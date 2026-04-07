@@ -18,7 +18,7 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
@@ -27,8 +27,8 @@ export function Header() {
           <span className="text-xl font-semibold tracking-tight">StockSense</span>
         </Link>
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex md:items-center md:gap-8">
+        {/* desktop (hidden) */}
+        <div className="hidden md:flex md:items-center md:gap-8"> 
           {navigation.map((item) => (
             <Link
               key={item.name}
@@ -51,7 +51,7 @@ export function Header() {
           </Button>
         </div>
 
-        {/* Mobile menu button */}
+        {/* mobile menu button (md:hidden) */}
         <button
           type="button"
           className="md:hidden"
@@ -65,7 +65,7 @@ export function Header() {
         </button>
       </nav>
 
-      {/* Mobile Navigation */}
+      {/* mobile menu */}
       {mobileMenuOpen && (
         <div className="md:hidden">
           <div className="space-y-1 px-6 pb-4">

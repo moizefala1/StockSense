@@ -9,9 +9,8 @@ export default function HomePage() {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-
       <main className="flex-1">
-        {/* Hero Section */}
+        {/* hero */}
         <section className="relative overflow-hidden px-6 py-24 sm:py-32 lg:px-8">
           <div className="mx-auto max-w-4xl text-center">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-accent/10 px-4 py-2 text-sm font-medium text-accent">
@@ -33,6 +32,7 @@ export default function HomePage() {
             </p>
 
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+              { /* cta buttons */ }
               <Button size="lg" className="w-full sm:w-auto" asChild>
                 <Link href="/analizar">
                   Comenzar Análisis Gratis
@@ -46,14 +46,9 @@ export default function HomePage() {
               </Button>
             </div>
           </div>
-
-          {/* Decorative gradient */}
-          <div className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true">
-            <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-accent/20 to-primary/10 opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" />
-          </div>
         </section>
 
-        {/* Problem Section */}
+        {/* problem */}
         <section className="bg-card px-6 py-24 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <div className="mx-auto max-w-2xl text-center">
@@ -108,7 +103,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Solution Section */}
+        {/* solucion */}
         <section className="px-6 py-24 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <div className="mx-auto max-w-2xl text-center">
@@ -119,7 +114,6 @@ export default function HomePage() {
                 Análisis simplificado que cualquiera puede entender
               </p>
             </div>
-
             <div className="mx-auto mt-16 grid max-w-5xl gap-8 lg:grid-cols-3">
               <Card className="relative overflow-hidden">
                 <CardContent className="pt-6">
@@ -166,7 +160,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Demo Preview Section */}
+        {/* preview */}
         <section className="bg-primary px-6 py-24 lg:px-8">
           <div className="mx-auto max-w-4xl text-center">
             <h2 className="text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
@@ -176,7 +170,7 @@ export default function HomePage() {
               Selecciona una acción → Recibe el veredicto → Entiende el por qué
             </p>
 
-            {/* Mock UI Preview */}
+            {/* mock ui */}
             <div className="mt-12 rounded-2xl bg-card p-8 shadow-2xl">
               <div className="mb-6 flex items-center justify-between">
                 <div>
@@ -189,17 +183,17 @@ export default function HomePage() {
               </div>
 
               <div className="grid gap-4 sm:grid-cols-3">
-                <div className="rounded-lg bg-secondary p-4 text-left">
+                <div className="rounded-lg bg-muted p-4 text-left">
                   <p className="text-xs text-muted-foreground">RSI (14)</p>
                   <p className="text-xl font-semibold">42.5</p>
                   <p className="text-xs text-success">Zona neutral-baja</p>
                 </div>
-                <div className="rounded-lg bg-secondary p-4 text-left">
+                <div className="rounded-lg bg-muted p-4 text-left">
                   <p className="text-xs text-muted-foreground">Media Móvil 50</p>
                   <p className="text-xl font-semibold">$178.20</p>
                   <p className="text-xs text-success">Precio por encima</p>
                 </div>
-                <div className="rounded-lg bg-secondary p-4 text-left">
+                <div className="rounded-lg bg-muted p-4 text-left">
                   <p className="text-xs text-muted-foreground">Tendencia</p>
                   <p className="text-xl font-semibold">Alcista</p>
                   <p className="text-xs text-success">Últimos 30 días</p>
@@ -209,7 +203,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* CTA Section */}
+        {/* second cta */}
         <section className="px-6 py-24 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
@@ -229,7 +223,6 @@ export default function HomePage() {
           </div>
         </section>
       </main>
-
       <Footer />
     </div>
   )
