@@ -149,6 +149,7 @@ export default function ComoFuncionaPage() {
                       </span>
                     </div>
 
+
                     <h3 className="text-lg font-semibold">{step.title}</h3>
                     <p className="mt-2 text-sm text-muted-foreground">
                       {step.description}
