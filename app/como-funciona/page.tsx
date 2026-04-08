@@ -83,19 +83,19 @@ const verdictExplanations = [
     verdict: "Comprar",
     description: "La mayoría de los indicadores sugieren que el precio tiene potencial de subir. El RSI no indica sobrecompra, y el precio está en tendencia positiva respecto a las medias móviles.",
     icon: TrendingUp,
-    color: "text-success bg-success/10 border-success/20",
+    color: "text-success bg-success/5 border-success/0",
   },
   {
     verdict: "Mantener",
     description: "Los indicadores muestran señales mixtas o neutrales. No hay una dirección clara. Si ya tienes la acción, puede ser prudente esperar. Si no la tienes, espera una señal más definida.",
     icon: Minus,
-    color: "text-warning bg-warning/10 border-warning/20",
+    color: "text-warning bg-warning/5 border-warning/0",
   },
   {
     verdict: "Vender",
     description: "Varios indicadores sugieren precaución. El precio puede estar sobrecomprado o mostrando debilidad técnica. Considera proteger ganancias o reducir exposición.",
     icon: TrendingDown,
-    color: "text-danger bg-danger/10 border-danger/20",
+    color: "text-danger bg-danger/5 border-danger/0",
   },
 ]
 
@@ -106,12 +106,23 @@ export default function ComoFuncionaPage() {
       
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="px-6 py-16 lg:px-8 lg:py-24">
+        <section className="relative overflow-hidden px-6 py-24 lg:px-8">
           <div className="mx-auto max-w-4xl text-center">
-            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
-              Cómo funciona StockSense
+
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-accent/10 px-4 py-2 text-sm font-medium text-accent">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75"></span>
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-accent"></span>
+              </span>
+              Aprende cómo funciona
+            </div>
+
+            <h1 className="text-balance text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
+              Cómo funciona
+              <span className="block text-accent">StockSense</span>
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
+
+            <p className="mx-auto mt-6 max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground sm:text-xl">
               Transformamos datos financieros complejos en recomendaciones claras que cualquiera puede entender. 
               Sin jerga técnica, sin confusión.
             </p>
@@ -119,29 +130,34 @@ export default function ComoFuncionaPage() {
         </section>
         
         {/* Process Steps */}
-        <section className="bg-card px-6 py-16 lg:px-8 lg:py-24">
+        <section className="bg-card px-6 py-24 lg:px-8">
           <div className="mx-auto max-w-5xl">
-            <h2 className="mb-12 text-center text-2xl font-bold sm:text-3xl">
+            <h2 className="mb-16 text-center text-3xl font-bold sm:text-4xl">
               El proceso en 4 pasos
             </h2>
             
             <div className="grid gap-8 md:grid-cols-2">
               {steps.map((step, index) => (
                 <Card key={step.number} className="relative overflow-hidden">
-                  <CardContent className="pt-6">
+                  <CardContent className="pt-2">
                     <div className="mb-4 flex items-center gap-4">
                       <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-accent/10">
                         <step.icon className="h-6 w-6 text-accent" />
-                          </div>
-                          <span className="text-4xl font-bold text-primary/90">
-                            {step.number}
-                          </span>
-                        </div>
+                      </div>
+                      <span className="text-4xl font-bold text-muted-foreground/20">
+                        {step.number}
+                      </span>
+                    </div>
+
+
                     <h3 className="text-lg font-semibold">{step.title}</h3>
                     <p className="mt-2 text-sm text-muted-foreground">
                       {step.description}
                     </p>
                   </CardContent>
+
+                  <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-accent/5" />
+
                   {index < steps.length - 1 && (
                     <div className="absolute -right-3 top-1/2 hidden -translate-y-1/2 md:block md:odd:hidden">
                       <ArrowRight className="h-6 w-6 text-muted-foreground/30" />
@@ -154,10 +170,10 @@ export default function ComoFuncionaPage() {
         </section>
         
         {/* Indicators Explanation */}
-        <section className="px-6 py-16 lg:px-8 lg:py-24">
+        <section className="px-6 py-24 lg:px-8">
           <div className="mx-auto max-w-5xl">
-            <div className="mb-12 text-center">
-              <h2 className="text-2xl font-bold sm:text-3xl">
+            <div className="mb-16 text-center">
+              <h2 className="text-3xl font-bold sm:text-4xl">
                 Los indicadores que usamos
               </h2>
               <p className="mt-4 text-muted-foreground">
@@ -167,7 +183,7 @@ export default function ComoFuncionaPage() {
             
             <div className="space-y-8">
               {indicators.map((indicator) => (
-                <Card key={indicator.name}>
+                <Card key={indicator.name} className="relative overflow-hidden">
                   <CardHeader>
                     <div className="flex items-center gap-3">
                       <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10">
@@ -179,6 +195,7 @@ export default function ComoFuncionaPage() {
                       </div>
                     </div>
                   </CardHeader>
+
                   <CardContent>
                     <div className="grid gap-3 sm:grid-cols-3">
                       {indicator.interpretation.map((item) => (
@@ -186,10 +203,10 @@ export default function ComoFuncionaPage() {
                           key={item.range}
                           className={`rounded-lg border p-4 ${
                             item.signal === "comprar"
-                              ? "border-success/20 bg-success/5"
+                              ? "border-success/0 bg-success/5"
                               : item.signal === "vender"
-                              ? "border-danger/20 bg-danger/5"
-                              : "border-warning/20 bg-warning/5"
+                              ? "border-danger/0 bg-danger/5" 
+                              : "border-warning/0 bg-warning/5"
                           }`}
                         >
                           <p className="font-medium">{item.range}</p>
@@ -211,6 +228,8 @@ export default function ComoFuncionaPage() {
                       ))}
                     </div>
                   </CardContent>
+
+                  <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-accent/5" />
                 </Card>
               ))}
             </div>
@@ -218,10 +237,10 @@ export default function ComoFuncionaPage() {
         </section>
         
         {/* Verdicts Explanation */}
-        <section className="bg-card px-6 py-16 lg:px-8 lg:py-24">
+        <section className="bg-card px-6 py-24 lg:px-8">
           <div className="mx-auto max-w-5xl">
-            <div className="mb-12 text-center">
-              <h2 className="text-2xl font-bold sm:text-3xl">
+            <div className="mb-16 text-center">
+              <h2 className="text-3xl font-bold sm:text-4xl">
                 Cómo interpretamos los resultados
               </h2>
               <p className="mt-4 text-muted-foreground">
@@ -231,7 +250,7 @@ export default function ComoFuncionaPage() {
             
             <div className="grid gap-6 md:grid-cols-3">
               {verdictExplanations.map((item) => (
-                <Card key={item.verdict} className={`border ${item.color.split(" ").slice(1).join(" ")}`}>
+                <Card key={item.verdict} className="relative overflow-hidden">
                   <CardContent className="pt-6">
                     <div className={`mb-4 inline-flex items-center gap-2 rounded-full border px-3 py-1 ${item.color}`}>
                       <item.icon className="h-4 w-4" />
@@ -239,6 +258,8 @@ export default function ComoFuncionaPage() {
                     </div>
                     <p className="text-sm text-muted-foreground">{item.description}</p>
                   </CardContent>
+
+                  <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-accent/5" />
                 </Card>
               ))}
             </div>
@@ -246,10 +267,10 @@ export default function ComoFuncionaPage() {
         </section>
         
         {/* Important Disclaimers */}
-        <section className="px-6 py-16 lg:px-8 lg:py-24">
+        <section className="px-6 py-24 lg:px-8">
           <div className="mx-auto max-w-4xl">
             <Card className="border-primary/20 bg-primary/5">
-              <CardContent className="py-8">
+              <CardContent className="py-10">
                 <div className="flex flex-col items-center text-center">
                   <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
                     <AlertTriangle className="h-7 w-7 text-primary" />
@@ -281,61 +302,81 @@ export default function ComoFuncionaPage() {
         </section>
         
         {/* Our Philosophy */}
-        <section className="bg-card px-6 py-16 lg:px-8 lg:py-24">
+        <section className="bg-card px-6 py-24 lg:px-8">
           <div className="mx-auto max-w-5xl">
-            <div className="mb-12 text-center">
-              <h2 className="text-2xl font-bold sm:text-3xl">
+            <div className="text-center">
+              <h2 className="text-3xl font-bold sm:text-4xl">
                 Nuestra filosofía
               </h2>
             </div>
-            
-            <div className="grid gap-8 md:grid-cols-3">
-              <Card>
-                <CardContent className="pt-6 text-center">
-                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-accent/10">
+                    
+            <div className="mt-16 grid gap-8 lg:grid-cols-3">
+                    
+              <Card className="relative overflow-hidden">
+                <CardContent className="pt-6">
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-accent/10">
                     <Lightbulb className="h-6 w-6 text-accent" />
                   </div>
-                  <h3 className="font-semibold">Claridad sobre complejidad</h3>
+                    
+                  <h3 className="text-lg font-semibold">
+                    Claridad sobre complejidad
+                  </h3>
+                    
                   <p className="mt-2 text-sm text-muted-foreground">
                     Creemos que la información financiera debe ser accesible para todos, no solo para expertos.
                   </p>
                 </CardContent>
+                    
+                <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-accent/5" />
               </Card>
-              
-              <Card>
-                <CardContent className="pt-6 text-center">
-                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-accent/10">
+                    
+              <Card className="relative overflow-hidden">
+                <CardContent className="pt-6">
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-accent/10">
                     <BookOpen className="h-6 w-6 text-accent" />
                   </div>
-                  <h3 className="font-semibold">Educación incluida</h3>
+                    
+                  <h3 className="text-lg font-semibold">
+                    Educación incluida
+                  </h3>
+                    
                   <p className="mt-2 text-sm text-muted-foreground">
                     No solo te decimos qué hacer. Te explicamos por qué, para que aprendas mientras analizas.
                   </p>
                 </CardContent>
+                    
+                <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-accent/5" />
               </Card>
-              
-              <Card>
-                <CardContent className="pt-6 text-center">
-                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-accent/10">
+                    
+              <Card className="relative overflow-hidden">
+                <CardContent className="pt-6">
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-accent/10">
                     <Shield className="h-6 w-6 text-accent" />
                   </div>
-                  <h3 className="font-semibold">Transparencia total</h3>
+                    
+                  <h3 className="text-lg font-semibold">
+                    Transparencia total
+                  </h3>
+                    
                   <p className="mt-2 text-sm text-muted-foreground">
                     Mostramos exactamente qué indicadores usamos y cómo llegamos a cada recomendación.
                   </p>
                 </CardContent>
+                    
+                <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-accent/5" />
               </Card>
+                    
             </div>
           </div>
         </section>
         
         {/* CTA */}
-        <section className="px-6 py-16 lg:px-8 lg:py-24">
+        <section className="bg-primary px-6 py-24 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-2xl font-bold sm:text-3xl">
+            <h2 className="text-3xl font-bold text-primary-foreground sm:text-4xl">
               ¿Listo para empezar?
             </h2>
-            <p className="mt-4 text-muted-foreground">
+            <p className="mt-4 text-primary-foreground/80">
               Analiza tu primera acción en segundos. Sin registro, sin costos.
             </p>
             <div className="mt-8">
