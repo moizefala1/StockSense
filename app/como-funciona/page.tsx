@@ -132,11 +132,11 @@ export default function ComoFuncionaPage() {
                     <div className="mb-4 flex items-center gap-4">
                       <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-accent/10">
                         <step.icon className="h-6 w-6 text-accent" />
-                      </div>
-                      <span className="text-4xl font-bold text-muted-foreground/20">
-                        {step.number}
-                      </span>
-                    </div>
+                          </div>
+                          <span className="text-4xl font-bold text-primary/90">
+                            {step.number}
+                          </span>
+                        </div>
                     <h3 className="text-lg font-semibold">{step.title}</h3>
                     <p className="mt-2 text-sm text-muted-foreground">
                       {step.description}
