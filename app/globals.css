@@ -9,13 +9,13 @@
   --primary-foreground:  oklch(0.98 0     0);
   --secondary:           oklch(0.72 0.080 265);
   --secondary-foreground:oklch(0.20 0.045 265);
-  --accent:              oklch(0.72 0.110 196);
+  --accent:              oklch(0.76 0.136 212);
   --accent-foreground:   oklch(0.15 0.030 265);
   --muted:               oklch(0.92 0.005 255);
   --muted-foreground:    oklch(0.40 0.015 258);
   --border:              oklch(0.28 0.045 265 / 0.12);
   --input:               oklch(0.96 0.006 250);
-  --ring:                oklch(0.72 0.110 196);
+  --ring:                oklch(0.76 0.136 212);
   --success:             oklch(0.62 0.170 145);
   --warning:             oklch(0.72 0.145  75);
   --danger:              oklch(0.58 0.210  25);
