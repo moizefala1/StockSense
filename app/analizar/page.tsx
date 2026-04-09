@@ -251,28 +251,18 @@ export default function AnalizarPage() {
     <div className="flex min-h-screen flex-col bg-[#f7f7f8]">
       <Header />
 
-      <main className="flex-1 px-6 py-10 lg:px-8">
-          <div className="mx-auto max-w-4xl">
-            <section className="relative mx-auto mb-12 max-w-3xl pt-16">
-              <div className="absolute left-1/2 top-[6px] z-10 -translate-x-1/2 pointer-events-none">
-                <div className="relative flex h-40 w-40 items-center justify-center rounded-full bg-[var(--primary)] sm:h-44 sm:w-44">
-                  <img
-                    src="/robot.png"
-                    alt="Robot"
-                    className="h-full w-full scale-y-78 scale-x-70 object-contain object-center [filter:drop-shadow(0_0_20px_rgba(255,255,255,0.20))_drop-shadow(0_0_7px_rgba(255,255,255,0.10))_drop-shadow(0_0_12px_rgba(255,255,255,0.40))]"
-                  />
-                </div>
+        <main className="flex-1 px-6 py-10 lg:px-8">
+        <div className="mx-auto max-w-4xl">
+          <section className="relative mx-auto mb-12 max-w-3xl pt-8">
+            <div className="relative rounded-[2rem] border-[5px] border-[oklch(0.14_0.03_265_/_0.22)] bg-[var(--primary)] px-4 pb-5 pt-12 shadow-[inset_0_0_52px_oklch(0.14_0.03_265_/_0.12),inset_0_-16px_30px_oklch(0.12_0.025_265_/_0.14),inset_0_12px_24px_oklch(0.16_0.03_265_/_0.07)] sm:px-6 sm:pb-6 sm:pt-12">
+              <div className="relative z-20 text-center">
+                <h1 className="text-3xl font-bold tracking-tight text-[var(--background)] [text-shadow:0_1px_0_rgba(0,0,0,0.22),1px_0_0_rgba(0,0,0,0.08),0_-1px_0_rgba(255,255,255,0.10)] sm:text-4xl">
+                  Analiza cualquier acción
+                </h1>
+                <p className="mx-auto mt-2 max-w-2xl text-sm text-[var(--secondary)] sm:text-base">
+                  Selecciona una acción y recibe un veredicto claro basado en indicadores técnicos
+                </p>
               </div>
-
-              <div className="relative rounded-[2rem] border-[5px] border-[oklch(0.14_0.03_265_/_0.22)] bg-[var(--primary)] px-4 pb-5 pt-24 shadow-[inset_0_0_52px_oklch(0.14_0.03_265_/_0.12),inset_0_-16px_30px_oklch(0.12_0.025_265_/_0.14),inset_0_12px_24px_oklch(0.16_0.03_265_/_0.07)] sm:px-6 sm:pb-6 sm:pt-28">
-                <div className="relative z-20 text-center">
-                  <h1 className="text-3xl font-bold tracking-tight text-accent sm:text-4xl">
-                    Analiza cualquier acción
-                  </h1>
-                  <p className="mx-auto mt-3 max-w-2xl text-sm text-[var(--secondary)] sm:text-base">
-                    Selecciona una acción y recibe un veredicto claro basado en indicadores técnicos
-                  </p>
-                </div>
 
               <div className="mt-8 rounded-[1.75rem] border border-slate-200 bg-white p-4 shadow-[0_8px_30px_rgba(0,0,0,0.08)] sm:p-5">
                 <div className="relative">
