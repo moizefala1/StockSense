@@ -27,8 +27,7 @@ export function Header() {
           <span className="text-xl font-semibold tracking-tight">StockSense</span>
         </Link>
 
-        {/* desktop (hidden) */}
-        <div className="hidden md:flex md:items-center md:gap-8"> 
+        <div className="hidden md:flex md:items-center md:gap-8">
           {navigation.map((item) => (
             <Link
               key={item.name}
@@ -46,12 +45,15 @@ export function Header() {
         </div>
 
         <div className="hidden md:block">
-          <Button asChild>
-            <Link href="/analizar">Comenzar Análisis</Link>
-          </Button>
+          {pathname !== "/analizar" ? (
+            <Button asChild>
+              <Link href="/analizar">Comenzar Análisis</Link>
+            </Button>
+          ) : (
+            <div className="h-10 w-[173px]" />
+          )}
         </div>
 
-        {/* mobile menu button (md:hidden) */}
         <button
           type="button"
           className="md:hidden"
@@ -65,7 +67,6 @@ export function Header() {
         </button>
       </nav>
 
-      {/* mobile menu */}
       {mobileMenuOpen && (
         <div className="md:hidden">
           <div className="space-y-1 px-6 pb-4">
@@ -84,11 +85,14 @@ export function Header() {
                 {item.name}
               </Link>
             ))}
-            <div className="pt-4">
-              <Button asChild className="w-full">
-                <Link href="/analizar">Comenzar Análisis</Link>
-              </Button>
-            </div>
+
+            {pathname !== "/analizar" && (
+              <div className="pt-4">
+                <Button asChild className="w-full">
+                  <Link href="/analizar">Comenzar Análisis</Link>
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       )}
