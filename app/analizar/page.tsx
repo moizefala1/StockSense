@@ -158,8 +158,8 @@ function VerdictBadge({ verdict }: { verdict: Verdict }) {
   const { icon: Icon, label, className } = config[verdict]
 
   return (
-    <div className={cn("inline-flex items-center gap-2 rounded-full border px-4 py-2 font-semibold", className)}>
-      <Icon className="h-5 w-5" />
+    <div className={cn("inline-flex items-center gap-2 rounded-full border px-5 py-3 text-lg font-semibold", className)}>
+      <Icon className="h-7 w-7" />
       {label}
     </div>
   )
@@ -186,7 +186,7 @@ function IndicatorCard({
 
   return (
     <Card className="border-slate-200 shadow-sm">
-      <CardContent className="pt-6">
+      <CardContent className="pt-2">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2">
             <p className="text-sm font-medium text-slate-500">{title}</p>
@@ -205,7 +205,7 @@ function IndicatorCard({
           </div>
         </div>
 
-        <p className="mt-2 text-2xl font-bold text-[#203268]">
+        <p className="mt-2 text-2xl font-bold text-primary">
           {typeof value === "number" ? value.toFixed(2) : value}
         </p>
 
@@ -254,12 +254,12 @@ export default function AnalizarPage() {
         <main className="flex-1 px-6 py-10 lg:px-8">
         <div className="mx-auto max-w-4xl">
           <section className="relative mx-auto mb-12 max-w-3xl pt-8">
-            <div className="relative rounded-[2rem] border-[5px] border-[oklch(0.14_0.03_265_/_0.22)] bg-[var(--primary)] px-4 pb-5 pt-12 shadow-[inset_0_0_52px_oklch(0.14_0.03_265_/_0.12),inset_0_-16px_30px_oklch(0.12_0.025_265_/_0.14),inset_0_12px_24px_oklch(0.16_0.03_265_/_0.07)] sm:px-6 sm:pb-6 sm:pt-12">
+            <div className="relative rounded-[2rem] border-[5px] border-border bg-primary px-4 pb-5 pt-12 shadow-[inset_0_0_52px_oklch(0.14_0.03_265_/_0.12),inset_0_-16px_30px_oklch(0.12_0.025_265_/_0.14),inset_0_12px_24px_oklch(0.16_0.03_265_/_0.07)] sm:px-6 sm:pb-6 sm:pt-12">
               <div className="relative z-20 text-center">
-                <h1 className="text-3xl font-bold tracking-tight text-[var(--background)] [text-shadow:0_1px_0_rgba(0,0,0,0.22),1px_0_0_rgba(0,0,0,0.08),0_-1px_0_rgba(255,255,255,0.10)] sm:text-4xl">
+                <h1 className="text-3xl font-bold tracking-tight text-background [text-shadow:0_1px_0_rgba(0,0,0,0.22),1px_0_0_rgba(0,0,0,0.08),0_-1px_0_rgba(255,255,255,0.10)] sm:text-4xl">
                   Analiza cualquier acción
                 </h1>
-                <p className="mx-auto mt-2 max-w-2xl text-sm text-[var(--secondary)] sm:text-base">
+                <p className="mx-auto mt-2 max-w-2xl text-sm text-secondary sm:text-base">
                   Selecciona una acción y recibe un veredicto claro basado en indicadores técnicos
                 </p>
               </div>
@@ -281,17 +281,17 @@ export default function AnalizarPage() {
                       filteredStocks.map((stock) => (
                         <button
                           key={stock.symbol}
-                          className="flex w-full items-center justify-between rounded-xl border border-slate-200 p-4 text-left transition-colors hover:bg-slate-50"
-                          onClick={() => handleAnalyze(stock)}
+                          className="group flex w-full items-center justify-between rounded-xl border border-slate-200 p-4 text-left transition-colors hover:bg-slate-50"
+                          onClick={() => {setSearchQuery(""); handleAnalyze(stock);}}
                         >
                           <div className="min-w-0">
-                            <span className="font-semibold text-[#203268]">{stock.symbol}</span>
+                            <span className="font-semibold text-primary">{stock.symbol}</span>
                             <span className="ml-2 text-slate-500">{stock.name}</span>
                           </div>
 
                           <div className="ml-4 flex items-center gap-2">
-                            <span className="font-medium text-[#203268]">${stock.price.toFixed(2)}</span>
-                            <ArrowRight className="h-4 w-4 text-slate-400" />
+                            <span className="font-medium text-primary">${stock.price.toFixed(2)}</span>
+                            <ArrowRight className="h-4 w-4 text-slate-400 transition-transform duration-200 ease-out group-hover:translate-x-1" />
                           </div>
                         </button>
                       ))
@@ -309,7 +309,12 @@ export default function AnalizarPage() {
                         <button
                           key={stock.symbol}
                           onClick={() => handleAnalyze(stock)}
-                          className="rounded-full border border-[#d7dfef] bg-[#f3f6fc] px-4 py-2 text-sm font-medium text-[#203268] transition hover:bg-[#eaf0fb]"
+                          className={cn(
+                            "rounded-full border px-4 py-2 text-sm font-medium transition ",
+                            analysis?.symbol === stock.symbol 
+                            ? "bg-accent/10 border-accent/15 text-accent hover:bg-accent/20"
+                            : "bg-muted/40 border-muted text-primary hover:bg-muted"
+                          )}
                         >
                           {stock.symbol}
                         </button>
@@ -324,8 +329,8 @@ export default function AnalizarPage() {
           {isAnalyzing && (
             <Card className="mx-auto max-w-3xl border-slate-200 shadow-sm">
               <CardContent className="py-12 text-center">
-                <RefreshCw className="mx-auto h-8 w-8 animate-spin text-[#2bc8d1]" />
-                <p className="mt-4 text-lg font-medium text-[#203268]">
+                <RefreshCw className="mx-auto h-8 w-8 animate-spin text-accent" />
+                <p className="mt-4 text-lg font-medium text-primary">
                   Analizando {selectedStock?.symbol}...
                 </p>
                 <p className="mt-2 text-sm text-slate-500">
@@ -337,23 +342,19 @@ export default function AnalizarPage() {
 
           {analysis && !isAnalyzing && (
             <div className="mx-auto max-w-3xl space-y-6">
+              <h2 className="mb-4 text-xl font-semibold text-primary">Resultado del análisis</h2>
               <Card className="border-slate-200 shadow-sm">
                 <CardHeader>
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                      <CardDescription className="text-slate-500">Resultado del análisis</CardDescription>
-                      <CardTitle className="text-2xl text-[#203268]">
+                      <CardTitle className="text-2xl text-primary">
                         {analysis.symbol} - {analysis.name}
                       </CardTitle>
                       <p className="mt-1 text-xl font-semibold text-slate-500">
                         ${analysis.price.toFixed(2)}
                       </p>
                     </div>
-
-                    <div className="flex flex-col items-start gap-2 sm:items-end">
-                      <VerdictBadge verdict={analysis.verdict} />
-                      <p className="text-sm text-slate-500">Confianza: {analysis.confidence}%</p>
-                    </div>
+                    <VerdictBadge verdict={analysis.verdict} />
                   </div>
                 </CardHeader>
 
@@ -362,14 +363,16 @@ export default function AnalizarPage() {
                     <p className="text-sm leading-relaxed text-slate-700">{analysis.reasoning}</p>
                   </div>
 
-                  <div className="mt-4 flex justify-end">
+                  <div className="mt-4 flex justify-between items-center">
+                    <p className="text-sm text-slate-500">Confianza: {analysis.confidence}%</p>
+
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={handleReanalyze}
-                      className="border-slate-200 text-[#203268]"
+                      className="group border-slate-200 text-slate-600"
                     >
-                      <RefreshCw className="mr-2 h-4 w-4" />
+                      <RefreshCw className="h-4 w-4 text-primary group-hover:transition-transform group-hover:duration-300 group-hover:rotate-180" />
                       Actualizar análisis
                     </Button>
                   </div>
@@ -377,7 +380,7 @@ export default function AnalizarPage() {
               </Card>
 
               <div>
-                <h2 className="mb-4 text-xl font-semibold text-[#203268]">Indicadores técnicos</h2>
+                <h2 className="mb-4 text-xl font-semibold text-primary">Indicadores técnicos</h2>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <IndicatorCard
                     title="RSI (14 días)"
@@ -413,20 +416,18 @@ export default function AnalizarPage() {
                 </div>
               </div>
 
-              <Card className="border-[#2bc8d1]/20 bg-[#2bc8d1]/5 shadow-sm">
-                <CardContent className="py-6">
+              <Card className="border-border bg-primary-foreground shadow-sm">
+                <CardContent className="py-2 px-7">
                   <div className="flex gap-4">
-                    <Info className="h-6 w-6 flex-shrink-0 text-[#2bc8d1]" />
-                    <div>
-                      <h3 className="font-semibold text-[#203268]">¿Qué significan estos indicadores?</h3>
-                      <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                        Estos indicadores técnicos analizan patrones históricos de precio y volumen.
-                        Aunque son herramientas útiles, el mercado sigue siendo incierto y ningún
-                        indicador garantiza resultados. Usa esta información como apoyo para tu
-                        investigación y no como única base para decidir.
-                      </p>
-                    </div>
+                    <Info className="h-6 w-6 flex-shrink-0 text-accent" />
+                    <h3 className="font-semibold text-primary">¿Qué significan estos indicadores?</h3>
                   </div>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                    Estos indicadores técnicos analizan patrones históricos de precio y volumen.
+                    Aunque son herramientas útiles, el mercado sigue siendo incierto y ningún
+                    indicador garantiza resultados. Usa esta información como apoyo para tu
+                    investigación y no como única base para decidir.
+                  </p>
                 </CardContent>
               </Card>
             </div>

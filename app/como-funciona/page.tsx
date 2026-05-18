@@ -106,7 +106,7 @@ export default function ComoFuncionaPage() {
       
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative overflow-hidden px-6 py-24 lg:px-8">
+        <section className="relative overflow-hidden px-6 py-20 lg:px-8">
           <div className="mx-auto max-w-4xl text-center">
 
             <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-accent/10 px-4 py-2 text-sm font-medium text-accent">
@@ -130,7 +130,7 @@ export default function ComoFuncionaPage() {
         </section>
         
         {/* Process Steps */}
-        <section className="bg-card px-6 py-24 lg:px-8">
+        <section className="bg-card px-6 py-20 lg:px-8">
           <div className="mx-auto max-w-5xl">
             <h2 className="mb-16 text-center text-3xl font-bold sm:text-4xl">
               El proceso en 4 pasos
@@ -170,7 +170,7 @@ export default function ComoFuncionaPage() {
         </section>
         
         {/* Indicators Explanation */}
-        <section className="px-6 py-24 lg:px-8">
+        <section className="px-6 py-20 lg:px-8">
           <div className="mx-auto max-w-5xl">
             <div className="mb-16 text-center">
               <h2 className="text-3xl font-bold sm:text-4xl">
@@ -237,7 +237,7 @@ export default function ComoFuncionaPage() {
         </section>
         
         {/* Verdicts Explanation */}
-        <section className="bg-card px-6 py-24 lg:px-8">
+        <section className="bg-card px-6 py-20 lg:px-8">
           <div className="mx-auto max-w-5xl">
             <div className="mb-16 text-center">
               <h2 className="text-3xl font-bold sm:text-4xl">
@@ -267,7 +267,7 @@ export default function ComoFuncionaPage() {
         </section>
         
         {/* Important Disclaimers */}
-        <section className="px-6 py-24 lg:px-8">
+        <section className="px-6 py-20 lg:px-8">
           <div className="mx-auto max-w-4xl">
             <Card className="border-primary/20 bg-primary/5">
               <CardContent className="py-10">
@@ -302,7 +302,7 @@ export default function ComoFuncionaPage() {
         </section>
         
         {/* Our Philosophy */}
-        <section className="bg-card px-6 py-24 lg:px-8">
+        <section className="bg-card px-6 py-20 lg:px-8">
           <div className="mx-auto max-w-5xl">
             <div className="text-center">
               <h2 className="text-3xl font-bold sm:text-4xl">
@@ -371,7 +371,7 @@ export default function ComoFuncionaPage() {
         </section>
         
         {/* CTA */}
-        <section className="bg-primary px-6 py-24 lg:px-8">
+        <section className="bg-primary px-6 py-20 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-bold text-primary-foreground sm:text-4xl">
               ¿Listo para empezar?
@@ -381,9 +381,9 @@ export default function ComoFuncionaPage() {
             </p>
             <div className="mt-8">
               <Button size="lg" asChild>
-                <Link href="/analizar">
+                <Link  className="group inline-flex items-center" href="/analizar">
                   Comenzar análisis
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  <ArrowRight className="h-4 w-4 transition-transform duration-200 ease-out group-hover:translate-x-1" />
                 </Link>
               </Button>
             </div>

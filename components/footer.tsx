@@ -1,7 +1,19 @@
+"use client"
+
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { TrendingUp } from "lucide-react"
+import { cn } from "@/lib/utils"
+
+const navigation = [
+  { name: "Inicio", href: "/" },
+  { name: "Analizar", href: "/analizar" },
+  { name: "Cómo Funciona", href: "/como-funciona" },
+]
 
 export function Footer() {
+  const pathname = usePathname()
+
   return (
     <footer className="border-t border-border bg-card">
       <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
@@ -14,24 +26,20 @@ export function Footer() {
           </div>
 
           <nav className="flex flex-wrap justify-center gap-6">
-            <Link
-              href="/"
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-            >
-              Inicio
-            </Link>
-            <Link
-              href="/analizar"
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-            >
-              Analizar
-            </Link>
-            <Link
-              href="/como-funciona"
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-            >
-              Cómo Funciona
-            </Link>
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={cn(
+                  "text-sm text-muted-foreground transition-colors hover:text-accent",
+                  pathname === item.href
+                    ? "text-foreground font-semibold"
+                    : "text-muted-foreground"
+                )}
+              >
+                {item.name}
+              </Link>
+            ))}
           </nav>
 
           <p className="text-sm text-muted-foreground">

@@ -11,7 +11,7 @@ export default function HomePage() {
       <Header />
       <main className="flex-1">
         {/* hero */}
-        <section className="relative overflow-hidden px-6 py-24 sm:py-32 lg:px-8">
+        <section className="relative overflow-hidden px-6 py-20 lg:px-8">
           <div className="mx-auto max-w-4xl text-center">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-accent/10 px-4 py-2 text-sm font-medium text-accent">
               <span className="relative flex h-2 w-2">
@@ -33,10 +33,10 @@ export default function HomePage() {
 
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               { /* cta buttons */ }
-              <Button size="lg" className="w-full sm:w-auto" asChild>
+              <Button size="lg" className="group w-full sm:w-auto" asChild>
                 <Link href="/analizar">
                   Comenzar Análisis Gratis
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
               </Button>
               <Button variant="outline" size="lg" className="w-full sm:w-auto" asChild>
@@ -49,7 +49,7 @@ export default function HomePage() {
         </section>
 
         {/* problem */}
-        <section className="bg-card px-6 py-24 lg:px-8">
+        <section className="bg-card px-6 py-20 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
@@ -104,7 +104,7 @@ export default function HomePage() {
         </section>
 
         {/* solucion */}
-        <section className="px-6 py-24 lg:px-8">
+        <section className="px-6 py-20 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
@@ -161,7 +161,7 @@ export default function HomePage() {
         </section>
 
         {/* preview */}
-        <section className="bg-primary px-6 py-24 lg:px-8">
+        <section className="bg-primary px-6 py-20 lg:px-8">
           <div className="mx-auto max-w-4xl text-center">
             <h2 className="text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
               Así de simple es
@@ -204,7 +204,7 @@ export default function HomePage() {
         </section>
 
         {/* second cta */}
-        <section className="px-6 py-24 lg:px-8">
+        <section className="px-6 py-20 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
               Comienza a invertir con confianza
@@ -214,9 +214,9 @@ export default function HomePage() {
             </p>
             <div className="mt-8">
               <Button size="lg" asChild>
-                <Link href="/analizar">
+                <Link  className="group inline-flex items-center" href="/analizar">
                   Analizar mi primera acción
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  <ArrowRight className="h-4 w-4 transition-transform duration-200 ease-out group-hover:translate-x-1" />
                 </Link>
               </Button>
             </div>
