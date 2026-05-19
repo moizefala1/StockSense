@@ -321,17 +321,30 @@ export default function AnalizarPage() {
           </section>
 
           {isAnalyzing && (
-            <Card className="mx-auto max-w-3xl border-slate-200 shadow-sm">
-              <CardContent className="py-12 text-center">
-                <RefreshCw className="mx-auto h-8 w-8 animate-spin text-accent" />
-                <p className="mt-4 text-lg font-medium text-primary">
-                  Analizando {selectedStock?.symbol}...
-                </p>
-                <p className="mt-2 text-sm text-slate-500">
-                  Calculando indicadores técnicos
-                </p>
-              </CardContent>
-            </Card>
+<Card className="mx-auto max-w-3xl py-8 border-slate-200 shadow-sm">
+  <CardHeader>
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      
+      <div className="space-y-3">
+        <div className="h-9.5 w-46 animate-[pulse_1s_ease-in-out_infinite] rounded-md bg-slate-200" />
+        <div className="h-6.5 w-21 animate-[pulse_1s_ease-in-out_infinite] rounded-md bg-slate-200" />
+      </div>
+
+      <div className="h-16 w-33 animate-[pulse_1s_ease-in-out_infinite] rounded-full bg-slate-200" />
+    </div>
+  </CardHeader>
+
+  <CardContent className="space-y-4">
+    
+    <div className="h-20 animate-[pulse_1s_ease-in-out_infinite] rounded-2xl bg-slate-200" />
+
+    <div className="flex items-center justify-between">
+      <div className="h-6 w-28 animate-[pulse_1s_ease-in-out_infinite] rounded-md bg-slate-200" />
+      <div className="h-8 w-36 animate-[pulse_1s_ease-in-out_infinite] rounded-md bg-slate-200" />
+    </div>
+
+  </CardContent>
+</Card>
           )}
 
           {analysis && !isAnalyzing && (
