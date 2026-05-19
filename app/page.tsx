@@ -61,7 +61,7 @@ export default function HomePage() {
             </div>
 
             <div className="mx-auto mt-16 grid max-w-5xl gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              <Card className="border-destructive/20 bg-destructive/5">
+              <Card className="relative overflow-hidden bg-white">
                 <CardContent className="pt-6">
                   <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-destructive/10">
                     <BarChart3 className="h-6 w-6 text-destructive" />
@@ -72,9 +72,10 @@ export default function HomePage() {
                     métricas y fuentes que confunden más de lo que ayudan.
                   </p>
                 </CardContent>
+                <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-danger/5" />
               </Card>
 
-              <Card className="border-destructive/20 bg-destructive/5">
+              <Card className="relative overflow-hidden bg-white">
                 <CardContent className="pt-6">
                   <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-destructive/10">
                     <Target className="h-6 w-6 text-destructive" />
@@ -85,9 +86,10 @@ export default function HomePage() {
                     invertir se siente como apostar en vez de decidir con fundamento.
                   </p>
                 </CardContent>
+                <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-danger/5" />
               </Card>
 
-              <Card className="border-destructive/20 bg-destructive/5 sm:col-span-2 lg:col-span-1">
+              <Card className="relative overflow-hidden bg-white sm:col-span-2 lg:col-span-1">
                 <CardContent className="pt-6">
                   <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-destructive/10">
                     <Shield className="h-6 w-6 text-destructive" />
@@ -98,6 +100,7 @@ export default function HomePage() {
                     no explican su razonamiento generan miedo e inseguridad.
                   </p>
                 </CardContent>
+                <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-danger/5" />
               </Card>
             </div>
           </div>
@@ -177,8 +180,8 @@ export default function HomePage() {
                   <p className="text-left text-sm text-muted-foreground">Analizando</p>
                   <p className="text-left text-2xl font-bold">AAPL - Apple Inc.</p>
                 </div>
-                <div className="rounded-full bg-success/10 px-4 py-2 text-success">
-                  <span className="text-sm font-semibold">Comprar</span>
+                <div className="rounded-full bg-success/10 px-6 py-3 text-success">
+                  <span className="text-lg font-semibold">Comprar</span>
                 </div>
               </div>
 

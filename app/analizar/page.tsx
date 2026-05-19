@@ -141,17 +141,17 @@ function VerdictBadge({ verdict }: { verdict: Verdict }) {
     comprar: {
       icon: TrendingUp,
       label: "Comprar",
-      className: "border-emerald-200 bg-emerald-50 text-emerald-700",
+      className: "bg-emerald-50 text-emerald-700",
     },
     mantener: {
       icon: Minus,
       label: "Mantener",
-      className: "border-amber-200 bg-amber-50 text-amber-700",
+      className: "bg-amber-50 text-amber-700",
     },
     vender: {
       icon: TrendingDown,
       label: "Vender",
-      className: "border-rose-200 bg-rose-50 text-rose-700",
+      className: "bg-rose-50 text-rose-700",
     },
   }
 
