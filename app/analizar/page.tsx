@@ -8,12 +8,8 @@ import { Input } from "@/components/ui/input"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { cn } from "@/lib/utils"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip"
+import { Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 
 // Mock data for demonstration
 const mockStocks = [
@@ -185,8 +181,7 @@ function IndicatorCard({
   }
 
   return (
-    <Card className="border-slate-200 shadow-sm">
-      <CardContent className="pt-2">
+    <div className="p-7 pb-9 bg-card rounded-b-2xl shadow-sm">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2">
             <p className="text-sm font-medium text-slate-500">{title}</p>
@@ -212,8 +207,7 @@ function IndicatorCard({
         <p className={cn("mt-2 text-sm leading-relaxed", signalColors[signal])}>
           {description}
         </p>
-      </CardContent>
-    </Card>
+    </div>
   )
 }
 
@@ -379,17 +373,25 @@ export default function AnalizarPage() {
                 </CardContent>
               </Card>
 
-              <div>
-                <h2 className="mb-4 text-xl font-semibold text-primary">Indicadores técnicos</h2>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <IndicatorCard
+              <Tabs defaultValue="rsi" className="w-full">
+                <TabsList className="grid h-auto w-full gap-2 grid-cols-2 bg-transparent md:grid-cols-4">
+                  <TabsTrigger value="rsi" className="rounded-b-none rounded-t-xl px-5 py-2 data-[state=active]:bg-card">RSI</TabsTrigger>
+                  <TabsTrigger value="sma50" className="rounded-b-none rounded-t-xl px-5 py-2 data-[state=active]:bg-card">SMA50</TabsTrigger>
+                  <TabsTrigger value="sma200" className="rounded-b-none rounded-t-xl px-5 py-2 data-[state=active]:bg-card">SMA200</TabsTrigger>
+                  <TabsTrigger value="trend" className="rounded-b-none rounded-t-xl px-5 py-2 data-[state=active]:bg-card">Tendencia</TabsTrigger>
+                </TabsList>
+                        
+                <TabsContent value="rsi">
+                  <IndicatorCard 
                     title="RSI (14 días)"
                     value={analysis.indicators.rsi.value}
                     signal={analysis.indicators.rsi.signal}
                     description={analysis.indicators.rsi.description}
                     tooltip="El RSI mide la velocidad y el cambio de los movimientos de precio. Bajo 30 puede sugerir sobreventa y sobre 70 puede sugerir sobrecompra."
                   />
-
+                </TabsContent>
+                        
+                <TabsContent value="sma50">
                   <IndicatorCard
                     title="Media Móvil 50 días"
                     value={`$${analysis.indicators.sma50.value.toFixed(2)}`}
@@ -397,7 +399,9 @@ export default function AnalizarPage() {
                     description={analysis.indicators.sma50.description}
                     tooltip="La media móvil de 50 días representa la tendencia de corto plazo. Estar por encima suele interpretarse como una señal positiva."
                   />
-
+                </TabsContent>
+                        
+                <TabsContent value="sma200">
                   <IndicatorCard
                     title="Media Móvil 200 días"
                     value={`$${analysis.indicators.sma200.value.toFixed(2)}`}
@@ -405,7 +409,9 @@ export default function AnalizarPage() {
                     description={analysis.indicators.sma200.description}
                     tooltip="La media móvil de 200 días representa la tendencia de largo plazo. Estar por encima suele interpretarse como una señal alcista."
                   />
-
+                </TabsContent>
+                        
+                <TabsContent value="trend">
                   <IndicatorCard
                     title="Tendencia General"
                     value={analysis.indicators.trend.value}
@@ -413,10 +419,10 @@ export default function AnalizarPage() {
                     description={analysis.indicators.trend.description}
                     tooltip="La tendencia general se estima observando la dirección predominante del precio durante las últimas semanas."
                   />
-                </div>
-              </div>
+                </TabsContent>
+              </Tabs>
 
-              <Card className="border-border bg-primary-foreground shadow-sm">
+              <Card className="border-border bg-primary-foreground shadow-sm rounded-2xl">
                 <CardContent className="py-2 px-7">
                   <div className="flex gap-4">
                     <Info className="h-6 w-6 flex-shrink-0 text-accent" />
