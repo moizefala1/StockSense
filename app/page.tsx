@@ -1,16 +1,22 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import { ArrowRight, TrendingUp, Shield, BookOpen, Zap, BarChart3, Target } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
+import { Header } from "@/components/layout/header"
+import { Footer } from "@/components/layout/footer"
+
+export const metadata: Metadata = {
+  title: "StockSense - Análisis de Acciones Simplificado",
+  description:
+    "Recibe recomendaciones claras de Comprar, Mantener o Vender basadas en indicadores técnicos. Invierte con confianza, sin jerga técnica.",
+}
 
 export default function HomePage() {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
-        {/* hero */}
         <section className="relative overflow-hidden px-6 py-20 lg:px-8">
           <div className="mx-auto max-w-4xl text-center">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-accent/10 px-4 py-2 text-sm font-medium text-accent">
@@ -32,7 +38,6 @@ export default function HomePage() {
             </p>
 
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              { /* cta buttons */ }
               <Button size="lg" className="group w-full sm:w-auto" asChild>
                 <Link href="/analizar">
                   Comenzar Análisis Gratis
@@ -48,7 +53,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* problem */}
         <section className="bg-card px-6 py-20 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <div className="mx-auto max-w-2xl text-center">
@@ -103,7 +107,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* solucion */}
         <section className="px-6 py-20 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <div className="mx-auto max-w-2xl text-center">
@@ -160,7 +163,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* preview */}
         <section className="bg-primary px-6 py-20 lg:px-8">
           <div className="mx-auto max-w-4xl text-center">
             <h2 className="text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
@@ -170,7 +172,6 @@ export default function HomePage() {
               Selecciona una acción → Recibe el veredicto → Entiende el por qué
             </p>
 
-            {/* mock ui */}
             <div className="mt-12 rounded-2xl bg-card p-8 shadow-2xl">
               <div className="mb-6 flex items-center justify-between">
                 <div>
@@ -203,7 +204,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* second cta */}
         <section className="px-6 py-20 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
@@ -214,7 +214,7 @@ export default function HomePage() {
             </p>
             <div className="mt-8">
               <Button size="lg" asChild>
-                <Link  className="group inline-flex items-center" href="/analizar">
+                <Link className="group inline-flex items-center" href="/analizar">
                   Analizar mi primera acción
                   <ArrowRight className="h-4 w-4 transition-transform duration-200 ease-out group-hover:translate-x-1" />
                 </Link>

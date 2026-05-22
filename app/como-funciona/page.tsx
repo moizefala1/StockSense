@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { 
   Search, 
   BarChart3, 
@@ -15,8 +16,14 @@ import {
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
+import { Header } from "@/components/layout/header"
+import { Footer } from "@/components/layout/footer"
+
+export const metadata: Metadata = {
+  title: "Cómo Funciona - StockSense",
+  description:
+    "Entiende cómo StockSense transforma datos financieros complejos en recomendaciones claras usando RSI, medias móviles y análisis de tendencia.",
+}
 
 const steps = [
   {
@@ -381,7 +388,7 @@ export default function ComoFuncionaPage() {
             </p>
             <div className="mt-8">
               <Button size="lg" asChild>
-                <Link  className="group inline-flex items-center" href="/analizar">
+                <Link className="group inline-flex items-center" href="/analizar">
                   Comenzar análisis
                   <ArrowRight className="h-4 w-4 transition-transform duration-200 ease-out group-hover:translate-x-1" />
                 </Link>
