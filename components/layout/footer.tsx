@@ -1,9 +1,5 @@
-"use client"
-
 import Link from "next/link"
-import { usePathname } from "next/navigation"
 import { TrendingUp } from "lucide-react"
-import { cn } from "@/lib/utils"
 
 const navigation = [
   { name: "Inicio", href: "/" },
@@ -12,8 +8,6 @@ const navigation = [
 ]
 
 export function Footer() {
-  const pathname = usePathname()
-
   return (
     <footer className="border-t border-border bg-card">
       <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
@@ -30,12 +24,7 @@ export function Footer() {
               <Link
                 key={item.name}
                 href={item.href}
-                className={cn(
-                  "text-sm text-muted-foreground transition-colors hover:text-accent",
-                  pathname === item.href
-                    ? "text-foreground font-semibold"
-                    : "text-muted-foreground"
-                )}
+                className="text-sm text-muted-foreground transition-colors hover:text-accent"
               >
                 {item.name}
               </Link>
