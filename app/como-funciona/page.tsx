@@ -16,9 +16,15 @@ import {
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
+import { Header } from "@/components/layout/header"
+import { Footer } from "@/components/layout/footer"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion"
+
+export const metadata: Metadata = {
+  title: "Cómo Funciona - StockSense",
+  description:
+    "Descubre cómo StockSense analiza acciones usando indicadores técnicos como RSI y medias móviles para darte recomendaciones claras de Compra, Mantén o Vende.",
+}
 
 const steps = [
   {
