@@ -23,7 +23,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/c
 export const metadata: Metadata = {
   title: "Cómo Funciona - StockSense",
   description:
-    "Descubre cómo StockSense analiza acciones usando indicadores técnicos como RSI y medias móviles para darte recomendaciones claras de Compra, Mantén o Vende.",
+    "Descubre cómo StockSense analiza acciones usando indicadores técnicos como RSI y medias móviles para darte recomendaciones claras de Compra, Mantener o Vende.",
 }
 
 const steps = [
