@@ -1,17 +1,31 @@
 "use client"
 
-import { RefreshCw, AlertCircle, TrendingUp } from "lucide-react"
+import { useEffect, useState } from "react"
+import { RefreshCw, AlertCircle, TrendingUp, GraduationCap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { useAnalysis } from "@/hooks/use-analysis"
 import { StockSearch } from "@/components/analysis/stock-search"
 import { AnalysisResult } from "@/components/analysis/analysis-result"
+import { TutorialOverlay } from "@/components/tutorial/tutorial-overlay"
+import {
+  KNOWLEDGE_PROFILE_STORAGE_KEY,
+  TUTORIAL_COMPLETED_STORAGE_KEY,
+  clearTutorialCompletedCookie,
+  readKnowledgeProfileCookie,
+  readTutorialCompletedCookie,
+  saveTutorialCompletedCookie,
+  tutorialDemoAnalysis,
+  tutorialStepsByLevel,
+  type KnowledgeProfile,
+} from "@/lib/tutorial"
+
+type TutorialGate = "checking" | "ready"
 
 export function StockAnalysis() {
   const {
     searchQuery,
     setSearchQuery,
-    selectedStock,
     analysis,
     isAnalyzing,
     error,
@@ -20,19 +34,78 @@ export function StockAnalysis() {
     reanalyze,
   } = useAnalysis()
 
+  const [profile, setProfile] = useState<KnowledgeProfile | null>(null)
+  const [tutorialGate, setTutorialGate] = useState<TutorialGate>("checking")
+  const [tutorialOpen, setTutorialOpen] = useState(false)
+
+  useEffect(() => {
+    window.localStorage.removeItem(KNOWLEDGE_PROFILE_STORAGE_KEY)
+    window.localStorage.removeItem(TUTORIAL_COMPLETED_STORAGE_KEY)
+
+    const storedProfile = readKnowledgeProfileCookie()
+    const tutorialCompleted = readTutorialCompletedCookie()
+    const timer = window.setTimeout(() => {
+      if (!storedProfile) {
+        setProfile(null)
+        setTutorialOpen(false)
+        setTutorialGate("ready")
+        return
+      }
+
+      setProfile(storedProfile)
+      setTutorialOpen(!tutorialCompleted)
+      setTutorialGate("ready")
+    }, 0)
+
+    return () => window.clearTimeout(timer)
+  }, [])
+
+  const handleTutorialFinish = () => {
+    saveTutorialCompletedCookie()
+    setTutorialOpen(false)
+  }
+
+  const handleRestartTutorial = () => {
+    clearTutorialCompletedCookie()
+
+    if (!profile) {
+      return
+    }
+
+    setTutorialOpen(true)
+  }
+
+  const visibleAnalysis = analysis ?? (tutorialOpen ? tutorialDemoAnalysis : null)
+  const tutorialSteps = profile ? tutorialStepsByLevel[profile.level] : []
+
   return (
     <main className="flex-1 px-6 py-10 lg:px-8">
       <div className="mx-auto max-w-4xl">
+        {tutorialGate === "ready" && profile && (
+          <div className="mb-3 flex flex-wrap justify-end gap-2">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={handleRestartTutorial}
+              className="text-muted-foreground"
+            >
+              <GraduationCap className="h-4 w-4" />
+              Ver tutorial
+            </Button>
+          </div>
+        )}
+
         <StockSearch
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
           isAnalyzing={isAnalyzing}
           filteredStocks={filteredStocks}
-          analysis={analysis}
+          analysis={visibleAnalysis}
           onAnalyze={analyze}
         />
 
-        {error && !isAnalyzing && (
+        {error && !isAnalyzing && !tutorialOpen && (
           <Card className="mx-auto max-w-3xl border-destructive/20 bg-destructive/5 shadow-sm">
             <CardContent className="py-10 text-center">
               <AlertCircle className="mx-auto h-8 w-8 text-destructive" />
@@ -50,7 +123,7 @@ export function StockAnalysis() {
           </Card>
         )}
 
-        {!isAnalyzing && !analysis && !error && (
+        {!isAnalyzing && !visibleAnalysis && !error && (
           <Card className="mx-auto max-w-3xl border-border shadow-sm">
             <CardContent className="py-12 text-center">
               <TrendingUp className="mx-auto h-10 w-10 text-muted-foreground/40" />
@@ -91,13 +164,24 @@ export function StockAnalysis() {
           </Card>
         )}
 
-        {analysis && !isAnalyzing && (
+        {visibleAnalysis && !isAnalyzing && (
           <AnalysisResult
-            analysis={analysis}
+            analysis={visibleAnalysis}
             onReanalyze={reanalyze}
+            tutorialMode={tutorialOpen}
           />
         )}
       </div>
+
+      {profile && tutorialSteps.length > 0 && (
+        <TutorialOverlay
+          key={`${profile.createdAt}-${tutorialOpen ? "open" : "closed"}`}
+          isOpen={tutorialOpen}
+          level={profile.level}
+          steps={tutorialSteps}
+          onFinish={handleTutorialFinish}
+        />
+      )}
     </main>
   )
 }

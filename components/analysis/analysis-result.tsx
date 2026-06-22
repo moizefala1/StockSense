@@ -10,17 +10,20 @@ import { IndicatorCard } from "@/components/analysis/indicator-card"
 interface AnalysisResultProps {
   analysis: AnalysisResultType
   onReanalyze: () => void
+  tutorialMode?: boolean
 }
 
-export function AnalysisResult({ analysis, onReanalyze }: AnalysisResultProps) {
-  const [showReasoning, setShowReasoning] = useState(false)
-  const [showIndicators, setShowIndicators] = useState(false)
+export function AnalysisResult({ analysis, onReanalyze, tutorialMode = false }: AnalysisResultProps) {
+  const [showReasoning, setShowReasoning] = useState(tutorialMode)
+  const [showIndicators, setShowIndicators] = useState(tutorialMode)
+  const reasoningOpen = tutorialMode || showReasoning
+  const indicatorsOpen = tutorialMode || showIndicators
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <h2 className="mb-4 text-xl font-semibold text-primary">Resultado del análisis</h2>
 
-      <Card className="border-border shadow-sm">
+      <Card className="border-border shadow-sm" data-tutorial-id="analysis-summary">
         <CardHeader>
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -36,7 +39,7 @@ export function AnalysisResult({ analysis, onReanalyze }: AnalysisResultProps) {
         </CardHeader>
 
         <CardContent>
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center" data-tutorial-id="confidence-row">
             <p className="text-sm text-muted-foreground">Confianza: {analysis.confidence}%</p>
 
             <Button
@@ -52,7 +55,8 @@ export function AnalysisResult({ analysis, onReanalyze }: AnalysisResultProps) {
 
           <button
             type="button"
-            onClick={() => setShowReasoning(!showReasoning)}
+            onClick={() => setShowReasoning(!reasoningOpen)}
+            data-tutorial-id="reasoning-toggle"
             className="mt-4 flex w-full items-center justify-between rounded-lg bg-muted p-4 text-left transition-colors hover:bg-muted/80 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1"
           >
             <span className="text-sm font-medium text-primary">
@@ -61,12 +65,12 @@ export function AnalysisResult({ analysis, onReanalyze }: AnalysisResultProps) {
             <ChevronDown
               className={cn(
                 "h-4 w-4 text-muted-foreground/50 transition-transform duration-200",
-                showReasoning && "rotate-180"
+                reasoningOpen && "rotate-180"
               )}
             />
           </button>
 
-          {showReasoning && (
+          {reasoningOpen && (
             <div className="mt-2 rounded-lg bg-muted p-4 animate-in fade-in slide-in-from-top-2 duration-200">
               <p className="text-sm leading-relaxed text-foreground/85">{analysis.reasoning}</p>
             </div>
@@ -77,20 +81,23 @@ export function AnalysisResult({ analysis, onReanalyze }: AnalysisResultProps) {
       <div>
         <button
           type="button"
-          onClick={() => setShowIndicators(!showIndicators)}
+          onClick={() => setShowIndicators(!indicatorsOpen)}
           className="mb-4 flex w-full items-center justify-between text-left focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 rounded-lg"
         >
           <h2 className="text-xl font-semibold text-primary">Indicadores técnicos</h2>
           <ChevronDown
             className={cn(
               "h-5 w-5 text-muted-foreground/50 transition-transform duration-200",
-              showIndicators && "rotate-180"
+              indicatorsOpen && "rotate-180"
             )}
           />
         </button>
 
-        {showIndicators && (
-          <div className="grid gap-4 sm:grid-cols-2 animate-in fade-in slide-in-from-top-2 duration-200">
+        {indicatorsOpen && (
+          <div
+            className="grid gap-4 sm:grid-cols-2 animate-in fade-in slide-in-from-top-2 duration-200"
+            data-tutorial-id="indicators-section"
+          >
             <IndicatorCard
               title="RSI (14 días)"
               value={analysis.indicators.rsi.value}
@@ -126,7 +133,7 @@ export function AnalysisResult({ analysis, onReanalyze }: AnalysisResultProps) {
         )}
       </div>
 
-      <Card className="border-border bg-primary-foreground shadow-sm">
+      <Card className="border-border bg-primary-foreground shadow-sm" data-tutorial-id="education-note">
         <CardContent className="py-2 px-7">
           <div className="flex gap-4">
             <Info className="h-6 w-6 flex-shrink-0 text-accent" />
