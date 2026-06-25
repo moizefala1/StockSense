@@ -86,11 +86,11 @@ const indicators = [
   {
     name: "Media Móvil 50 días (SMA50)",
     description:
-      "El precio promedio de los últimos 50 días. Indica la tendencia de corto a mediano plazo y posibles puntos de soporte o resistencia.",
+      "El precio promedio de los últimos 50 días. Indica la tendencia de corto a mediano plazo. Entre el precio y la media hay un margen de tolerancia configurable (5% por defecto) para evitar señales falsas.",
     interpretation: [
       { range: "Precio > SMA50", meaning: "Tendencia positiva a corto plazo", signal: "comprar" as const },
-      { range: "Precio ≈ SMA50", meaning: "El precio está consolidando", signal: "mantener" as const },
-      { range: "Precio < SMA50", meaning: "Tendencia negativa a corto plazo", signal: "vender" as const },
+      { range: "Precio ≈ SMA50 (−5%)", meaning: "Dentro del margen: el precio está cerca de la media", signal: "mantener" as const },
+      { range: "Precio < SMA50 − 5%", meaning: "Tendencia negativa a corto plazo", signal: "vender" as const },
     ],
     icon: TrendingUp,
     image: "/ma50.png",
@@ -99,11 +99,11 @@ const indicators = [
   {
     name: "Media Móvil 200 días (SMA200)",
     description:
-      "El precio promedio de los últimos 200 días. Es el indicador de tendencia de largo plazo más respetado del mercado.",
+      "El precio promedio de los últimos 200 días. Es el indicador de tendencia de largo plazo más respetado del mercado. El margen de tolerancia (5% por defecto) es configurable en la página de análisis.",
     interpretation: [
       { range: "Precio > SMA200", meaning: "Tendencia alcista de largo plazo", signal: "comprar" as const },
-      { range: "Precio cruzando", meaning: "Posible cambio de tendencia", signal: "mantener" as const },
-      { range: "Precio < SMA200", meaning: "Tendencia bajista de largo plazo", signal: "vender" as const },
+      { range: "Precio ≈ SMA200 (−5%)", meaning: "Dentro del margen: posible cambio de tendencia", signal: "mantener" as const },
+      { range: "Precio < SMA200 − 5%", meaning: "Tendencia bajista de largo plazo", signal: "vender" as const },
     ],
     icon: BarChart3,
     image: "/ma200.png",

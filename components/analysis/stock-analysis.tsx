@@ -7,7 +7,9 @@ import { Card, CardContent } from "@/components/ui/card"
 import { useAnalysis } from "@/hooks/use-analysis"
 import { StockSearch } from "@/components/analysis/stock-search"
 import { AnalysisResult } from "@/components/analysis/analysis-result"
+import { ThresholdConfig } from "@/components/analysis/threshold-config"
 import { TutorialOverlay } from "@/components/tutorial/tutorial-overlay"
+import { DEFAULT_THRESHOLDS, type IndicatorThresholds } from "@/lib/types"
 import {
   KNOWLEDGE_PROFILE_STORAGE_KEY,
   TUTORIAL_COMPLETED_STORAGE_KEY,
@@ -23,6 +25,8 @@ import {
 type TutorialGate = "checking" | "ready"
 
 export function StockAnalysis() {
+  const [thresholds, setThresholds] = useState<IndicatorThresholds>(DEFAULT_THRESHOLDS)
+
   const {
     searchQuery,
     setSearchQuery,
@@ -32,7 +36,7 @@ export function StockAnalysis() {
     filteredStocks,
     analyze,
     reanalyze,
-  } = useAnalysis()
+  } = useAnalysis(thresholds)
 
   const [profile, setProfile] = useState<KnowledgeProfile | null>(null)
   const [tutorialGate, setTutorialGate] = useState<TutorialGate>("checking")
@@ -104,6 +108,13 @@ export function StockAnalysis() {
           analysis={visibleAnalysis}
           onAnalyze={analyze}
         />
+
+        <div className="mt-4">
+          <ThresholdConfig
+            thresholds={thresholds}
+            onThresholdsChange={setThresholds}
+          />
+        </div>
 
         {error && !isAnalyzing && !tutorialOpen && (
           <Card className="mx-auto max-w-3xl border-destructive/20 bg-destructive/5 shadow-sm">

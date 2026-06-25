@@ -2,10 +2,10 @@
 
 import { useState, useMemo, useEffect, useRef } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
-import type { AnalysisResult, Stock } from "@/lib/types"
+import type { AnalysisResult, Stock, IndicatorThresholds } from "@/lib/types"
 import { mockStocks, generateMockAnalysis } from "@/lib/mock-data"
 
-export function useAnalysis() {
+export function useAnalysis(thresholds: IndicatorThresholds) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const autoAnalyzed = useRef(false)
@@ -59,7 +59,7 @@ export function useAnalysis() {
         throw new Error("Servicio temporalmente no disponible")
       }
 
-      const result = generateMockAnalysis(stock.symbol, stock.name, stock.price)
+      const result = generateMockAnalysis(stock.symbol, stock.name, stock.price, thresholds)
       setAnalysis(result)
       setSearchQuery("")
     } catch {

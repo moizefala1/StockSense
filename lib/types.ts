@@ -1,5 +1,17 @@
 export type Verdict = "comprar" | "mantener" | "vender"
 
+export interface IndicatorThresholds {
+  rsiOversold: number
+  rsiOverbought: number
+  smaMargin: number
+}
+
+export const DEFAULT_THRESHOLDS: IndicatorThresholds = {
+  rsiOversold: 30,
+  rsiOverbought: 70,
+  smaMargin: 5,
+}
+
 export interface Stock {
   symbol: string
   name: string
