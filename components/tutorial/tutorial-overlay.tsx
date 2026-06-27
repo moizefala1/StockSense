@@ -63,6 +63,14 @@ type LessonBoxTone = keyof typeof lessonBoxStyles
 
 const scrollKeys = new Set(["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End", " ", "Spacebar"])
 
+const PANEL_SAFE_PADDING = 16
+const PANEL_MAX_HEIGHT = 560
+const PANEL_MIN_FLOATING_HEIGHT = 260
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max)
+}
+
 function LessonBox({
   label,
   tone,
@@ -105,7 +113,9 @@ function getPanelStyle(
   placement: TutorialStep["placement"]
 ): CSSProperties {
   const margin = 18
-  const width = Math.min(460, viewport.width - 32)
+  const width = Math.min(460, viewport.width - PANEL_SAFE_PADDING * 2)
+  const availableHeight = Math.max(160, viewport.height - PANEL_SAFE_PADDING * 2)
+  const fullMaxHeight = Math.min(PANEL_MAX_HEIGHT, availableHeight)
 
   if (!rect) {
     return {
@@ -113,43 +123,76 @@ function getPanelStyle(
       left: "50%",
       top: "50%",
       transform: "translate(-50%, -50%)",
+      maxHeight: fullMaxHeight,
     }
   }
 
   const centeredLeft = Math.min(
-    Math.max(16, rect.left + rect.width / 2 - width / 2),
-    Math.max(16, viewport.width - width - 16)
+    Math.max(PANEL_SAFE_PADDING, rect.left + rect.width / 2 - width / 2),
+    Math.max(PANEL_SAFE_PADDING, viewport.width - width - PANEL_SAFE_PADDING)
   )
+  const bottomTop = rect.top + rect.height + margin
+  const spaceAbove = rect.top - margin - PANEL_SAFE_PADDING
+  const spaceBelow = viewport.height - bottomTop - PANEL_SAFE_PADDING
 
-  if (placement === "top") {
-    return {
-      width,
-      left: centeredLeft,
-      top: Math.max(16, rect.top - margin),
-      transform: rect.top < 260 ? "translateY(0)" : "translateY(-100%)",
+  const getVerticalPlacement = () => {
+    if (placement === "top" && spaceAbove >= PANEL_MIN_FLOATING_HEIGHT) {
+      const maxHeight = Math.min(fullMaxHeight, spaceAbove)
+      return { top: rect.top - margin - maxHeight, maxHeight }
     }
+
+    if (placement === "bottom" && spaceBelow >= PANEL_MIN_FLOATING_HEIGHT) {
+      return { top: bottomTop, maxHeight: Math.min(fullMaxHeight, spaceBelow) }
+    }
+
+    if (spaceBelow >= spaceAbove && spaceBelow >= PANEL_MIN_FLOATING_HEIGHT) {
+      return { top: bottomTop, maxHeight: Math.min(fullMaxHeight, spaceBelow) }
+    }
+
+    if (spaceAbove >= PANEL_MIN_FLOATING_HEIGHT) {
+      const maxHeight = Math.min(fullMaxHeight, spaceAbove)
+      return { top: rect.top - margin - maxHeight, maxHeight }
+    }
+
+    return { top: PANEL_SAFE_PADDING, maxHeight: availableHeight }
   }
 
   if (placement === "left" && viewport.width >= 900) {
+    const top = clamp(
+      rect.top + rect.height / 2 - fullMaxHeight / 2,
+      PANEL_SAFE_PADDING,
+      viewport.height - fullMaxHeight - PANEL_SAFE_PADDING
+    )
+
     return {
       width,
-      left: Math.max(16, rect.left - width - margin),
-      top: Math.max(16, Math.min(Math.max(16, rect.top), viewport.height - 420)),
+      left: Math.max(PANEL_SAFE_PADDING, rect.left - width - margin),
+      top,
+      maxHeight: fullMaxHeight,
     }
   }
 
   if (placement === "right" && viewport.width >= 900) {
+    const top = clamp(
+      rect.top + rect.height / 2 - fullMaxHeight / 2,
+      PANEL_SAFE_PADDING,
+      viewport.height - fullMaxHeight - PANEL_SAFE_PADDING
+    )
+
     return {
       width,
-      left: Math.min(viewport.width - width - 16, rect.left + rect.width + margin),
-      top: Math.max(16, Math.min(Math.max(16, rect.top), viewport.height - 420)),
+      left: Math.min(viewport.width - width - PANEL_SAFE_PADDING, rect.left + rect.width + margin),
+      top,
+      maxHeight: fullMaxHeight,
     }
   }
+
+  const verticalPlacement = getVerticalPlacement()
 
   return {
     width,
     left: centeredLeft,
-    top: Math.max(16, Math.min(rect.top + rect.height + margin, viewport.height - 420)),
+    ...verticalPlacement,
   }
 }
 
@@ -190,7 +233,12 @@ export function TutorialOverlay({ isOpen, level, steps, onFinish }: TutorialOver
   useEffect(() => {
     if (!isOpen) return
 
-    const preventScroll = (event: Event) => event.preventDefault()
+    const preventScroll = (event: Event) => {
+      const target = event.target as HTMLElement | null
+      if (target?.closest("[data-tutorial-panel]")) return
+
+      event.preventDefault()
+    }
     const preventScrollKey = (event: KeyboardEvent) => {
       if (!scrollKeys.has(event.key)) return
 
@@ -319,14 +367,15 @@ export function TutorialOverlay({ isOpen, level, steps, onFinish }: TutorialOver
       )}
 
       <div
-        className="absolute pointer-events-auto max-h-[calc(100vh-2rem)] overflow-y-auto rounded-2xl border border-border bg-card p-5 shadow-2xl transition-[top,left,transform,opacity] duration-300 ease-out animate-in fade-in zoom-in-95"
+        className="absolute pointer-events-auto flex flex-col overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-2xl transition-[top,left,transform,opacity] duration-300 ease-out animate-in fade-in zoom-in-95"
         style={panelStyle}
         role="dialog"
         aria-modal="true"
         aria-label="Tutorial de StockSense"
+        tabIndex={-1}
         data-tutorial-panel
       >
-        <div className="mb-3 flex items-center justify-between gap-3">
+        <div className="mb-3 flex shrink-0 items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2">
             <span className="rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
               {levelLabels[level]}
@@ -348,7 +397,11 @@ export function TutorialOverlay({ isOpen, level, steps, onFinish }: TutorialOver
           </button>
         </div>
 
-        <div key={currentStep.id} className="animate-in fade-in-0 slide-in-from-bottom-1 duration-200">
+        <div
+          key={currentStep.id}
+          className="min-h-0 flex-1 overflow-y-auto pr-1 animate-in fade-in-0 slide-in-from-bottom-1 duration-200"
+          data-tutorial-scroll
+        >
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-accent">
             {currentStep.section}
           </p>
@@ -382,7 +435,7 @@ export function TutorialOverlay({ isOpen, level, steps, onFinish }: TutorialOver
           </div>
         </div>
 
-        <div className="mt-5">
+        <div className="mt-4 shrink-0 border-t border-border/60 pt-4">
           <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
             <span>
               Paso {stepIndex + 1} de {steps.length}
@@ -395,43 +448,43 @@ export function TutorialOverlay({ isOpen, level, steps, onFinish }: TutorialOver
               style={{ width: `${((stepIndex + 1) / steps.length) * 100}%` }}
             />
           </div>
-        </div>
 
-        <div className="mt-5 flex items-center justify-between gap-3">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => setStepIndex((current) => Math.max(0, current - 1))}
-            disabled={stepIndex === 0}
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Anterior
-          </Button>
+          <div className="mt-4 flex items-center justify-between gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setStepIndex((current) => Math.max(0, current - 1))}
+              disabled={stepIndex === 0}
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Anterior
+            </Button>
 
-          <Button
-            type="button"
-            size="sm"
-            onClick={() => {
-              if (isLastStep) {
-                onFinish()
-              } else {
-                setStepIndex((current) => current + 1)
-              }
-            }}
-          >
-            {isLastStep ? (
-              <>
-                Terminar
-                <Check className="h-4 w-4" />
-              </>
-            ) : (
-              <>
-                Siguiente
-                <ArrowRight className="h-4 w-4" />
-              </>
-            )}
-          </Button>
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => {
+                if (isLastStep) {
+                  onFinish()
+                } else {
+                  setStepIndex((current) => current + 1)
+                }
+              }}
+            >
+              {isLastStep ? (
+                <>
+                  Terminar
+                  <Check className="h-4 w-4" />
+                </>
+              ) : (
+                <>
+                  Siguiente
+                  <ArrowRight className="h-4 w-4" />
+                </>
+              )}
+            </Button>
+          </div>
         </div>
       </div>
     </div>
