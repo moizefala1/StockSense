@@ -28,8 +28,8 @@ interface ViewportState {
 const scrollKeys = new Set(["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End", " ", "Spacebar"])
 
 const PANEL_SAFE_PADDING = 16
-const PANEL_MAX_HEIGHT = 560
-const PANEL_MIN_FLOATING_HEIGHT = 260
+const PANEL_MAX_HEIGHT = 360
+const PANEL_MIN_FLOATING_HEIGHT = 150
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max)
@@ -55,8 +55,8 @@ function getPanelStyle(
   viewport: ViewportState,
   placement: TutorialStep["placement"]
 ): CSSProperties {
-  const margin = 18
-  const width = Math.min(460, viewport.width - PANEL_SAFE_PADDING * 2)
+  const margin = 16
+  const width = Math.min(400, viewport.width - PANEL_SAFE_PADDING * 2)
   const availableHeight = Math.max(160, viewport.height - PANEL_SAFE_PADDING * 2)
   const fullMaxHeight = Math.min(PANEL_MAX_HEIGHT, availableHeight)
 
@@ -77,6 +77,35 @@ function getPanelStyle(
   const bottomTop = rect.top + rect.height + margin
   const spaceAbove = rect.top - margin - PANEL_SAFE_PADDING
   const spaceBelow = viewport.height - bottomTop - PANEL_SAFE_PADDING
+  const rightLeft = rect.left + rect.width + margin
+  const leftLeft = rect.left - width - margin
+  const hasRoomRight = viewport.width >= 900 && rightLeft + width <= viewport.width - PANEL_SAFE_PADDING
+  const hasRoomLeft = viewport.width >= 900 && leftLeft >= PANEL_SAFE_PADDING
+  const sideTop = clamp(
+    rect.top + rect.height / 2 - fullMaxHeight / 2,
+    PANEL_SAFE_PADDING,
+    viewport.height - fullMaxHeight - PANEL_SAFE_PADDING
+  )
+
+  const getSidePlacement = () => {
+    if (placement === "right" && hasRoomRight) {
+      return { left: rightLeft, top: sideTop, maxHeight: fullMaxHeight }
+    }
+
+    if (placement === "left" && hasRoomLeft) {
+      return { left: leftLeft, top: sideTop, maxHeight: fullMaxHeight }
+    }
+
+    if (hasRoomRight) {
+      return { left: rightLeft, top: sideTop, maxHeight: fullMaxHeight }
+    }
+
+    if (hasRoomLeft) {
+      return { left: leftLeft, top: sideTop, maxHeight: fullMaxHeight }
+    }
+
+    return null
+  }
 
   const getVerticalPlacement = () => {
     if (placement === "top" && spaceAbove >= PANEL_MIN_FLOATING_HEIGHT) {
@@ -88,6 +117,9 @@ function getPanelStyle(
       return { top: bottomTop, maxHeight: Math.min(fullMaxHeight, spaceBelow) }
     }
 
+    const sidePlacement = getSidePlacement()
+    if (sidePlacement) return sidePlacement
+
     if (spaceBelow >= spaceAbove && spaceBelow >= PANEL_MIN_FLOATING_HEIGHT) {
       return { top: bottomTop, maxHeight: Math.min(fullMaxHeight, spaceBelow) }
     }
@@ -97,35 +129,54 @@ function getPanelStyle(
       return { top: rect.top - margin - maxHeight, maxHeight }
     }
 
-    return { top: PANEL_SAFE_PADDING, maxHeight: availableHeight }
+    if (spaceBelow > 96) {
+      return { top: bottomTop, maxHeight: Math.min(fullMaxHeight, spaceBelow) }
+    }
+
+    if (spaceAbove > 96) {
+      const maxHeight = Math.min(fullMaxHeight, spaceAbove)
+      return { top: rect.top - margin - maxHeight, maxHeight }
+    }
+
+    return { top: PANEL_SAFE_PADDING, maxHeight: Math.min(fullMaxHeight, availableHeight) }
   }
 
   if (placement === "left" && viewport.width >= 900) {
-    const top = clamp(
-      rect.top + rect.height / 2 - fullMaxHeight / 2,
-      PANEL_SAFE_PADDING,
-      viewport.height - fullMaxHeight - PANEL_SAFE_PADDING
-    )
+    if (!hasRoomLeft) {
+      const verticalPlacement = getVerticalPlacement()
+
+      return {
+        width,
+        left: "left" in verticalPlacement ? verticalPlacement.left : centeredLeft,
+        top: verticalPlacement.top,
+        maxHeight: verticalPlacement.maxHeight,
+      }
+    }
 
     return {
       width,
-      left: Math.max(PANEL_SAFE_PADDING, rect.left - width - margin),
-      top,
+      left: leftLeft,
+      top: sideTop,
       maxHeight: fullMaxHeight,
     }
   }
 
   if (placement === "right" && viewport.width >= 900) {
-    const top = clamp(
-      rect.top + rect.height / 2 - fullMaxHeight / 2,
-      PANEL_SAFE_PADDING,
-      viewport.height - fullMaxHeight - PANEL_SAFE_PADDING
-    )
+    if (!hasRoomRight) {
+      const verticalPlacement = getVerticalPlacement()
+
+      return {
+        width,
+        left: "left" in verticalPlacement ? verticalPlacement.left : centeredLeft,
+        top: verticalPlacement.top,
+        maxHeight: verticalPlacement.maxHeight,
+      }
+    }
 
     return {
       width,
-      left: Math.min(viewport.width - width - PANEL_SAFE_PADDING, rect.left + rect.width + margin),
-      top,
+      left: rightLeft,
+      top: sideTop,
       maxHeight: fullMaxHeight,
     }
   }
@@ -134,7 +185,7 @@ function getPanelStyle(
 
   return {
     width,
-    left: centeredLeft,
+    left: "left" in verticalPlacement ? verticalPlacement.left : centeredLeft,
     ...verticalPlacement,
   }
 }
@@ -223,7 +274,10 @@ export function TutorialOverlay({ isOpen, steps, onFinish }: TutorialOverlayProp
       `[data-tutorial-id="${currentStep.targetId}"]`
     )
 
-    element?.scrollIntoView({ block: "center", behavior: "smooth" })
+    element?.scrollIntoView({
+      block: currentStep.placement === "top" ? "end" : "start",
+      behavior: "smooth",
+    })
     const timer = window.setTimeout(updateRect, 260)
 
     return () => window.clearTimeout(timer)
@@ -310,7 +364,7 @@ export function TutorialOverlay({ isOpen, steps, onFinish }: TutorialOverlayProp
       )}
 
       <div
-        className="absolute pointer-events-auto flex flex-col overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-2xl transition-[top,left,transform,opacity] duration-300 ease-out animate-in fade-in zoom-in-95"
+        className="absolute pointer-events-auto flex flex-col overflow-hidden rounded-2xl border border-border bg-card p-4 shadow-2xl transition-[top,left,transform,opacity] duration-300 ease-out animate-in fade-in zoom-in-95"
         style={panelStyle}
         role="dialog"
         aria-modal="true"
@@ -318,20 +372,18 @@ export function TutorialOverlay({ isOpen, steps, onFinish }: TutorialOverlayProp
         tabIndex={-1}
         data-tutorial-panel
       >
-        <div className="mb-3 flex shrink-0 justify-end">
-          <button
-            type="button"
-            onClick={onFinish}
-            className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-primary focus-visible:ring-2 focus-visible:ring-accent"
-            aria-label="Cerrar tutorial"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={onFinish}
+          className="absolute right-3 top-3 rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-primary focus-visible:ring-2 focus-visible:ring-accent"
+          aria-label="Cerrar tutorial"
+        >
+          <X className="h-4 w-4" />
+        </button>
 
         <div
           key={currentStep.id}
-          className="min-h-0 flex-1 overflow-y-auto pr-1 animate-in fade-in-0 slide-in-from-bottom-1 duration-200"
+          className="min-h-0 flex-1 overflow-y-auto pr-7 animate-in fade-in-0 slide-in-from-bottom-1 duration-200"
           data-tutorial-scroll
         >
           <h2 className="text-lg font-semibold leading-tight text-primary">{currentStep.title}</h2>
