@@ -35,6 +35,14 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max)
 }
 
+function getPreferredPanelWidth(viewportWidth: number) {
+  if (viewportWidth >= 1280) return 520
+  if (viewportWidth >= 1024) return 480
+  if (viewportWidth >= 768) return 440
+
+  return viewportWidth - PANEL_SAFE_PADDING * 2
+}
+
 function getPaddedRect(rect: RectState, viewport: ViewportState): RectState {
   const padding = 10
   const left = Math.max(8, rect.left - padding)
@@ -56,7 +64,8 @@ function getPanelStyle(
   placement: TutorialStep["placement"]
 ): CSSProperties {
   const margin = 16
-  const width = Math.min(400, viewport.width - PANEL_SAFE_PADDING * 2)
+  const preferredWidth = getPreferredPanelWidth(viewport.width)
+  const width = Math.min(preferredWidth, viewport.width - PANEL_SAFE_PADDING * 2)
   const availableHeight = Math.max(160, viewport.height - PANEL_SAFE_PADDING * 2)
   const fullMaxHeight = Math.min(PANEL_MAX_HEIGHT, availableHeight)
 
@@ -393,11 +402,10 @@ export function TutorialOverlay({ isOpen, steps, onFinish }: TutorialOverlayProp
         </div>
 
         <div className="mt-4 shrink-0 border-t border-border/60 pt-4">
-          <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
+          <div className="mb-2 text-xs text-muted-foreground">
             <span>
               Paso {stepIndex + 1} de {steps.length}
             </span>
-            <span>{Math.round(((stepIndex + 1) / steps.length) * 100)}%</span>
           </div>
           <div className="h-2 overflow-hidden rounded-full bg-muted">
             <div
