@@ -20,7 +20,7 @@ export default function HomePage() {
       <Header />
       <main className="flex-1">
         <section className="relative overflow-hidden px-6 py-20 lg:px-8" data-tutorial-id="home-hero">
-          <div className="mx-auto max-w-4xl text-center">
+          <div className="mx-auto max-w-4xl text-center" data-tutorial-id="home-hero-content">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-accent/10 px-4 py-2 text-sm font-medium text-accent">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75"></span>

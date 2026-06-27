@@ -281,20 +281,12 @@ export const homeTutorialSteps: TutorialStep[] = [
     id: "home-intro",
     section: "Inicio claro",
     phase: "inicio",
-    title: "Clase guiada: de duda a decisión",
+    title: "Bienvenido a StockSense",
     description:
-      "Qué veremos: cómo StockSense transforma una acción en una recomendación clara y cómo revisar la evidencia antes de decidir.",
+      "Esta es la página de inicio. Aquí se presenta el objetivo de StockSense: ayudarte a analizar acciones con una recomendación clara, explicaciones simples y acceso directo a la vista de análisis. Fíjate en el mensaje principal y en los botones para comenzar.",
     category: "page",
-    targetId: "home-hero",
+    targetId: "home-hero-content",
     placement: "bottom",
-    problem:
-      "El problema real es la sobrecarga: muchos datos, poca claridad y miedo a interpretar mal una señal.",
-    concept:
-      "El tutorial funcionará como una clase breve: problema, concepto, ejemplo visual, práctica guiada y resumen.",
-    example:
-      "Caso de clase: partiremos desde la idea de analizar una acción y luego iremos a la página Analizar.",
-    takeaway:
-      "Al terminar esta introducción, pasaremos automáticamente al recorrido práctico.",
   },
 ]
 
