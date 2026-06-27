@@ -1,9 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { GraduationCap } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { KnowledgeOnboarding } from "@/components/tutorial/knowledge-onboarding"
 import { TutorialOverlay } from "@/components/tutorial/tutorial-overlay"
 import { useTutorialProfile } from "@/hooks/use-tutorial-profile"
@@ -21,6 +19,48 @@ export function HomeOnboarding() {
     setHomeTutorialProfile(nextProfile)
   }
 
+  useEffect(() => {
+    if (status !== "ready" || profile || isKnowledgeOpen || homeTutorialProfile) return
+
+    let hasTriggered = false
+
+    const openTutorial = () => {
+      if (hasTriggered) return
+      hasTriggered = true
+      setIsKnowledgeOpen(true)
+    }
+
+    const handleClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null
+      if (!target?.closest("a, button")) return
+
+      event.preventDefault()
+      openTutorial()
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End", " "].includes(event.key)) {
+        return
+      }
+
+      openTutorial()
+    }
+
+    window.addEventListener("wheel", openTutorial, { passive: true })
+    window.addEventListener("scroll", openTutorial, { passive: true })
+    window.addEventListener("touchmove", openTutorial, { passive: true })
+    window.addEventListener("keydown", handleKeyDown)
+    document.addEventListener("click", handleClick, true)
+
+    return () => {
+      window.removeEventListener("wheel", openTutorial)
+      window.removeEventListener("scroll", openTutorial)
+      window.removeEventListener("touchmove", openTutorial)
+      window.removeEventListener("keydown", handleKeyDown)
+      document.removeEventListener("click", handleClick, true)
+    }
+  }, [homeTutorialProfile, isKnowledgeOpen, profile, status])
+
   if (homeTutorialProfile) {
     return (
       <TutorialOverlay
@@ -37,19 +77,6 @@ export function HomeOnboarding() {
 
   if (status === "ready" && !profile && isKnowledgeOpen) {
     return <KnowledgeOnboarding onComplete={handleComplete} />
-  }
-
-  if (status === "ready" && !profile) {
-    return (
-      <Button
-        type="button"
-        onClick={() => setIsKnowledgeOpen(true)}
-        className="fixed bottom-6 right-6 z-40 shadow-lg"
-      >
-        <GraduationCap className="h-4 w-4" />
-        Iniciar tutorial
-      </Button>
-    )
   }
 
   return null
