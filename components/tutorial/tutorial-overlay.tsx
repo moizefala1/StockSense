@@ -37,6 +37,8 @@ const levelLabels: Record<KnowledgeLevel, string> = {
   alto: "Nivel alto",
 }
 
+const scrollKeys = new Set(["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End", " ", "Spacebar"])
+
 function getPaddedRect(rect: RectState, viewport: ViewportState): RectState {
   const padding = 10
   const left = Math.max(8, rect.left - padding)
@@ -141,6 +143,44 @@ export function TutorialOverlay({ isOpen, level, steps, onFinish }: TutorialOver
   }, [currentStep])
 
   useEffect(() => {
+    if (!isOpen) return
+
+    const preventScroll = (event: Event) => event.preventDefault()
+    const preventScrollKey = (event: KeyboardEvent) => {
+      if (!scrollKeys.has(event.key)) return
+
+      const target = event.target as HTMLElement | null
+      if (target?.closest("[data-tutorial-panel]")) return
+
+      event.preventDefault()
+    }
+
+    window.addEventListener("wheel", preventScroll, { capture: true, passive: false })
+    window.addEventListener("touchmove", preventScroll, { capture: true, passive: false })
+    window.addEventListener("keydown", preventScrollKey, { capture: true })
+
+    const previousBodyOverflow = document.body.style.overflow
+    const previousHtmlOverflow = document.documentElement.style.overflow
+    const previousBodyPaddingRight = document.body.style.paddingRight
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+
+    document.body.style.overflow = "hidden"
+    document.documentElement.style.overflow = "hidden"
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`
+    }
+
+    return () => {
+      window.removeEventListener("wheel", preventScroll, { capture: true })
+      window.removeEventListener("touchmove", preventScroll, { capture: true })
+      window.removeEventListener("keydown", preventScrollKey, { capture: true })
+      document.body.style.overflow = previousBodyOverflow
+      document.documentElement.style.overflow = previousHtmlOverflow
+      document.body.style.paddingRight = previousBodyPaddingRight
+    }
+  }, [isOpen])
+
+  useEffect(() => {
     if (!isOpen || !currentStep) return
 
     const element = document.querySelector<HTMLElement>(
@@ -165,21 +205,35 @@ export function TutorialOverlay({ isOpen, level, steps, onFinish }: TutorialOver
     }
   }, [isOpen, updateRect])
 
+  useEffect(() => {
+    if (!isOpen) return
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onFinish()
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [isOpen, onFinish])
+
   if (!isOpen || !currentStep) return null
 
   const panelStyle = getPanelStyle(paddedRect, viewport, currentStep.placement)
   const isLastStep = stepIndex === steps.length - 1
 
   return (
-    <div className="fixed inset-0 z-[80] pointer-events-none" aria-live="polite">
+    <div className="fixed inset-0 z-[80] pointer-events-auto animate-in fade-in duration-200" aria-live="polite">
       {paddedRect ? (
         <>
           <div
-            className="absolute bg-primary/72 backdrop-blur-[1px] pointer-events-auto"
+            className="absolute bg-primary/72 backdrop-blur-[1px] pointer-events-auto transition-all duration-300 ease-out"
             style={{ top: 0, left: 0, width: "100%", height: paddedRect.top }}
           />
           <div
-            className="absolute bg-primary/72 backdrop-blur-[1px] pointer-events-auto"
+            className="absolute bg-primary/72 backdrop-blur-[1px] pointer-events-auto transition-all duration-300 ease-out"
             style={{
               top: paddedRect.top + paddedRect.height,
               left: 0,
@@ -188,7 +242,7 @@ export function TutorialOverlay({ isOpen, level, steps, onFinish }: TutorialOver
             }}
           />
           <div
-            className="absolute bg-primary/72 backdrop-blur-[1px] pointer-events-auto"
+            className="absolute bg-primary/72 backdrop-blur-[1px] pointer-events-auto transition-all duration-300 ease-out"
             style={{
               top: paddedRect.top,
               left: 0,
@@ -197,7 +251,7 @@ export function TutorialOverlay({ isOpen, level, steps, onFinish }: TutorialOver
             }}
           />
           <div
-            className="absolute bg-primary/72 backdrop-blur-[1px] pointer-events-auto"
+            className="absolute bg-primary/72 backdrop-blur-[1px] pointer-events-auto transition-all duration-300 ease-out"
             style={{
               top: paddedRect.top,
               left: paddedRect.left + paddedRect.width,
@@ -206,7 +260,7 @@ export function TutorialOverlay({ isOpen, level, steps, onFinish }: TutorialOver
             }}
           />
           <div
-            className="absolute rounded-[1.25rem] border-2 border-accent shadow-[0_0_0_4px_oklch(0.76_0.136_212_/_0.16),0_18px_60px_rgba(0,0,0,0.24)]"
+            className="absolute rounded-[1.25rem] border-2 border-accent shadow-[0_0_0_4px_oklch(0.76_0.136_212_/_0.16),0_18px_60px_rgba(0,0,0,0.24)] transition-all duration-300 ease-out"
             style={{
               top: paddedRect.top,
               left: paddedRect.left,
@@ -220,10 +274,12 @@ export function TutorialOverlay({ isOpen, level, steps, onFinish }: TutorialOver
       )}
 
       <div
-        className="absolute pointer-events-auto rounded-2xl border border-border bg-card p-5 shadow-2xl"
+        className="absolute pointer-events-auto rounded-2xl border border-border bg-card p-5 shadow-2xl transition-[top,left,transform,opacity] duration-300 ease-out animate-in fade-in zoom-in-95"
         style={panelStyle}
         role="dialog"
+        aria-modal="true"
         aria-label="Tutorial de StockSense"
+        data-tutorial-panel
       >
         <div className="mb-3 flex items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2">
@@ -244,10 +300,12 @@ export function TutorialOverlay({ isOpen, level, steps, onFinish }: TutorialOver
           </button>
         </div>
 
-        <h2 className="text-lg font-semibold leading-tight text-primary">{currentStep.title}</h2>
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          {currentStep.description}
-        </p>
+        <div key={currentStep.id} className="animate-in fade-in-0 slide-in-from-bottom-1 duration-200">
+          <h2 className="text-lg font-semibold leading-tight text-primary">{currentStep.title}</h2>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+            {currentStep.description}
+          </p>
+        </div>
 
         <div className="mt-5">
           <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">

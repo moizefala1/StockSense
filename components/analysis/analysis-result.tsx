@@ -107,7 +107,7 @@ export function AnalysisResult({
               </button>
 
               {reasoningOpen && (
-                <div className="mt-2 rounded-lg bg-muted p-4 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="mt-2 rounded-lg bg-muted p-4 animate-in fade-in-0 slide-in-from-top-1 duration-300">
                   <p className="text-sm leading-relaxed text-foreground/85">{analysis.reasoning}</p>
                 </div>
               )}

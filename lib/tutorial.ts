@@ -102,6 +102,15 @@ const recommendationsSteps: TutorialStep[] = [
 
 const pageSteps: TutorialStep[] = [
   {
+    id: "analysis-intro",
+    title: "Estamos en Analizar",
+    description:
+      "Esta es la vista principal para usar StockSense. Desde aqui eliges una accion, revisas el resultado y abres el detalle cuando necesitas entender la recomendacion.",
+    category: "page",
+    targetId: "stock-search",
+    placement: "bottom",
+  },
+  {
     id: "search-flow",
     title: "Busca o elige una accion popular",
     description:
@@ -127,6 +136,18 @@ const pageSteps: TutorialStep[] = [
     category: "page",
     targetId: "education-note",
     placement: "top",
+  },
+]
+
+export const homeTutorialSteps: TutorialStep[] = [
+  {
+    id: "home-intro",
+    title: "Esta es la pagina de inicio",
+    description:
+      "Aqui se presenta la propuesta de StockSense: invertir con claridad, entender el problema que resuelve y entrar al flujo principal. Al terminar este paso iremos automaticamente a Analizar.",
+    category: "page",
+    targetId: "home-hero",
+    placement: "bottom",
   },
 ]
 
@@ -185,7 +206,7 @@ export const tutorialDemoAnalysis: AnalysisResult = {
 
 export const KNOWLEDGE_PROFILE_STORAGE_KEY = "stocksense-knowledge-profile"
 export const TUTORIAL_COMPLETED_STORAGE_KEY = "stocksense-tutorial-completed"
-export const TUTORIAL_PROFILE_VERSION = "tutorial-profile-v3"
+export const TUTORIAL_PROFILE_VERSION = "tutorial-profile-v5"
 export const KNOWLEDGE_PROFILE_COOKIE_KEY = "stocksense_knowledge_profile"
 export const TUTORIAL_COMPLETED_COOKIE_KEY = "stocksense_tutorial_completed"
 

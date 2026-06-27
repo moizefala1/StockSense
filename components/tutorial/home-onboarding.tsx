@@ -1,39 +1,48 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { KnowledgeOnboarding } from "@/components/tutorial/knowledge-onboarding"
-import {
-  KNOWLEDGE_PROFILE_STORAGE_KEY,
-  TUTORIAL_COMPLETED_STORAGE_KEY,
-  clearTutorialCookies,
-  readKnowledgeProfileCookie,
-  saveKnowledgeProfileCookie,
-  type KnowledgeProfile,
-} from "@/lib/tutorial"
-
-type HomeOnboardingState = "checking" | "show" | "hidden"
+import { TutorialSkeleton } from "@/components/tutorial/tutorial-skeleton"
+import { TutorialOverlay } from "@/components/tutorial/tutorial-overlay"
+import { useTutorialProfile } from "@/hooks/use-tutorial-profile"
+import { homeTutorialSteps, type KnowledgeProfile } from "@/lib/tutorial"
 
 export function HomeOnboarding() {
-  const [state, setState] = useState<HomeOnboardingState>("checking")
+  const router = useRouter()
+  const { status, profile, saveProfile } = useTutorialProfile()
+  const [homeTutorialProfile, setHomeTutorialProfile] = useState<KnowledgeProfile | null>(null)
 
-  useEffect(() => {
-    window.localStorage.removeItem(KNOWLEDGE_PROFILE_STORAGE_KEY)
-    window.localStorage.removeItem(TUTORIAL_COMPLETED_STORAGE_KEY)
-
-    const timer = window.setTimeout(() => {
-      setState(readKnowledgeProfileCookie() ? "hidden" : "show")
-    }, 0)
-
-    return () => window.clearTimeout(timer)
-  }, [])
-
-  const handleComplete = (profile: KnowledgeProfile) => {
-    clearTutorialCookies()
-    saveKnowledgeProfileCookie(profile)
-    setState("hidden")
+  const handleComplete = (nextProfile: KnowledgeProfile) => {
+    saveProfile(nextProfile)
+    setHomeTutorialProfile(nextProfile)
   }
 
-  if (state !== "show") return null
+  if (homeTutorialProfile) {
+    return (
+      <TutorialOverlay
+        isOpen
+        level={homeTutorialProfile.level}
+        steps={homeTutorialSteps}
+        onFinish={() => {
+          setHomeTutorialProfile(null)
+          router.push("/analizar")
+        }}
+      />
+    )
+  }
 
-  return <KnowledgeOnboarding onComplete={handleComplete} />
+  if (status === "ready" && !profile) {
+    return <KnowledgeOnboarding onComplete={handleComplete} />
+  }
+
+  if (status === "checking") {
+    return (
+      <div className="fixed inset-0 z-[90] flex items-center justify-center bg-primary/60 px-4 py-6 backdrop-blur-sm">
+        <TutorialSkeleton />
+      </div>
+    )
+  }
+
+  return null
 }
