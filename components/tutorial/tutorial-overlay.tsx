@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import type { CSSProperties } from "react"
 import { ArrowLeft, ArrowRight, Check, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
 import type { KnowledgeLevel, TutorialStep } from "@/lib/tutorial"
 
 interface TutorialOverlayProps {
@@ -26,41 +25,6 @@ interface ViewportState {
   height: number
 }
 
-const categoryLabels: Record<TutorialStep["category"], string> = {
-  stocks: "Stocks",
-  recommendations: "Recomendaciones",
-  page: "Página",
-}
-
-const levelLabels: Record<KnowledgeLevel, string> = {
-  bajo: "Nivel bajo",
-  medio: "Nivel medio",
-  alto: "Nivel alto",
-}
-
-const phaseLabels: Record<TutorialStep["phase"], string> = {
-  inicio: "Inicio",
-  problema: "Problema",
-  concepto: "Concepto",
-  ejemplo: "Ejemplo",
-  practica: "Práctica",
-  solucion: "Solución",
-  advertencia: "Advertencia",
-  resumen: "Resumen",
-}
-
-const lessonBoxStyles = {
-  problem: "border-rose-200 bg-rose-50 text-rose-950",
-  concept: "border-sky-200 bg-sky-50 text-sky-950",
-  example: "border-violet-200 bg-violet-50 text-violet-950",
-  practice: "border-amber-200 bg-amber-50 text-amber-950",
-  solution: "border-emerald-200 bg-emerald-50 text-emerald-950",
-  warning: "border-yellow-200 bg-yellow-50 text-yellow-950",
-  takeaway: "border-purple-200 bg-purple-50 text-purple-950",
-}
-
-type LessonBoxTone = keyof typeof lessonBoxStyles
-
 const scrollKeys = new Set(["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End", " ", "Spacebar"])
 
 const PANEL_SAFE_PADDING = 16
@@ -69,27 +33,6 @@ const PANEL_MIN_FLOATING_HEIGHT = 260
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max)
-}
-
-function LessonBox({
-  label,
-  tone,
-  children,
-}: {
-  label: string
-  tone: LessonBoxTone
-  children?: string
-}) {
-  if (!children) return null
-
-  return (
-    <div className={cn("rounded-xl border px-3.5 py-3", lessonBoxStyles[tone])}>
-      <p className="text-[0.68rem] font-bold uppercase tracking-[0.14em] opacity-70">
-        {label}
-      </p>
-      <p className="mt-1.5 text-sm leading-relaxed">{children}</p>
-    </div>
-  )
 }
 
 function getPaddedRect(rect: RectState, viewport: ViewportState): RectState {
@@ -196,7 +139,7 @@ function getPanelStyle(
   }
 }
 
-export function TutorialOverlay({ isOpen, level, steps, onFinish }: TutorialOverlayProps) {
+export function TutorialOverlay({ isOpen, steps, onFinish }: TutorialOverlayProps) {
   const [stepIndex, setStepIndex] = useState(0)
   const [targetRect, setTargetRect] = useState<RectState | null>(null)
   const [viewport, setViewport] = useState<ViewportState>({ width: 1200, height: 800 })
@@ -375,18 +318,7 @@ export function TutorialOverlay({ isOpen, level, steps, onFinish }: TutorialOver
         tabIndex={-1}
         data-tutorial-panel
       >
-        <div className="mb-3 flex shrink-0 items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
-              {levelLabels[level]}
-            </span>
-            <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
-              {categoryLabels[currentStep.category]}
-            </span>
-            <span className="rounded-full bg-primary/5 px-3 py-1 text-xs font-medium text-primary">
-              {phaseLabels[currentStep.phase]}
-            </span>
-          </div>
+        <div className="mb-3 flex shrink-0 justify-end">
           <button
             type="button"
             onClick={onFinish}
@@ -402,37 +334,10 @@ export function TutorialOverlay({ isOpen, level, steps, onFinish }: TutorialOver
           className="min-h-0 flex-1 overflow-y-auto pr-1 animate-in fade-in-0 slide-in-from-bottom-1 duration-200"
           data-tutorial-scroll
         >
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-accent">
-            {currentStep.section}
-          </p>
           <h2 className="text-lg font-semibold leading-tight text-primary">{currentStep.title}</h2>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
             {currentStep.description}
           </p>
-
-          <div className="mt-4 space-y-2.5">
-            <LessonBox label="Problema" tone="problem">
-              {currentStep.problem}
-            </LessonBox>
-            <LessonBox label="Definición" tone="concept">
-              {currentStep.concept}
-            </LessonBox>
-            <LessonBox label="Ejemplo" tone="example">
-              {currentStep.example}
-            </LessonBox>
-            <LessonBox label="Práctica" tone="practice">
-              {currentStep.practice}
-            </LessonBox>
-            <LessonBox label="Solución" tone="solution">
-              {currentStep.solution}
-            </LessonBox>
-            <LessonBox label="Advertencia" tone="warning">
-              {currentStep.warning}
-            </LessonBox>
-            <LessonBox label="Conclusión práctica" tone="takeaway">
-              {currentStep.takeaway}
-            </LessonBox>
-          </div>
         </div>
 
         <div className="mt-4 shrink-0 border-t border-border/60 pt-4">

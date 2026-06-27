@@ -52,7 +52,7 @@ export function KnowledgeOnboarding({ onComplete }: KnowledgeOnboardingProps) {
                   Bienvenido a StockSense
                 </CardTitle>
                 <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
-                  Antes de usar la plataforma, ajustaremos la experiencia a tu nivel de conocimiento para que sea lo más cercana posible a tus necesidades.
+                  Una página que te ayudará en tus decisiones al momento de invertir.
                 </p>
               </div>
             </CardHeader>
