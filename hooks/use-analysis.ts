@@ -75,14 +75,6 @@ export function useAnalysis() {
     }
   }
 
-  const reset = () => {
-    setSearchQuery("")
-    setSelectedStock(null)
-    setAnalysis(null)
-    setError(null)
-    setIsAnalyzing(false)
-  }
-
   return {
     searchQuery,
     setSearchQuery,
@@ -93,6 +85,5 @@ export function useAnalysis() {
     filteredStocks,
     analyze,
     reanalyze,
-    reset,
   }
 }

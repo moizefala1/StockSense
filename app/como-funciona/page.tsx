@@ -20,6 +20,12 @@ import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion"
 
+export const metadata: Metadata = {
+  title: "Cómo Funciona - StockSense",
+  description:
+    "Descubre cómo StockSense analiza acciones usando indicadores técnicos como RSI y medias móviles para darte recomendaciones claras de Compra, Mantener o Vende.",
+}
+
 const steps = [
   {
     number: "01",
