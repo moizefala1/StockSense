@@ -4,7 +4,6 @@ import { useState } from "react"
 import { GraduationCap, TrendingUp, Target } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 import type { KnowledgeLevel, KnowledgeProfile } from "@/lib/tutorial"
 import { TUTORIAL_PROFILE_VERSION, knowledgeLevelOptions } from "@/lib/tutorial"
@@ -22,12 +21,13 @@ const levelIcons = {
 export function KnowledgeOnboarding({ onComplete }: KnowledgeOnboardingProps) {
   const [step, setStep] = useState<"welcome" | "profile">("welcome")
   const [selectedLevel, setSelectedLevel] = useState<KnowledgeLevel>("bajo")
-  const [goal, setGoal] = useState("")
 
   const handleComplete = () => {
+    const selectedOption = knowledgeLevelOptions.find((option) => option.level === selectedLevel)
+
     onComplete({
       level: selectedLevel,
-      goal: goal.trim() || "Aprender a usar StockSense",
+      goal: selectedOption?.description ?? "Aprender a usar StockSense",
       createdAt: new Date().toISOString(),
       version: TUTORIAL_PROFILE_VERSION,
     })
@@ -52,35 +52,14 @@ export function KnowledgeOnboarding({ onComplete }: KnowledgeOnboardingProps) {
                   Bienvenido a StockSense
                 </CardTitle>
                 <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
-                  Antes de usar la plataforma, vamos a ajustar la experiencia a tu nivel de conocimiento. Asi el tutorial explica solo lo necesario y mantiene el foco en cada parte importante de la pagina.
+                  Antes de usar la plataforma, ajustaremos la experiencia a tu nivel de conocimiento para que sea lo más cercana posible a tus necesidades.
                 </p>
               </div>
             </CardHeader>
 
-            <CardContent className="space-y-5 text-center">
-              <div className="mx-auto grid max-w-2xl gap-3 text-left sm:grid-cols-3">
-                <div className="rounded-xl border border-border bg-background p-4">
-                  <p className="text-sm font-semibold text-primary">1. Nivel</p>
-                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                    Dinos cuanto sabes de inversiones.
-                  </p>
-                </div>
-                <div className="rounded-xl border border-border bg-background p-4">
-                  <p className="text-sm font-semibold text-primary">2. Tutorial</p>
-                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                    La guia cambia segun tu respuesta.
-                  </p>
-                </div>
-                <div className="rounded-xl border border-border bg-background p-4">
-                  <p className="text-sm font-semibold text-primary">3. Cookie</p>
-                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                    Guardamos tu eleccion en este navegador.
-                  </p>
-                </div>
-              </div>
-
+            <CardContent className="text-center">
               <Button onClick={() => setStep("profile")} size="lg">
-                Continuar
+                De acuerdo
               </Button>
             </CardContent>
           </>
@@ -92,10 +71,10 @@ export function KnowledgeOnboarding({ onComplete }: KnowledgeOnboardingProps) {
               </div>
               <div>
                 <CardTitle id="knowledge-onboarding-title" className="text-2xl text-primary">
-                  Antes de empezar
+                  Sobre tu nivel de conocimiento
                 </CardTitle>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  Ajustaremos el tutorial segun tu conocimiento previo en inversiones. La eleccion queda guardada en este navegador.
+                  Cuéntanos cuánto sabes sobre inversiones.
                 </p>
               </div>
             </CardHeader>
@@ -136,20 +115,7 @@ export function KnowledgeOnboarding({ onComplete }: KnowledgeOnboardingProps) {
                 })}
               </div>
 
-              <label className="block">
-                <span className="text-sm font-medium text-primary">Que quieres lograr hoy?</span>
-                <Input
-                  value={goal}
-                  onChange={(event) => setGoal(event.target.value)}
-                  placeholder="Ej: entender si una accion parece conveniente"
-                  className="mt-2 h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none transition-[border,color,box-shadow] placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
-                />
-              </label>
-
-              <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-xs leading-relaxed text-muted-foreground">
-                  Tu preferencia se guardara en este navegador para no preguntarte de nuevo.
-                </p>
+              <div className="flex justify-end">
                 <Button onClick={handleComplete} className="sm:min-w-44">
                   Iniciar tutorial
                 </Button>

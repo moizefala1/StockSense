@@ -26,17 +26,17 @@ export const knowledgeLevelOptions: Array<{
   {
     level: "bajo",
     title: "Estoy empezando",
-    description: "Quiero entender que es una accion, como se lee una recomendacion y como usar la pagina.",
+    description: "Quiero entender qué es una acción y cómo interpretar las recomendaciones.",
   },
   {
     level: "medio",
-    title: "Ya conozco lo basico",
-    description: "Entiendo que es invertir, pero quiero saber como se construye el veredicto.",
+    title: "Ya conozco lo básico",
+    description: "Entiendo qué es una inversión, pero quiero aprender a interpretar las recomendaciones.",
   },
   {
     level: "alto",
     title: "Tengo experiencia",
-    description: "Solo necesito ubicar el flujo, los controles y las secciones principales.",
+    description: "Conozco de inversiones y quiero entender cómo usar la plataforma.",
   },
 ]
 
