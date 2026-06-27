@@ -1,11 +1,26 @@
 "use client"
 
-import { useEffect } from "react"
-import { TrendingUp, AlertCircle, X } from "lucide-react"
+import { useEffect, useState } from "react"
+import { TrendingUp, AlertCircle, X, GraduationCap } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { useAnalysis } from "@/hooks/use-analysis"
 import { StockSearch } from "@/components/analysis/stock-search"
 import { AnalysisResult } from "@/components/analysis/analysis-result"
+import { ThresholdConfig } from "@/components/analysis/threshold-config"
+import { TutorialOverlay } from "@/components/tutorial/tutorial-overlay"
+import { DEFAULT_THRESHOLDS, type IndicatorThresholds } from "@/lib/types"
+import {
+  KNOWLEDGE_PROFILE_STORAGE_KEY,
+  TUTORIAL_COMPLETED_STORAGE_KEY,
+  clearTutorialCompletedCookie,
+  readKnowledgeProfileCookie,
+  readTutorialCompletedCookie,
+  saveTutorialCompletedCookie,
+  tutorialDemoAnalysis,
+  tutorialStepsByLevel,
+  type KnowledgeProfile,
+} from "@/lib/tutorial"
 
 // ── Skeleton ──────────────────────────────────────────────────────────────────
 // Refleja el layout real de AnalysisResult: 2 columnas en lg, 3 cards.
@@ -152,7 +167,11 @@ function ErrorToast({ message, onClose }: ErrorToastProps) {
 
 // ── StockAnalysis ─────────────────────────────────────────────────────────────
 
+type TutorialGate = "checking" | "ready"
+
 export function StockAnalysis() {
+  const [thresholds, setThresholds] = useState<IndicatorThresholds>(DEFAULT_THRESHOLDS)
+
   const {
     searchQuery,
     setSearchQuery,
@@ -163,21 +182,62 @@ export function StockAnalysis() {
     analyze,
     reanalyze,
     reset,
-  } = useAnalysis()
+  } = useAnalysis(thresholds)
 
-  // TODO: reemplazar por los valores reales una vez exista la categorización de usuarios
-  const userKnowledge = "no-sabe" as const
+  const [profile, setProfile] = useState<KnowledgeProfile | null>(null)
+  const [tutorialGate, setTutorialGate] = useState<TutorialGate>("checking")
+  const [tutorialOpen, setTutorialOpen] = useState(false)
+
+  useEffect(() => {
+    window.localStorage.removeItem(KNOWLEDGE_PROFILE_STORAGE_KEY)
+    window.localStorage.removeItem(TUTORIAL_COMPLETED_STORAGE_KEY)
+
+    const storedProfile = readKnowledgeProfileCookie()
+    const tutorialCompleted = readTutorialCompletedCookie()
+    const timer = window.setTimeout(() => {
+      if (!storedProfile) {
+        setProfile(null)
+        setTutorialOpen(false)
+        setTutorialGate("ready")
+        return
+      }
+
+      setProfile(storedProfile)
+      setTutorialOpen(!tutorialCompleted)
+      setTutorialGate("ready")
+    }, 0)
+
+    return () => window.clearTimeout(timer)
+  }, [])
+
+  const handleTutorialFinish = () => {
+    saveTutorialCompletedCookie()
+    setTutorialOpen(false)
+  }
+
+  const handleRestartTutorial = () => {
+    clearTutorialCompletedCookie()
+
+    if (profile) {
+      setTutorialOpen(true)
+    }
+  }
+
+  const userKnowledge = profile && profile.level !== "bajo" ? "sabe" as const : "no-sabe" as const
   const userRisk = "moderado" as const
+
+  const visibleAnalysis = analysis ?? (tutorialOpen ? tutorialDemoAnalysis : null)
+  const tutorialSteps = profile ? tutorialStepsByLevel[profile.level] : []
 
   // Cuando hay error, volvemos al buscador automáticamente — el toast flota encima.
   // El usuario puede cerrar el toast y reintentar desde el buscador.
-  const showSearch = !analysis && !isAnalyzing
-  const showEmpty = showSearch && !error
+  const showSearch = (!analysis && !isAnalyzing) || tutorialOpen
+  const showEmpty = showSearch && !visibleAnalysis && !error
 
   return (
     <main className="flex-1 px-6 py-10 lg:px-8">
       {/* Toast de error — flotante, independiente del contenido de abajo */}
-      {error && !isAnalyzing && (
+      {error && !isAnalyzing && !tutorialOpen && (
         <ErrorToast
           message="No pudimos completar el análisis."
           onClose={reset}
@@ -185,16 +245,38 @@ export function StockAnalysis() {
       )}
 
       <div className="mx-auto max-w-6xl">
+        {tutorialGate === "ready" && profile && (
+          <div className="mb-3 flex flex-wrap justify-end gap-2">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={handleRestartTutorial}
+              className="text-muted-foreground"
+            >
+              <GraduationCap className="h-4 w-4" />
+              Ver tutorial
+            </Button>
+          </div>
+        )}
+
         {showSearch && (
           <StockSearch
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
             isAnalyzing={isAnalyzing}
             filteredStocks={filteredStocks}
-            analysis={analysis}
+            analysis={visibleAnalysis}
             onAnalyze={analyze}
           />
         )}
+
+        <div className="mb-6">
+          <ThresholdConfig
+            thresholds={thresholds}
+            onThresholdsChange={setThresholds}
+          />
+        </div>
 
         {showEmpty && (
           <Card className="mx-auto max-w-3xl border-border shadow-sm">
@@ -212,16 +294,27 @@ export function StockAnalysis() {
 
         {isAnalyzing && <AnalysisSkeleton />}
 
-        {analysis && !isAnalyzing && (
+        {visibleAnalysis && !isAnalyzing && (
           <AnalysisResult
-            analysis={analysis}
+            analysis={visibleAnalysis}
             onReanalyze={reanalyze}
             onSearchAgain={reset}
             knowledge={userKnowledge}
             risk={userRisk}
+            tutorialMode={tutorialOpen}
           />
         )}
       </div>
+
+      {profile && tutorialSteps.length > 0 && (
+        <TutorialOverlay
+          key={`${profile.createdAt}-${tutorialOpen ? "open" : "closed"}`}
+          isOpen={tutorialOpen}
+          level={profile.level}
+          steps={tutorialSteps}
+          onFinish={handleTutorialFinish}
+        />
+      )}
     </main>
   )
 }

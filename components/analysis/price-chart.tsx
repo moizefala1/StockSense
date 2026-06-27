@@ -14,7 +14,7 @@ import {
 } from "recharts"
 import { TrendingUp, TrendingDown, Minus } from "lucide-react"
 import { cn } from "@/lib/utils"
-import type { AnalysisResult, IndicatorKey, Verdict } from "@/lib/types"
+import type { AnalysisResult, IndicatorKey, PricePoint, Verdict } from "@/lib/types"
 
 interface PriceChartProps {
   analysis: AnalysisResult
@@ -66,7 +66,13 @@ function formatDateShort(dateStr: string) {
   return d.toLocaleDateString("es-ES", { day: "numeric", month: "short" })
 }
 
-function CustomTooltip({ active, payload, activeIndicator }: any) {
+interface CustomTooltipProps {
+  active?: boolean
+  payload?: Array<{ payload: PricePoint }>
+  activeIndicator: IndicatorKey
+}
+
+function CustomTooltip({ active, payload, activeIndicator }: CustomTooltipProps) {
   if (!active || !payload?.length) return null
   const point = payload[0].payload
 
@@ -89,8 +95,13 @@ function CustomTooltip({ active, payload, activeIndicator }: any) {
 }
 
 /** Punto destacado en la serie: marca señales de sobrecompra/sobreventa, solo visible si activeIndicator === "rsi". */
-function SignalDot(props: any) {
-  const { cx, cy, payload } = props
+interface SignalDotProps {
+  cx?: number
+  cy?: number
+  payload: PricePoint
+}
+
+function SignalDot({ cx = 0, cy = 0, payload }: SignalDotProps) {
   if (!payload.rsiSignal) return <></>
   return (
     <Dot

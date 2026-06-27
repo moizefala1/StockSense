@@ -1,5 +1,17 @@
 export type Verdict = "comprar" | "mantener" | "vender"
 
+export interface IndicatorThresholds {
+  rsiOversold: number
+  rsiOverbought: number
+  smaMargin: number
+}
+
+export const DEFAULT_THRESHOLDS: IndicatorThresholds = {
+  rsiOversold: 30,
+  rsiOverbought: 70,
+  smaMargin: 5,
+}
+
 /** Eje 1: cuánta información técnica puede decodificar el usuario. Controla qué tan técnica es la explicación del indicador. */
 export type KnowledgeLevel = "no-sabe" | "sabe"
 

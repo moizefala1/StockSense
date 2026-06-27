@@ -1,4 +1,11 @@
-import type { Stock, AnalysisResult, Verdict, PricePoint } from "@/lib/types"
+import {
+  DEFAULT_THRESHOLDS,
+  type AnalysisResult,
+  type IndicatorThresholds,
+  type PricePoint,
+  type Stock,
+  type Verdict,
+} from "@/lib/types"
 
 export const mockStocks: Stock[] = [
   { symbol: "AAPL", name: "Apple Inc.", price: 182.52 },
@@ -18,7 +25,10 @@ export const mockStocks: Stock[] = [
  * a partir de esta serie, no al revés. Así el gráfico es la única fuente de verdad
  * y todo lo demás (señales, veredicto, valores mostrados) se deriva de él.
  */
-function generatePriceHistory(endPrice: number): PricePoint[] {
+function generatePriceHistory(
+  endPrice: number,
+  thresholds: IndicatorThresholds
+): PricePoint[] {
   const days = 30
   const points: PricePoint[] = []
 
@@ -85,8 +95,8 @@ function generatePriceHistory(endPrice: number): PricePoint[] {
     const rsi = rsiSeries[i]
 
     let rsiSignal: Verdict | undefined
-    if (rsi < 30) rsiSignal = "comprar"
-    else if (rsi > 70) rsiSignal = "vender"
+    if (rsi < thresholds.rsiOversold) rsiSignal = "comprar"
+    else if (rsi > thresholds.rsiOverbought) rsiSignal = "vender"
 
     points.push({
       date: date.toISOString().split("T")[0],
@@ -101,21 +111,34 @@ function generatePriceHistory(endPrice: number): PricePoint[] {
   return points
 }
 
-export function generateMockAnalysis(symbol: string, name: string, price: number): AnalysisResult {
+export function generateMockAnalysis(
+  symbol: string,
+  name: string,
+  price: number,
+  thresholds: IndicatorThresholds = DEFAULT_THRESHOLDS
+): AnalysisResult {
   // 1. Generamos la serie histórica primero. A partir de aquí, todo lo demás
   //    (señales, veredicto, valores que se muestran en pantalla) se LEE de esta
   //    serie en vez de inventarse por separado — así el gráfico y el resto de la
   //    UI nunca pueden contradecirse entre sí.
-  const priceHistory = generatePriceHistory(price)
+  const priceHistory = generatePriceHistory(price, thresholds)
   const latest = priceHistory[priceHistory.length - 1]
 
   const rsiValue = latest.rsi
   const sma50 = latest.sma50
   const sma200 = latest.sma200
 
-  const rsiSignal: Verdict = rsiValue < 30 ? "comprar" : rsiValue > 70 ? "vender" : "mantener"
-  const sma50Signal: Verdict = price > sma50 * 1.01 ? "comprar" : price < sma50 * 0.99 ? "vender" : "mantener"
-  const sma200Signal: Verdict = price > sma200 * 1.01 ? "comprar" : price < sma200 * 0.99 ? "vender" : "mantener"
+  const smaMultiplier = 1 - thresholds.smaMargin / 100
+  const rsiSignal: Verdict =
+    rsiValue < thresholds.rsiOversold
+      ? "comprar"
+      : rsiValue > thresholds.rsiOverbought
+        ? "vender"
+        : "mantener"
+  const sma50Signal: Verdict =
+    price > sma50 ? "comprar" : price < sma50 * smaMultiplier ? "vender" : "mantener"
+  const sma200Signal: Verdict =
+    price > sma200 ? "comprar" : price < sma200 * smaMultiplier ? "vender" : "mantener"
 
   // La tendencia general también se deriva de la propia serie: comparamos el
   // precio de hace 30 días contra el actual, en vez de elegirla al azar aparte.
@@ -166,11 +189,11 @@ export function generateMockAnalysis(symbol: string, name: string, price: number
         value: rsiValue,
         signal: rsiSignal,
         description:
-          rsiValue < 30
-            ? "El RSI bajo indica que la acción puede estar sobrevendida y podría existir una oportunidad de compra."
-            : rsiValue > 70
-              ? "El RSI alto indica que la acción puede estar sobrecomprada y sugiere precaución."
-              : "El RSI está en zona neutral y no muestra señales extremas.",
+          rsiValue < thresholds.rsiOversold
+            ? `El RSI por debajo de ${thresholds.rsiOversold} indica que la acción puede estar sobrevendida.`
+            : rsiValue > thresholds.rsiOverbought
+              ? `El RSI por encima de ${thresholds.rsiOverbought} indica que la acción puede estar sobrecomprada.`
+              : `El RSI está entre ${thresholds.rsiOversold} y ${thresholds.rsiOverbought}, en zona neutral.`,
       },
       sma50: {
         value: sma50,
@@ -178,7 +201,9 @@ export function generateMockAnalysis(symbol: string, name: string, price: number
         description:
           price > sma50
             ? "El precio está por encima de la media de 50 días, lo que sugiere una tendencia positiva de corto plazo."
-            : "El precio está por debajo de la media de 50 días, lo que sugiere una tendencia negativa de corto plazo.",
+            : price < sma50 * smaMultiplier
+              ? `El precio está más de un ${thresholds.smaMargin}% por debajo de la SMA50, lo que sugiere una tendencia negativa de corto plazo.`
+              : `El precio está dentro del ${thresholds.smaMargin}% de la SMA50, en zona de consolidación.`,
       },
       sma200: {
         value: sma200,
@@ -186,7 +211,9 @@ export function generateMockAnalysis(symbol: string, name: string, price: number
         description:
           price > sma200
             ? "El precio está por encima de la media de 200 días, lo que sugiere una tendencia positiva de largo plazo."
-            : "El precio está por debajo de la media de 200 días, lo que sugiere una tendencia negativa de largo plazo.",
+            : price < sma200 * smaMultiplier
+              ? `El precio está más de un ${thresholds.smaMargin}% por debajo de la SMA200, lo que sugiere una tendencia negativa de largo plazo.`
+              : `El precio está dentro del ${thresholds.smaMargin}% de la SMA200, en zona de consolidación.`,
       },
       trend: {
         value: trendValue,

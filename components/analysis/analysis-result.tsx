@@ -26,6 +26,7 @@ interface AnalysisResultProps {
   knowledge?: KnowledgeLevel
   /** Eje 2: tolerancia al riesgo del usuario. Determina qué indicador viene preseleccionado. Por defecto, moderado. */
   risk?: RiskProfile
+  tutorialMode?: boolean
 }
 
 export function AnalysisResult({
@@ -34,9 +35,11 @@ export function AnalysisResult({
   onSearchAgain,
   knowledge = "no-sabe",
   risk = "moderado",
+  tutorialMode = false,
 }: AnalysisResultProps) {
-  const [showReasoning, setShowReasoning] = useState(false)
+  const [showReasoning, setShowReasoning] = useState(tutorialMode)
   const [activeIndicator, setActiveIndicator] = useState<IndicatorKey>(defaultIndicatorByRisk[risk])
+  const reasoningOpen = tutorialMode || showReasoning
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
@@ -56,7 +59,7 @@ export function AnalysisResult({
       <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
         <div className="space-y-6">
           {/* Card 1: identidad de la acción + veredicto + confianza + razonamiento */}
-          <Card className="border-border shadow-sm">
+          <Card className="border-border shadow-sm" data-tutorial-id="analysis-summary">
             <CardHeader>
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
@@ -72,7 +75,7 @@ export function AnalysisResult({
             </CardHeader>
 
             <CardContent>
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center" data-tutorial-id="confidence-row">
                 <p className="text-sm text-muted-foreground">Confianza: {analysis.confidence}%</p>
 
                 <Button
@@ -88,7 +91,8 @@ export function AnalysisResult({
 
               <button
                 type="button"
-                onClick={() => setShowReasoning(!showReasoning)}
+                onClick={() => setShowReasoning(!reasoningOpen)}
+                data-tutorial-id="reasoning-toggle"
                 className="mt-4 flex w-full items-center justify-between rounded-lg bg-muted p-4 text-left transition-colors hover:bg-muted/80 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1"
               >
                 <span className="text-sm font-medium text-primary">
@@ -97,12 +101,12 @@ export function AnalysisResult({
                 <ChevronDown
                   className={cn(
                     "h-4 w-4 text-muted-foreground/50 transition-transform duration-200",
-                    showReasoning && "rotate-180"
+                    reasoningOpen && "rotate-180"
                   )}
                 />
               </button>
 
-              {showReasoning && (
+              {reasoningOpen && (
                 <div className="mt-2 rounded-lg bg-muted p-4 animate-in fade-in slide-in-from-top-2 duration-200">
                   <p className="text-sm leading-relaxed text-foreground/85">{analysis.reasoning}</p>
                 </div>
@@ -111,7 +115,10 @@ export function AnalysisResult({
           </Card>
 
           {/* Card 2: disclaimer de qué significan los indicadores, separada del veredicto */}
-          <Card className="border-border bg-primary-foreground shadow-sm">
+          <Card
+            className="border-border bg-primary-foreground shadow-sm"
+            data-tutorial-id="education-note"
+          >
             <CardContent>
               <div className="flex gap-3">
                 <Info className="h-5 w-5 flex-shrink-0 text-accent" />
@@ -128,7 +135,7 @@ export function AnalysisResult({
         </div>
 
         {/* Card 3: gráfico + selector de indicador + resumen + explicación de cómo se calcula */}
-        <Card className="border-border shadow-sm">
+        <Card className="border-border shadow-sm" data-tutorial-id="indicators-section">
           <CardContent>
             <div className="flex items-center justify-between mb-1">
               <h3 className="font-medium text-primary">Evolución del precio</h3>
