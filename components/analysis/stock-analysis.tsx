@@ -1,56 +1,202 @@
 "use client"
 
-import { RefreshCw, AlertCircle, TrendingUp } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { useEffect } from "react"
+import { TrendingUp, AlertCircle, X } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { useAnalysis } from "@/hooks/use-analysis"
 import { StockSearch } from "@/components/analysis/stock-search"
 import { AnalysisResult } from "@/components/analysis/analysis-result"
 
+// ── Skeleton ──────────────────────────────────────────────────────────────────
+// Refleja el layout real de AnalysisResult: 2 columnas en lg, 3 cards.
+// Los placeholders tienen las mismas dimensiones aproximadas que el contenido real
+// para que la transición skeleton → resultado no produzca saltos de layout.
+
+function Shimmer({ className }: { className?: string }) {
+  return (
+    <div
+      className={`animate-[pulse_1.2s_ease-in-out_infinite] rounded-md bg-muted ${className ?? ""}`}
+    />
+  )
+}
+
+function AnalysisSkeleton() {
+  return (
+    <div className="mx-auto max-w-6xl space-y-6">
+      {/* Fila header: "Resultado del análisis" + botón "Analizar otra acción" */}
+      <div className="flex items-center justify-between">
+        <Shimmer className="h-7 w-52" />
+        <Shimmer className="h-9 w-44 rounded-lg" />
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
+        {/* Columna izquierda: Card veredicto + Card disclaimer */}
+        <div className="space-y-6">
+          {/* Card 1 — veredicto */}
+          <Card className="border-border shadow-sm">
+            <div className="p-6 pb-0">
+              <div className="flex items-start justify-between gap-4">
+                <div className="space-y-2">
+                  <Shimmer className="h-7 w-56" />
+                  <Shimmer className="h-6 w-24" />
+                </div>
+                <Shimmer className="h-12 w-32 rounded-full" />
+              </div>
+            </div>
+            <CardContent className="mt-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <Shimmer className="h-5 w-28" />
+                <Shimmer className="h-8 w-36 rounded-lg" />
+              </div>
+              <Shimmer className="h-12 w-full rounded-lg" />
+            </CardContent>
+          </Card>
+
+          {/* Card 2 — disclaimer */}
+          <Card className="border-border shadow-sm">
+            <CardContent className="p-4 space-y-2">
+              <div className="flex items-center gap-2">
+                <Shimmer className="h-5 w-5 rounded-full" />
+                <Shimmer className="h-5 w-48" />
+              </div>
+              <Shimmer className="h-4 w-full" />
+              <Shimmer className="h-4 w-5/6" />
+              <Shimmer className="h-4 w-4/6" />
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Columna derecha: Card gráfico */}
+        <Card className="border-border shadow-sm">
+          <CardContent className="pt-6 space-y-4">
+            {/* Título + selector de indicador */}
+            <div className="flex items-center justify-between">
+              <Shimmer className="h-5 w-36" />
+              <Shimmer className="h-8 w-48 rounded-lg" />
+            </div>
+
+            {/* Header del gráfico: ícono + texto + % */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Shimmer className="h-7 w-7 rounded-full" />
+                <Shimmer className="h-4 w-32" />
+              </div>
+              <Shimmer className="h-6 w-14" />
+            </div>
+
+            {/* Área del gráfico */}
+            <Shimmer className="h-[220px] w-full rounded-lg" />
+
+            {/* Leyenda */}
+            <div className="flex items-center gap-4">
+              <Shimmer className="h-4 w-12" />
+              <Shimmer className="h-4 w-20" />
+            </div>
+
+            {/* IndicatorSummaryCard */}
+            <div className="rounded-lg border border-border p-4 space-y-2">
+              <div className="flex items-center justify-between">
+                <Shimmer className="h-4 w-40" />
+                <Shimmer className="h-4 w-16" />
+              </div>
+              <Shimmer className="h-4 w-full" />
+              <Shimmer className="h-4 w-4/5" />
+            </div>
+
+            {/* IndicatorExplainer (acordeón cerrado) */}
+            <Shimmer className="h-12 w-full rounded-lg" />
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  )
+}
+
+// ── Toast de error ────────────────────────────────────────────────────────────
+// Aparece flotante en la esquina superior derecha. Se cierra solo a los 5s o al
+// hacer click en la X. No bloquea la UI — el buscador ya está visible detrás.
+
+interface ErrorToastProps {
+  message: string
+  onClose: () => void
+}
+
+function ErrorToast({ message, onClose }: ErrorToastProps) {
+  useEffect(() => {
+    const timer = setTimeout(onClose, 5000)
+    return () => clearTimeout(timer)
+  }, [onClose])
+
+  return (
+    <div
+      role="alert"
+      aria-live="assertive"
+      className="fixed top-6 right-6 z-50 flex items-start gap-3 rounded-xl border border-destructive/20 bg-destructive/5 px-4 py-3 shadow-lg backdrop-blur-sm animate-in fade-in slide-in-from-top-2 duration-200 max-w-sm"
+    >
+      <AlertCircle className="h-5 w-5 flex-shrink-0 text-destructive mt-0.5" />
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium text-destructive">No pudimos completar el análisis</p>
+        <p className="text-xs text-destructive/80 mt-0.5">{message} Inténtalo de nuevo.</p>
+      </div>
+      <button
+        type="button"
+        onClick={onClose}
+        aria-label="Cerrar notificación"
+        className="flex-shrink-0 text-destructive/60 hover:text-destructive transition-colors"
+      >
+        <X className="h-4 w-4" />
+      </button>
+    </div>
+  )
+}
+
+// ── StockAnalysis ─────────────────────────────────────────────────────────────
+
 export function StockAnalysis() {
   const {
     searchQuery,
     setSearchQuery,
-    selectedStock,
     analysis,
     isAnalyzing,
     error,
     filteredStocks,
     analyze,
     reanalyze,
+    reset,
   } = useAnalysis()
+
+  // TODO: reemplazar por los valores reales una vez exista la categorización de usuarios
+  const userKnowledge = "no-sabe" as const
+  const userRisk = "moderado" as const
+
+  // Cuando hay error, volvemos al buscador automáticamente — el toast flota encima.
+  // El usuario puede cerrar el toast y reintentar desde el buscador.
+  const showSearch = !analysis && !isAnalyzing
+  const showEmpty = showSearch && !error
 
   return (
     <main className="flex-1 px-6 py-10 lg:px-8">
-      <div className="mx-auto max-w-4xl">
-        <StockSearch
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          isAnalyzing={isAnalyzing}
-          filteredStocks={filteredStocks}
-          analysis={analysis}
-          onAnalyze={analyze}
+      {/* Toast de error — flotante, independiente del contenido de abajo */}
+      {error && !isAnalyzing && (
+        <ErrorToast
+          message="No pudimos completar el análisis."
+          onClose={reset}
         />
+      )}
 
-        {error && !isAnalyzing && (
-          <Card className="mx-auto max-w-3xl border-destructive/20 bg-destructive/5 shadow-sm">
-            <CardContent className="py-10 text-center">
-              <AlertCircle className="mx-auto h-8 w-8 text-destructive" />
-              <p className="mt-4 text-lg font-medium text-destructive">{error}</p>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={reanalyze}
-                className="mt-4"
-              >
-                <RefreshCw className="h-4 w-4" />
-                Reintentar análisis
-              </Button>
-            </CardContent>
-          </Card>
+      <div className="mx-auto max-w-6xl">
+        {showSearch && (
+          <StockSearch
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            isAnalyzing={isAnalyzing}
+            filteredStocks={filteredStocks}
+            analysis={analysis}
+            onAnalyze={analyze}
+          />
         )}
 
-        {!isAnalyzing && !analysis && !error && (
+        {showEmpty && (
           <Card className="mx-auto max-w-3xl border-border shadow-sm">
             <CardContent className="py-12 text-center">
               <TrendingUp className="mx-auto h-10 w-10 text-muted-foreground/40" />
@@ -64,37 +210,15 @@ export function StockAnalysis() {
           </Card>
         )}
 
-        {isAnalyzing && (
-          <Card className="mx-auto max-w-3xl py-8 border-slate-200 shadow-sm">
-            <CardContent>
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-
-                <div className="space-y-3">
-                  <div className="h-9.5 w-46 animate-[pulse_1s_ease-in-out_infinite] rounded-md bg-slate-300" />
-                  <div className="h-6.5 w-21 animate-[pulse_1s_ease-in-out_infinite] rounded-md bg-slate-300" />
-                </div>
-
-                <div className="h-16 w-33 animate-[pulse_1s_ease-in-out_infinite] rounded-full bg-slate-300" />
-              </div>
-            </CardContent>
-
-            <CardContent className="space-y-4">
-
-              <div className="h-20 animate-[pulse_1s_ease-in-out_infinite] rounded-2xl bg-slate-300" />
-
-              <div className="flex items-center justify-between">
-                <div className="h-6 w-28 animate-[pulse_1s_ease-in-out_infinite] rounded-md bg-slate-300" />
-                <div className="h-8 w-36 animate-[pulse_1s_ease-in-out_infinite] rounded-md bg-slate-300" />
-              </div>
-
-            </CardContent>
-          </Card>
-        )}
+        {isAnalyzing && <AnalysisSkeleton />}
 
         {analysis && !isAnalyzing && (
           <AnalysisResult
             analysis={analysis}
             onReanalyze={reanalyze}
+            onSearchAgain={reset}
+            knowledge={userKnowledge}
+            risk={userRisk}
           />
         )}
       </div>
