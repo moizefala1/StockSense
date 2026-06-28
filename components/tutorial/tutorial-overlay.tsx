@@ -78,7 +78,7 @@ function getPanelStyle(
   placement: TutorialStep["placement"],
   panelWidth: TutorialStep["panelWidth"]
 ): CSSProperties {
-  const margin = 16
+  const margin = 20
   const preferredWidth = getPreferredPanelWidth(viewport.width, panelWidth)
   const width = Math.min(preferredWidth, viewport.width - PANEL_SAFE_PADDING * 2)
   const availableHeight = Math.max(160, viewport.height - PANEL_SAFE_PADDING * 2)
@@ -300,10 +300,21 @@ export function TutorialOverlay({ isOpen, steps, onFinish, onStepChange }: Tutor
       `[data-tutorial-id="${currentStep.targetId}"]`
     )
 
-    element?.scrollIntoView({
-      block: currentStep.scrollPosition ?? (currentStep.placement === "top" ? "end" : "start"),
-      behavior: "smooth",
-    })
+    if (element) {
+      const rect = element.getBoundingClientRect()
+      const absoluteTop = window.scrollY + rect.top
+      const alignment =
+        currentStep.scrollPosition ?? (currentStep.placement === "top" ? "end" : "start")
+      const viewportGap = 96
+      const scrollTop =
+        alignment === "center"
+          ? absoluteTop - (window.innerHeight - rect.height) / 2
+          : alignment === "end"
+            ? absoluteTop - window.innerHeight + rect.height + viewportGap
+            : absoluteTop - viewportGap
+
+      window.scrollTo({ top: Math.max(0, scrollTop), behavior: "smooth" })
+    }
     const timer = window.setTimeout(updateRect, 260)
 
     return () => window.clearTimeout(timer)

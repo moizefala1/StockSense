@@ -105,28 +105,30 @@ export function AnalysisResult({
                 </Button>
               </div>
 
-              <button
-                type="button"
-                onClick={() => setShowReasoning(!reasoningOpen)}
-                data-tutorial-id="reasoning-toggle"
-                className="mt-4 flex w-full scroll-mt-28 items-center justify-between rounded-lg bg-muted p-4 text-left transition-colors hover:bg-muted/80 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1"
-              >
-                <span className="text-sm font-medium text-primary">
-                  ¿Por qué esta recomendación?
-                </span>
-                <ChevronDown
-                  className={cn(
-                    "h-4 w-4 text-muted-foreground/50 transition-transform duration-200",
-                    reasoningOpen && "rotate-180"
-                  )}
-                />
-              </button>
+              <div className="scroll-mt-28" data-tutorial-id="reasoning-section">
+                <button
+                  type="button"
+                  onClick={() => setShowReasoning(!reasoningOpen)}
+                  data-tutorial-id="reasoning-toggle"
+                  className="mt-4 flex w-full items-center justify-between rounded-lg bg-muted p-4 text-left transition-colors hover:bg-muted/80 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1"
+                >
+                  <span className="text-sm font-medium text-primary">
+                    ¿Por qué esta recomendación?
+                  </span>
+                  <ChevronDown
+                    className={cn(
+                      "h-4 w-4 text-muted-foreground/50 transition-transform duration-200",
+                      reasoningOpen && "rotate-180"
+                    )}
+                  />
+                </button>
 
-              {reasoningOpen && (
-                <div className="mt-2 rounded-lg bg-muted p-4 animate-in fade-in-0 slide-in-from-top-1 duration-300">
-                  <p className="text-sm leading-relaxed text-foreground/85">{analysis.reasoning}</p>
-                </div>
-              )}
+                {reasoningOpen && (
+                  <div className="mt-2 rounded-lg bg-muted p-4 animate-in fade-in-0 slide-in-from-top-1 duration-300">
+                    <p className="text-sm leading-relaxed text-foreground/85">{analysis.reasoning}</p>
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
 

@@ -134,7 +134,7 @@ const analysisCoreSteps: TutorialStep[] = [
     phase: "inicio",
     title: "Busca una acción",
     description:
-      "Escribe el nombre de una acción o elige una opción popular para comenzar el análisis.",
+      "Escribe en el buscador el nombre de la empresa que quieres analizar o selecciona una de las acciones populares.",
     category: "page",
     targetId: "stock-search",
     placement: "bottom",
@@ -148,8 +148,9 @@ const analysisCoreSteps: TutorialStep[] = [
     description:
       "Aquí verás el precio actual de la acción y una explicación breve de cómo se genera la recomendación.",
     category: "stocks",
-    targetId: "analysis-overview",
+    targetId: "analysis-summary",
     placement: "bottom",
+    scrollPosition: "start",
   },
   {
     id: "recommendation",
@@ -185,7 +186,7 @@ const recommendationsSteps: TutorialStep[] = [
     description:
       "Aquí puedes entender qué señales explican la recomendación antes de tomar una decisión.",
     category: "recommendations",
-    targetId: "reasoning-toggle",
+    targetId: "reasoning-section",
     placement: "bottom",
     scrollPosition: "start",
   },
