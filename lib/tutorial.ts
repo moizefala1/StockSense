@@ -239,12 +239,13 @@ export const homeAnalysisEntrySteps: TutorialStep[] = [
     id: "home-main-overview",
     section: "Inicio",
     phase: "inicio",
-    title: "Vista principal",
+    title: "Página de inicio",
     description:
-      "Esta es la vista principal. Aquí verás información sobre nosotros y una primera explicación de cómo StockSense puede ayudarte.",
+      "Esta es la página de inicio. Aquí encontrarás información sobre nosotros.",
     category: "page",
     targetId: "home-hero-content",
     placement: "bottom",
+    viewportGap: 260,
   },
   {
     id: "home-navbar",
