@@ -18,13 +18,7 @@ import {
   PiggyBank,
   DollarSign,
   ArrowUpRight,
-  Sparkles,,
-  HelpCircle,
-  PiggyBank,
-  DollarSign,
-  ArrowUpRight,
 } from "lucide-react"
-import Image from "next/image"
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -48,7 +42,6 @@ const steps = [
     number: "01",
     title: "Selecciona una acción",
     description:
-     
       "Busca por símbolo (como AAPL) o nombre de empresa (como Apple). Tenemos acceso a las principales acciones del mercado estadounidense.",
     icon: Search,
   },
@@ -56,7 +49,6 @@ const steps = [
     number: "02",
     title: "Analizamos los indicadores",
     description:
-     
       "Nuestro sistema calcula automáticamente indicadores técnicos clave como el RSI, medias móviles de 50 y 200 días, y la tendencia general del precio.",
     icon: BarChart3,
   },
@@ -64,7 +56,6 @@ const steps = [
     number: "03",
     title: "Recibe el veredicto",
     description:
-     
       "Combinamos las señales de todos los indicadores para darte una recomendación clara: Comprar, Mantener o Vender, junto con el nivel de confianza.",
     icon: CheckCircle,
   },
@@ -72,7 +63,6 @@ const steps = [
     number: "04",
     title: "Entiende el por qué",
     description:
-     
       "Cada indicador viene con una explicación simple. No solo te decimos qué hacer, te explicamos por qué el análisis sugiere esa acción.",
     icon: BookOpen,
   },
@@ -82,8 +72,7 @@ const indicators = [
   {
     name: "RSI (Relative Strength Index)",
     description:
-     
-      "El RSI mide qué tan rápido y cuánto ha cambiado el precio recientemente. Ayuda a identificar si una acción está sobrecomprada o sobrevendida. Ayuda a identificar si una acción está sobrecomprada o sobrevendida.",
+      "El RSI mide qué tan rápido y cuánto ha cambiado el precio recientemente. Ayuda a identificar si una acción está sobrecomprada o sobrevendida.",
     interpretation: [
       { range: "Menor a 30", meaning: "La acción puede estar sobrevendida", signal: "comprar" as const },
       { range: "Entre 30 y 70", meaning: "Zona neutral, sin señales extremas", signal: "mantener" as const },
@@ -92,14 +81,11 @@ const indicators = [
     icon: Target,
     image: "/rsi_values.png",
     visualLabel: "Velocidad del precio",
-    image: "/rsi_values.png",
-    visualLabel: "Velocidad del precio",
   },
   {
     name: "Media Móvil 50 días (SMA50)",
     description:
-     
-      "El precio promedio de los últimos 50 días. Indica la tendencia de corto a mediano plazo y posibles puntos de soporte o resistencia y posibles puntos de soporte o resistencia.",
+      "El precio promedio de los últimos 50 días. Indica la tendencia de corto a mediano plazo y posibles puntos de soporte o resistencia.",
     interpretation: [
       { range: "Precio > SMA50", meaning: "Tendencia positiva a corto plazo", signal: "comprar" as const },
       { range: "Precio ≈ SMA50", meaning: "El precio está consolidando", signal: "mantener" as const },
@@ -108,13 +94,9 @@ const indicators = [
     icon: TrendingUp,
     image: "/ma50.png",
     visualLabel: "Tendencia corto plazo",
-    image: "/ma50.png",
-    visualLabel: "Tendencia corto plazo",
   },
   {
     name: "Media Móvil 200 días (SMA200)",
-    description:
-      "El precio promedio de los últimos 200 días. Es el indicador de tendencia de largo plazo más respetado del mercado.",
     description:
       "El precio promedio de los últimos 200 días. Es el indicador de tendencia de largo plazo más respetado del mercado.",
     interpretation: [
@@ -125,8 +107,6 @@ const indicators = [
     icon: BarChart3,
     image: "/ma200.png",
     visualLabel: "Tendencia largo plazo",
-    image: "/ma200.png",
-    visualLabel: "Tendencia largo plazo",
   },
 ]
 
@@ -134,7 +114,6 @@ const verdictExplanations = [
   {
     verdict: "Comprar",
     description:
-     
       "La mayoría de los indicadores sugieren que el precio tiene potencial de subir. El RSI no indica sobrecompra, y el precio está en tendencia positiva respecto a las medias móviles.",
     icon: TrendingUp,
     color: "text-success",
@@ -145,7 +124,6 @@ const verdictExplanations = [
   {
     verdict: "Mantener",
     description:
-     
       "Los indicadores muestran señales mixtas o neutrales. No hay una dirección clara. Si ya tienes la acción, puede ser prudente esperar. Si no la tienes, espera una señal más definida.",
     icon: Minus,
     color: "text-warning",
@@ -156,7 +134,6 @@ const verdictExplanations = [
   {
     verdict: "Vender",
     description:
-     
       "Varios indicadores sugieren precaución. El precio puede estar sobrecomprado o mostrando debilidad técnica. Considera proteger ganancias o reducir exposición.",
     icon: TrendingDown,
     color: "text-danger",
@@ -225,74 +202,7 @@ const faqItems = [
   },
 ]
 
-const faqItems = [
-  {
-    question: "¿Es gratis usar StockSense?",
-    answer:
-      "Sí, StockSense es completamente gratuito. Puedes analizar todas las acciones que quieras sin registro, sin costos ocultos y sin límites de uso.",
-  },
-  {
-    question: "¿Qué acciones puedo analizar?",
-    answer:
-      "Actualmente cubrimos las principales acciones del mercado estadounidense (NYSE y NASDAQ). Puedes buscar por símbolo como AAPL, GOOGL, MSFT o por nombre de empresa.",
-  },
-  {
-    question: "¿Cada cuánto se actualizan los datos?",
-    answer:
-      "Trabajamos con datos de mercado en tiempo real para ofrecerte la información más actualizada posible al momento de tu consulta.",
-  },
-  {
-    question: "¿Puedo confiar ciegamente en las recomendaciones?",
-    answer:
-      "No. StockSense es una herramienta educativa basada en análisis técnico. Los indicadores estudian patrones históricos, pero el pasado no garantiza resultados futuros. Te recomendamos usar esta información como complemento a tu propia investigación y, si es necesario, consultar con un asesor financiero profesional.",
-  },
-  {
-    question: "¿Ejecutan operaciones de compra o venta?",
-    answer:
-      "No. StockSense solo proporciona información y análisis. No ejecutamos operaciones, no manejamos dinero y no tenemos acceso a tus cuentas de inversión. Las decisiones de inversión son completamente tuyas.",
-  },
-  {
-    question: "¿Cómo combinan los indicadores para dar un veredicto?",
-    answer:
-      "Nuestro sistema analiza cada indicador por separado (RSI, SMA50, SMA200 y tendencia del precio) y les asigna una señal: comprar, mantener o vender. Luego contamos cuántos indicadores apuntan en cada dirección y el veredicto final se basa en la señal predominante, acompañado de un porcentaje de confianza.",
-  },
-  {
-    question: "¿Qué es el nivel de confianza?",
-    answer:
-      "El nivel de confianza es el porcentaje de indicadores que coinciden en la misma señal. Por ejemplo, si 3 de 3 indicadores sugieren comprar, la confianza es del 100%. Si solo 1 de 3 lo sugiere, la confianza es del 33%.",
-  },
-]
-
 function ComoInvertirSection() {
-  const [activeSection, setActiveSection] = useState("como-invertir")
-
-  const handleScroll = useCallback(() => {
-    const sections = navSections.map((s) => document.getElementById(s.id))
-    const scrollPos = window.scrollY + 140
-
-    for (let i = sections.length - 1; i >= 0; i--) {
-      const section = sections[i]
-      if (section && section.offsetTop <= scrollPos) {
-        setActiveSection(navSections[i].id)
-        return
-      }
-    }
-    setActiveSection(navSections[0].id)
-  }, [])
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll, { passive: true })
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [handleScroll])
-
-  const scrollTo = (id: string) => {
-    const el = document.getElementById(id)
-    if (el) {
-      const top = el.offsetTop - 80
-      window.scrollTo({ top, behavior: "smooth" })
-    }
-  }
-
   return (
     <section className="px-6 py-20 lg:px-8">
       <div className="mx-auto max-w-4xl">
@@ -518,18 +428,7 @@ function IndicadoresSection() {
                         <span className="mx-1.5 text-muted-foreground/60">→</span>
                         <span className="text-muted-foreground">{item.meaning}</span>
                       </div>
-                    </div>
-
-                    {/* imagen  */}
-                    <div className={cn("md:col-span-2", !isEven && "md:order-1")}>
-                      <Image
-                        src={indicator.image}
-                        alt={`Visual de ${indicator.name}`}
-                        width={500}
-                        height={500}
-                        className="w-full rounded-xl"
-                      />
-                    </div>
+                    ))}
                   </div>
                 </div>
 
