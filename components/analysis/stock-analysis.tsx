@@ -9,7 +9,6 @@ import { useAnalysis } from "@/hooks/use-analysis"
 import { useTutorialProfile } from "@/hooks/use-tutorial-profile"
 import { StockSearch } from "@/components/analysis/stock-search"
 import { AnalysisResult } from "@/components/analysis/analysis-result"
-import { ThresholdConfig } from "@/components/analysis/threshold-config"
 import { TutorialOverlay } from "@/components/tutorial/tutorial-overlay"
 import { useTutorialPageTransition } from "@/components/tutorial/tutorial-page-transition"
 import { TutorialSkeleton } from "@/components/tutorial/tutorial-skeleton"
@@ -259,13 +258,6 @@ export function StockAnalysis() {
             onAnalyze={analyze}
           />
         )}
-
-        <div className="mb-6">
-          <ThresholdConfig
-            thresholds={thresholds}
-            onThresholdsChange={setThresholds}
-          />
-        </div>
 
         {status === "checking" && !isAnalyzing && <TutorialSkeleton />}
 

@@ -17,6 +17,9 @@ import { PriceChart } from "@/components/analysis/price-chart"
 import { IndicatorSelector } from "@/components/analysis/indicator-selector"
 import { IndicatorSummaryCard } from "@/components/analysis/indicator-summary-card"
 import { IndicatorExplainer } from "@/components/analysis/indicator-explainer"
+import { ThresholdConfig } from "@/components/analysis/threshold-config"
+import { DEFAULT_THRESHOLDS, type IndicatorThresholds } from "@/lib/types"
+import { useAnalysis } from "@/hooks/use-analysis"
 
 interface AnalysisResultProps {
   analysis: AnalysisResultType
@@ -50,6 +53,9 @@ export function AnalysisResult({
   const reasoningOpen = tutorialMode || showReasoning
   const tutorialIndicator = tutorialStepId ? tutorialIndicatorByStep[tutorialStepId] : undefined
   const displayedIndicator = tutorialMode && tutorialIndicator ? tutorialIndicator : activeIndicator
+
+    const [thresholds, setThresholds] = useState<IndicatorThresholds>(DEFAULT_THRESHOLDS)
+
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
@@ -154,6 +160,13 @@ export function AnalysisResult({
               </div>
             </CardContent>
           </Card>
+
+          <div className="mb-6">
+            <ThresholdConfig
+              thresholds={thresholds}
+              onThresholdsChange={setThresholds}
+            />
+          </div>
 
           <Card
             className="scroll-mt-28 border-border bg-primary-foreground shadow-sm"
