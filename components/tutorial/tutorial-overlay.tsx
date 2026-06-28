@@ -57,12 +57,18 @@ function getPreferredPanelWidth(
   return viewportWidth - PANEL_SAFE_PADDING * 2
 }
 
-function getPaddedRect(rect: RectState, viewport: ViewportState): RectState {
+function getPaddedRect(
+  rect: RectState,
+  viewport: ViewportState,
+  offsetY = 0
+): RectState {
   const padding = viewport.width < 640 ? 14 : 22
+  const adjustedTop = rect.top + offsetY
+  const topBoundary = offsetY < 0 ? 0 : 8
   const left = Math.max(8, rect.left - padding)
-  const top = Math.max(8, rect.top - padding)
+  const top = Math.max(topBoundary, adjustedTop - padding)
   const right = Math.min(viewport.width - 8, rect.left + rect.width + padding)
-  const bottom = Math.min(viewport.height - 8, rect.top + rect.height + padding)
+  const bottom = Math.min(viewport.height - 8, adjustedTop + rect.height + padding)
 
   return {
     left,
@@ -221,8 +227,8 @@ export function TutorialOverlay({ isOpen, steps, onFinish, onStepChange }: Tutor
 
   const currentStep = steps[stepIndex]
   const paddedRect = useMemo(
-    () => (targetRect ? getPaddedRect(targetRect, viewport) : null),
-    [targetRect, viewport]
+    () => (targetRect ? getPaddedRect(targetRect, viewport, currentStep?.spotlightOffsetY) : null),
+    [currentStep, targetRect, viewport]
   )
 
   const updateRect = useCallback(() => {

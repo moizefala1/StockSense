@@ -28,6 +28,7 @@ export interface TutorialStep {
   placement: "top" | "bottom" | "left" | "right"
   scrollPosition?: "start" | "center" | "end"
   viewportGap?: number
+  spotlightOffsetY?: number
   panelMode?: "default" | "navigation"
   panelWidth?: "default" | "wide" | "compact"
   nextLabel?: string
@@ -235,6 +236,17 @@ export const homeTutorialSteps: TutorialStep[] = [
 
 export const homeAnalysisEntrySteps: TutorialStep[] = [
   {
+    id: "home-main-overview",
+    section: "Inicio",
+    phase: "inicio",
+    title: "Vista principal",
+    description:
+      "Esta es la vista principal. Aquí verás información sobre nosotros y una primera explicación de cómo StockSense puede ayudarte.",
+    category: "page",
+    targetId: "home-hero-content",
+    placement: "bottom",
+  },
+  {
     id: "home-navbar",
     section: "Inicio",
     phase: "inicio",
@@ -244,6 +256,7 @@ export const homeAnalysisEntrySteps: TutorialStep[] = [
     category: "page",
     targetId: "site-navbar",
     placement: "bottom",
+    spotlightOffsetY: -10,
   },
   {
     id: "home-analysis-entry",
@@ -255,6 +268,7 @@ export const homeAnalysisEntrySteps: TutorialStep[] = [
     category: "page",
     targetId: "desktop-nav-analyze-link",
     placement: "bottom",
+    spotlightOffsetY: -8,
     finishLabel: "Ir a analizar",
   },
 ]
