@@ -86,11 +86,11 @@ const indicators = [
   {
     name: "Media Móvil 50 días (SMA50)",
     description:
-      "El precio promedio de los últimos 50 días. Indica la tendencia de corto a mediano plazo. Entre el precio y la media hay un margen de tolerancia configurable (5% por defecto) para evitar señales falsas.",
+      "El precio promedio de los últimos 50 días. Indica la tendencia de corto a mediano plazo y posibles puntos de soporte o resistencia.",
     interpretation: [
       { range: "Precio > SMA50", meaning: "Tendencia positiva a corto plazo", signal: "comprar" as const },
-      { range: "Precio ≈ SMA50 (−5%)", meaning: "Dentro del margen: el precio está cerca de la media", signal: "mantener" as const },
-      { range: "Precio < SMA50 − 5%", meaning: "Tendencia negativa a corto plazo", signal: "vender" as const },
+      { range: "Precio ≈ SMA50", meaning: "El precio está consolidando", signal: "mantener" as const },
+      { range: "Precio < SMA50", meaning: "Tendencia negativa a corto plazo", signal: "vender" as const },
     ],
     icon: TrendingUp,
     image: "/ma50.png",
@@ -99,11 +99,11 @@ const indicators = [
   {
     name: "Media Móvil 200 días (SMA200)",
     description:
-      "El precio promedio de los últimos 200 días. Es el indicador de tendencia de largo plazo más respetado del mercado. El margen de tolerancia (5% por defecto) es configurable en la página de análisis.",
+      "El precio promedio de los últimos 200 días. Es el indicador de tendencia de largo plazo más respetado del mercado.",
     interpretation: [
       { range: "Precio > SMA200", meaning: "Tendencia alcista de largo plazo", signal: "comprar" as const },
-      { range: "Precio ≈ SMA200 (−5%)", meaning: "Dentro del margen: posible cambio de tendencia", signal: "mantener" as const },
-      { range: "Precio < SMA200 − 5%", meaning: "Tendencia bajista de largo plazo", signal: "vender" as const },
+      { range: "Precio cruzando", meaning: "Posible cambio de tendencia", signal: "mantener" as const },
+      { range: "Precio < SMA200", meaning: "Tendencia bajista de largo plazo", signal: "vender" as const },
     ],
     icon: BarChart3,
     image: "/ma200.png",
@@ -309,24 +309,11 @@ export default function ComoFuncionaPage() {
               </p>
             </div>
 
-            {/* ¿Qué es una acción? */}
-            <div className="mb-16 scroll-mt-28" data-tutorial-id="investment-stock-definition">
-              <h3 className="mb-6 text-xl font-bold">¿Qué es una acción?</h3>
-              <div className="space-y-4 text-muted-foreground">
-                <p>
-                  Una acción representa una pequeña parte de una empresa. Al comprarla, pasas a ser
-                  dueño de una fracción de esa compañía y el valor de tu inversión cambia según su
-                  desempeño y las expectativas del mercado.
-                </p>
-                <p>
-                  Por ejemplo, comprar una acción de Apple significa tener una pequeña participación
-                  en Apple. Puedes ganar si su valor aumenta, pero también puedes perder si disminuye.
-                </p>
-              </div>
-            </div>
-
             {/* ¿Qué es invertir? */}
-            <div className="mb-16 scroll-mt-28" data-tutorial-id="investing-definition">
+            <div
+              className="mb-16 scroll-mt-28"
+              data-tutorial-id="investing-definition"
+            >
               <h3 className="mb-6 text-xl font-bold">¿Qué es invertir?</h3>
               <div className="space-y-4 text-muted-foreground">
                 <p>
@@ -335,7 +322,10 @@ export default function ComoFuncionaPage() {
                   un conjunto de empresas (un fondo). Si a esas empresas les va bien, el valor de tu inversión
                   sube y ganas dinero. Si les va mal, puedes perder.
                 </p>
-                <p>
+                <p
+                  className="scroll-mt-28"
+                  data-tutorial-id="investment-stock-definition"
+                >
                   Es como ser dueño de una pequeñísima porción de empresas como Apple, Google o Mercado Libre.
                   Cuando compras una acción, te conviertes en socio.
                 </p>
