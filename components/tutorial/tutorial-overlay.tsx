@@ -45,9 +45,9 @@ function getPreferredPanelWidth(
   }
 
   if (panelWidth === "wide") {
-    if (viewportWidth >= 1280) return 840
-    if (viewportWidth >= 1024) return 760
-    if (viewportWidth >= 768) return 640
+    if (viewportWidth >= 1280) return 1080
+    if (viewportWidth >= 1024) return 940
+    if (viewportWidth >= 768) return 720
   }
 
   if (viewportWidth >= 1280) return 520

@@ -66,6 +66,18 @@ export const knowledgeLevelOptions: Array<{
 
 export const investmentBasicsTutorialSteps: TutorialStep[] = [
   {
+    id: "investment-basics-intro",
+    section: "Conceptos básicos",
+    phase: "inicio",
+    title: "Primero: qué es una acción",
+    description:
+      "Primero debes aprender qué es una acción. Con esa base será más fácil entender cómo invertir, por qué invertir y cómo interpretar las recomendaciones.",
+    category: "stocks",
+    targetId: "investment-basics-intro",
+    placement: "bottom",
+    panelWidth: "wide",
+  },
+  {
     id: "stock-definition",
     section: "Conceptos básicos",
     phase: "concepto",

@@ -297,7 +297,7 @@ export default function ComoFuncionaPage() {
         {/* CÓMO INVERTIR */}
         <section id="como-invertir" className="scroll-mt-24 px-6 py-20 lg:px-8">
           <div className="mx-auto max-w-4xl">
-            <div className="mb-12 text-center">
+            <div className="mb-12 text-center" data-tutorial-id="investment-basics-intro">
               <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10">
                 <PiggyBank className="h-7 w-7 text-accent" />
               </div>
