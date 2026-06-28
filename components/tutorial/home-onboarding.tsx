@@ -15,6 +15,15 @@ export function HomeOnboarding() {
   const [isAnalysisEntryOpen, setIsAnalysisEntryOpen] = useState(false)
   const { isTransitionSettling, startTransition } = useTutorialPageTransition()
 
+  const continueToAnalysis = () => {
+    const href = "/analizar?tutorial=analysis"
+    startTransition({
+      href,
+      beforeNavigate: () => setIsAnalysisEntryOpen(false),
+      onNavigate: () => router.push(href),
+    })
+  }
+
   const handleComplete = (nextProfile: KnowledgeProfile) => {
     saveProfile(nextProfile)
     setIsKnowledgeOpen(false)
@@ -94,18 +103,8 @@ export function HomeOnboarding() {
           isOpen
           level={profile.level}
           steps={homeAnalysisEntrySteps}
-          onClose={() => {
-            setIsAnalysisEntryOpen(false)
-            router.replace("/")
-          }}
-          onFinish={() => {
-            const href = "/analizar?tutorial=analysis"
-            startTransition({
-              href,
-              beforeNavigate: () => setIsAnalysisEntryOpen(false),
-              onNavigate: () => router.push(href),
-            })
-          }}
+          onClose={continueToAnalysis}
+          onFinish={continueToAnalysis}
         />
       )}
 
