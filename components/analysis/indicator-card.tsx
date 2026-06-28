@@ -29,8 +29,8 @@ export function IndicatorCard({
   }
 
   return (
-    <Card className="border-border shadow-sm">
-      <CardContent className="pt-2">
+    <Card className="h-full min-h-40 border-border shadow-sm">
+      <CardContent className="flex h-full flex-col pt-2">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2">
             <p className="text-sm font-medium text-muted-foreground">{title}</p>

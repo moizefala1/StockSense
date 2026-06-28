@@ -18,7 +18,10 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
+    <header
+      className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60"
+      data-tutorial-id="site-navbar"
+    >
       <nav className="mx-auto flex h-15 max-w-7xl items-center justify-between px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2 pt-4 pb-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
@@ -32,6 +35,13 @@ export function Header() {
             <Link
               key={item.name}
               href={item.href}
+              data-tutorial-id={
+                item.href === "/analizar"
+                  ? "desktop-nav-analyze-link"
+                  : item.href === "/como-funciona"
+                    ? "desktop-nav-how-it-works-link"
+                    : undefined
+              }
               className={cn(
                 "flex h-full items-center text-sm font-medium transition-colors hover:text-accent hover:border-b-2 hover:border-accent p-1",
                 pathname === item.href

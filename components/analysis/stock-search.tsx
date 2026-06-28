@@ -22,8 +22,11 @@ export function StockSearch({
   onAnalyze,
 }: StockSearchProps) {
   return (
-    <section className="relative mx-auto mb-12 max-w-3xl pt-8">
-      <div className="relative rounded-[2rem] border-[5px] border-border bg-primary px-4 pb-5 pt-12 shadow-[inset_0_0_52px_oklch(0.14_0.03_265_/_0.12),inset_0_-16px_30px_oklch(0.12_0.025_265_/_0.14),inset_0_12px_24px_oklch(0.16_0.03_265_/_0.07)] sm:px-6 sm:pb-6 sm:pt-12">
+    <section className="relative mx-auto mb-12 max-w-3xl pt-10" data-tutorial-id="stock-search">
+      <div
+        className="relative rounded-[2rem] border-[5px] border-border bg-primary px-4 pb-5 pt-12 shadow-[inset_0_0_52px_oklch(0.14_0.03_265_/_0.12),inset_0_-16px_30px_oklch(0.12_0.025_265_/_0.14),inset_0_12px_24px_oklch(0.16_0.03_265_/_0.07)] sm:px-6 sm:pb-6 sm:pt-12"
+        data-tutorial-id="stock-search-panel"
+      >
         <div className="relative z-20 text-center">
           <h1 className="text-3xl font-bold tracking-tight text-background [text-shadow:0_1px_0_rgba(0,0,0,0.22),1px_0_0_rgba(0,0,0,0.08),0_-1px_0_rgba(255,255,255,0.10)] sm:text-4xl">
             Analiza cualquier acción
@@ -33,7 +36,10 @@ export function StockSearch({
           </p>
         </div>
 
-        <div className="mt-8 rounded-[1.75rem] border border-border bg-card p-4 shadow-[0_8px_30px_rgba(0,0,0,0.08)] sm:p-5">
+        <div
+          className="mt-8 rounded-[1.75rem] border border-border bg-card p-4 shadow-[0_8px_30px_rgba(0,0,0,0.08)] sm:p-5"
+          data-tutorial-id="stock-search-controls"
+        >
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground/60" />
             <Input
