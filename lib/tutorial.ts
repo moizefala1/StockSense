@@ -73,7 +73,7 @@ export const investmentBasicsTutorialSteps: TutorialStep[] = [
     description:
       "Primero debes aprender qué es una acción. Con esa base será más fácil entender cómo invertir, por qué invertir y cómo interpretar las recomendaciones.",
     category: "stocks",
-    targetId: "investment-basics-intro",
+    targetId: "tutorial-centered-intro",
     placement: "bottom",
     panelWidth: "wide",
   },

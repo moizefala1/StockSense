@@ -414,34 +414,36 @@ export function TutorialOverlay({ isOpen, steps, onFinish, onStepChange }: Tutor
           </div>
         )}
 
-        <div className={`${navigationOnly ? "mt-0" : "mt-4 border-t border-border/60 pt-4"} shrink-0`}>
-          <div className="mb-2 text-xs text-muted-foreground">
+        <div className={`${navigationOnly ? "mt-0" : "mt-3 border-t border-border/60 pt-3"} shrink-0`}>
+          <div className="mb-1 text-[11px] leading-none text-muted-foreground">
             <span>
               Paso {stepIndex + 1} de {steps.length}
             </span>
           </div>
-          <div className="h-2 overflow-hidden rounded-full bg-muted">
+          <div className="h-1.5 overflow-hidden rounded-full bg-muted">
             <div
               className="h-full rounded-full bg-accent transition-all duration-300"
               style={{ width: `${((stepIndex + 1) / steps.length) * 100}%` }}
             />
           </div>
 
-          <div className="mt-4 flex items-center justify-between gap-3">
+          <div className="mt-3 flex items-center justify-between gap-2">
             <Button
               type="button"
               variant="outline"
               size="sm"
+              className="h-7 px-2.5 text-xs"
               onClick={() => setStepIndex((current) => Math.max(0, current - 1))}
               disabled={stepIndex === 0}
             >
-              <ArrowLeft className="h-4 w-4" />
+              <ArrowLeft className="h-3.5 w-3.5" />
               Anterior
             </Button>
 
             <Button
               type="button"
               size="sm"
+              className="h-7 px-2.5 text-xs"
               onClick={() => {
                 if (isLastStep) {
                   onFinish()
@@ -453,12 +455,12 @@ export function TutorialOverlay({ isOpen, steps, onFinish, onStepChange }: Tutor
               {isLastStep ? (
                 <>
                   {currentStep.finishLabel ?? "Terminar"}
-                  <Check className="h-4 w-4" />
+                  <Check className="h-3.5 w-3.5" />
                 </>
               ) : (
                 <>
                   {currentStep.nextLabel ?? "Siguiente"}
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="h-3.5 w-3.5" />
                 </>
               )}
             </Button>
