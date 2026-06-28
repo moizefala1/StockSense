@@ -44,16 +44,29 @@ function getPreferredPanelWidth(
     return viewportWidth >= 768 ? 340 : viewportWidth - PANEL_SAFE_PADDING * 2
   }
 
+  if (panelWidth === "narrow") {
+    if (viewportWidth >= 1280) return 640
+    if (viewportWidth >= 1024) return 620
+    if (viewportWidth >= 768) return 560
+    return viewportWidth - PANEL_SAFE_PADDING * 2
+  }
+
   if (panelWidth === "balanced") {
     if (viewportWidth >= 1280) return 560
     if (viewportWidth >= 768) return 520
     return viewportWidth - PANEL_SAFE_PADDING * 2
   }
 
+  if (panelWidth === "featured") {
+    if (viewportWidth >= 1280) return 680
+    if (viewportWidth >= 768) return 600
+    return viewportWidth - PANEL_SAFE_PADDING * 2
+  }
+
   if (panelWidth === "wide") {
-    if (viewportWidth >= 1280) return 1020
-    if (viewportWidth >= 1024) return 880
-    if (viewportWidth >= 768) return 700
+    if (viewportWidth >= 1280) return 1180
+    if (viewportWidth >= 1024) return 1000
+    if (viewportWidth >= 768) return 760
   }
 
   if (viewportWidth >= 1280) return 520
@@ -362,6 +375,7 @@ export function TutorialOverlay({ isOpen, steps, onFinish, onStepChange }: Tutor
 
   const isLastStep = stepIndex === steps.length - 1
   const navigationOnly = currentStep.panelMode === "navigation"
+  const featuredPanel = currentStep.panelWidth === "featured"
   const showSpotlight = Boolean(paddedRect) && currentStep.spotlightMode !== "hidden"
   const panelAnchorRect = showSpotlight ? paddedRect : null
   const panelWidth = currentStep.panelWidth ?? (navigationOnly ? "compact" : "default")
@@ -384,7 +398,7 @@ export function TutorialOverlay({ isOpen, steps, onFinish, onStepChange }: Tutor
         <div
           className={`absolute inset-0 pointer-events-auto ${
             currentStep.spotlightMode === "hidden"
-              ? "bg-primary/90 backdrop-blur-md"
+              ? "bg-primary backdrop-blur-2xl"
               : "bg-primary/72 backdrop-blur-sm"
           }`}
         />
@@ -392,14 +406,19 @@ export function TutorialOverlay({ isOpen, steps, onFinish, onStepChange }: Tutor
 
       <div
         className={`absolute pointer-events-auto flex flex-col overflow-hidden border border-border bg-card shadow-2xl transition-[top,left,transform,opacity] duration-300 ease-out animate-in fade-in zoom-in-95 ${
-          navigationOnly ? "rounded-xl p-3" : "rounded-2xl p-4"
+          navigationOnly ? "rounded-xl p-3" : featuredPanel ? "rounded-2xl p-6" : "rounded-2xl p-4"
         }`}
-        style={getPanelStyle(
-          panelAnchorRect,
-          viewport,
-          currentStep.placement,
-          panelWidth
-        )}
+        style={{
+          ...getPanelStyle(
+            panelAnchorRect,
+            viewport,
+            currentStep.placement,
+            panelWidth
+          ),
+          ...(featuredPanel
+            ? { minHeight: Math.min(240, viewport.height - PANEL_SAFE_PADDING * 2) }
+            : {}),
+        }}
         role="dialog"
         aria-modal="true"
         aria-label="Tutorial de StockSense"
@@ -421,9 +440,11 @@ export function TutorialOverlay({ isOpen, steps, onFinish, onStepChange }: Tutor
             className="min-h-0 flex-1 overflow-y-auto pr-7 animate-in fade-in-0 slide-in-from-bottom-1 duration-200"
             data-tutorial-scroll
           >
-            <h2 className="text-lg font-semibold leading-tight text-primary">{currentStep.title}</h2>
+            <h2 className={`${featuredPanel ? "text-xl" : "text-lg"} font-semibold leading-tight text-primary`}>
+              {currentStep.title}
+            </h2>
             {currentStep.description && (
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              <p className={`${featuredPanel ? "mt-3 text-base" : "mt-2 text-sm"} leading-relaxed text-muted-foreground`}>
                 {currentStep.description}
               </p>
             )}

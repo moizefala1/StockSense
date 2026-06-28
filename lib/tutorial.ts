@@ -31,7 +31,7 @@ export interface TutorialStep {
   spotlightOffsetY?: number
   spotlightMode?: "default" | "hidden"
   panelMode?: "default" | "navigation"
-  panelWidth?: "default" | "wide" | "compact" | "balanced"
+  panelWidth?: "default" | "wide" | "compact" | "balanced" | "narrow" | "featured"
   nextLabel?: string
   finishLabel?: string
   problem?: string
@@ -70,13 +70,12 @@ export const investmentBasicsTutorialSteps: TutorialStep[] = [
     id: "investment-basics-intro",
     section: "Conceptos básicos",
     phase: "inicio",
-    title: "Primero: inversión y cómo invertir",
-    description:
-      "Primero te enseñaremos qué es una inversión y cómo invertir.",
+    title: "Primero te enseñaremos qué es una inversión y cómo invertir",
+    description: "",
     category: "stocks",
     targetId: "investment-basics-intro",
     placement: "bottom",
-    panelWidth: "balanced",
+    panelWidth: "featured",
     spotlightMode: "hidden",
   },
   {
@@ -259,7 +258,8 @@ export const homeAnalysisEntrySteps: TutorialStep[] = [
     category: "page",
     targetId: "home-hero-content",
     placement: "bottom",
-    viewportGap: 260,
+    panelWidth: "narrow",
+    viewportGap: 72,
   },
   {
     id: "home-navbar",
