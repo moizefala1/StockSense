@@ -146,7 +146,7 @@ const analysisCoreSteps: TutorialStep[] = [
     phase: "concepto",
     title: "El precio es solo una parte",
     description:
-      "Aquí verás el precio actual de la acción y una explicación breve de cómo se genera la recomendación.",
+      "Aquí verás el precio actual y cómo se genera la recomendación.",
     category: "stocks",
     targetId: "analysis-summary",
     placement: "bottom",
