@@ -26,6 +26,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { InvestmentBasicsTutorial } from "@/components/tutorial/investment-basics-tutorial"
 import { cn } from "@/lib/utils"
 
 const navSections = [
@@ -206,7 +207,7 @@ function ComoInvertirSection() {
   return (
     <section className="px-6 py-20 lg:px-8">
       <div className="mx-auto max-w-4xl">
-        <div className="mb-12 text-center">
+        <div className="mb-12 text-center" data-tutorial-id="investment-basics-intro">
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10">
             <PiggyBank className="h-7 w-7 text-accent" />
           </div>
@@ -218,8 +219,24 @@ function ComoInvertirSection() {
           </p>
         </div>
 
+        {/* ¿Qué es una acción? */}
+        <div className="mb-16 scroll-mt-28" data-tutorial-id="investment-stock-definition">
+          <h3 className="mb-6 text-xl font-bold">¿Qué es una acción?</h3>
+          <div className="space-y-4 text-muted-foreground">
+            <p>
+              Una acción representa una pequeña parte de una empresa. Al comprarla, pasas a ser
+              dueño de una fracción de esa compañía y el valor de tu inversión cambia según su
+              desempeño y las expectativas del mercado.
+            </p>
+            <p>
+              Por ejemplo, comprar una acción de Apple significa tener una pequeña participación
+              en Apple. Puedes ganar si su valor aumenta, pero también puedes perder si disminuye.
+            </p>
+          </div>
+        </div>
+
         {/* ¿Qué es invertir? */}
-        <div className="mb-16">
+        <div className="mb-16 scroll-mt-28" data-tutorial-id="investing-definition">
           <h3 className="mb-6 text-xl font-bold">¿Qué es invertir?</h3>
           <div className="space-y-4 text-muted-foreground">
             <p>
@@ -236,7 +253,7 @@ function ComoInvertirSection() {
         </div>
 
         {/* ¿Por qué invertir? */}
-        <div className="mb-16">
+        <div className="mb-16 scroll-mt-28" data-tutorial-id="why-investing">
           <h3 className="mb-6 text-xl font-bold">¿Por qué deberías invertir?</h3>
           <div className="grid gap-6 sm:grid-cols-2">
             <div className="rounded-xl border bg-card p-5">
@@ -257,7 +274,7 @@ function ComoInvertirSection() {
         </div>
 
         {/* Reglas */}
-        <div className="mb-16">
+        <div className="mb-16 scroll-mt-28" data-tutorial-id="investing-rules">
           <h3 className="mb-6 text-xl font-bold">Las 3 reglas más importantes</h3>
           <div className="grid gap-6 md:grid-cols-3">
             <Card className="group">
@@ -302,7 +319,7 @@ function ComoInvertirSection() {
         </div>
 
         {/* Plataformas */}
-        <div>
+        <div className="scroll-mt-28" data-tutorial-id="investing-platforms">
           <h3 className="mb-2 text-xl font-bold">Plataformas recomendadas en Chile</h3>
           <p className="mb-8 text-muted-foreground">
             Estas apps están reguladas por la CMF y son las más usadas para empezar a invertir desde cero. Las recomendamos para usarlas complementariamente con StockSense
@@ -600,6 +617,15 @@ export default function ComoFuncionaPage() {
     setActiveSection(id)
   }
 
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    const params = new URLSearchParams(window.location.search)
+    if (params.get("tutorial") === "basics") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setActiveSection("como-invertir")
+    }
+  }, [])
+
   const scrollToContent = () => {
     if (contentRef.current) {
       const top = contentRef.current.offsetTop - 80
@@ -724,6 +750,7 @@ export default function ComoFuncionaPage() {
         </section>
       </main>
 
+      <InvestmentBasicsTutorial />
       <Footer />
     </div>
   )

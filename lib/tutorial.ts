@@ -1,4 +1,4 @@
-import type { AnalysisResult } from "@/lib/types"
+import type { AnalysisResult, PricePoint } from "@/lib/types"
 
 export type KnowledgeLevel = "bajo" | "medio" | "alto"
 
@@ -11,11 +11,36 @@ export interface KnowledgeProfile {
 
 export interface TutorialStep {
   id: string
+  section: string
+  phase:
+    | "inicio"
+    | "problema"
+    | "concepto"
+    | "ejemplo"
+    | "practica"
+    | "solucion"
+    | "advertencia"
+    | "resumen"
   title: string
   description: string
   category: "stocks" | "recommendations" | "page"
   targetId: string
   placement: "top" | "bottom" | "left" | "right"
+  scrollPosition?: "start" | "center" | "end"
+  viewportGap?: number
+  spotlightOffsetY?: number
+  spotlightMode?: "default" | "hidden"
+  panelMode?: "default" | "navigation"
+  panelWidth?: "default" | "wide" | "compact" | "balanced" | "narrow" | "featured"
+  nextLabel?: string
+  finishLabel?: string
+  problem?: string
+  concept?: string
+  example?: string
+  practice?: string
+  solution?: string
+  warning?: string
+  takeaway?: string
 }
 
 export const knowledgeLevelOptions: Array<{
@@ -26,115 +51,261 @@ export const knowledgeLevelOptions: Array<{
   {
     level: "bajo",
     title: "Estoy empezando",
-    description: "Quiero entender que es una accion, como se lee una recomendacion y como usar la pagina.",
+    description: "Quiero entender qué es una acción, cómo interpretar las recomendaciones y aprender a usar la página.",
   },
   {
     level: "medio",
-    title: "Ya conozco lo basico",
-    description: "Entiendo que es invertir, pero quiero saber como se construye el veredicto.",
+    title: "Ya conozco lo básico",
+    description: "Entiendo qué es una inversión, pero quiero aprender a interpretar las recomendaciones y a usar la página.",
   },
   {
     level: "alto",
     title: "Tengo experiencia",
-    description: "Solo necesito ubicar el flujo, los controles y las secciones principales.",
+    description: "Conozco de inversiones y quiero entender cómo usar la plataforma.",
   },
 ]
 
-const stocksSteps: TutorialStep[] = [
+export const investmentBasicsTutorialSteps: TutorialStep[] = [
   {
-    id: "stock-basics",
-    title: "Primero: que estas analizando",
-    description:
-      "Una accion representa una participacion en una empresa. En StockSense partes buscando un simbolo, como AAPL o MSFT, para ver una lectura simplificada de esa empresa.",
+    id: "investment-basics-intro",
+    section: "Conceptos básicos",
+    phase: "inicio",
+    title: "Primero te enseñaremos qué es una inversión y cómo invertir",
+    description: "",
     category: "stocks",
-    targetId: "stock-search",
+    targetId: "investment-basics-intro",
     placement: "bottom",
+    panelWidth: "featured",
+    spotlightMode: "hidden",
+  },
+  {
+    id: "stock-definition",
+    section: "Conceptos básicos",
+    phase: "concepto",
+    title: "¿Qué es una acción?",
+    description:
+      "Una acción representa una pequeña parte de una empresa. Cuando compras una, pasas a ser dueño de una fracción de esa compañía y su valor puede subir o bajar.",
+    category: "stocks",
+    targetId: "investment-stock-definition",
+    placement: "bottom",
+    panelMode: "navigation",
+    panelWidth: "compact",
+  },
+  {
+    id: "investing-definition",
+    section: "Conceptos básicos",
+    phase: "concepto",
+    title: "¿Qué es invertir?",
+    description: "",
+    category: "page",
+    targetId: "investing-definition",
+    placement: "bottom",
+    panelMode: "navigation",
+    panelWidth: "compact",
+  },
+  {
+    id: "why-invest",
+    section: "Conceptos básicos",
+    phase: "concepto",
+    title: "¿Por qué invertir?",
+    description: "",
+    category: "page",
+    targetId: "why-investing",
+    placement: "bottom",
+    panelMode: "navigation",
+    panelWidth: "compact",
+  },
+  {
+    id: "investing-rules",
+    section: "Conceptos básicos",
+    phase: "advertencia",
+    title: "Las tres reglas más importantes",
+    description: "",
+    category: "page",
+    targetId: "investing-rules",
+    placement: "bottom",
+    panelMode: "navigation",
+    panelWidth: "compact",
+  },
+  {
+    id: "investing-platforms",
+    section: "Conceptos básicos",
+    phase: "ejemplo",
+    title: "Plataformas recomendadas en Chile",
+    description: "",
+    category: "page",
+    targetId: "investing-platforms",
+    placement: "bottom",
+    panelMode: "navigation",
+    panelWidth: "compact",
+    finishLabel: "Ir a analizar",
+  },
+]
+
+const analysisCoreSteps: TutorialStep[] = [
+  {
+    id: "search-flow",
+    section: "Analizar una acción",
+    phase: "inicio",
+    title: "Busca una acción",
+    description:
+      "Escribe el nombre de una empresa o elige una acción popular. StockSense usará esa selección para preparar el análisis y mostrarte una recomendación clara.",
+    category: "page",
+    targetId: "stock-search-panel",
+    placement: "bottom",
+    panelWidth: "wide",
+    viewportGap: 24,
   },
   {
     id: "stock-price",
-    title: "El precio es solo una senal",
+    section: "Resultado del análisis",
+    phase: "concepto",
+    title: "El precio es solo una parte",
     description:
-      "El precio actual no dice por si solo si conviene comprar o vender. Por eso la pagina lo combina con indicadores que muestran tendencia, fuerza y posibles zonas de riesgo.",
+      "Aquí verás el precio actual y cómo se genera la recomendación.",
     category: "stocks",
     targetId: "analysis-summary",
+    placement: "bottom",
+    scrollPosition: "start",
+  },
+  {
+    id: "recommendation",
+    section: "Resultado del análisis",
+    phase: "solucion",
+    title: "Recomendación",
+    description:
+      "Esta tarjeta resume el análisis en una recomendación directa: comprar, mantener o vender. Así podrás ahorrar tiempo al recibir la indicación lista.",
+    category: "recommendations",
+    targetId: "analysis-recommendation",
     placement: "bottom",
   },
 ]
 
 const recommendationsSteps: TutorialStep[] = [
   {
-    id: "verdict",
-    title: "El veredicto resume varias senales",
-    description:
-      "Comprar, Mantener o Vender no sale de una sola metrica. El mock combina RSI, medias moviles y tendencia general para entregar una recomendacion clara.",
-    category: "recommendations",
-    targetId: "analysis-summary",
-    placement: "bottom",
-  },
-  {
     id: "confidence",
-    title: "La confianza comunica incertidumbre",
+    section: "Recomendación",
+    phase: "advertencia",
+    title: "Confianza de la señal",
     description:
-      "El porcentaje ayuda a no presentar el resultado como una verdad absoluta. Es feedback para tomar una decision informada, no una orden financiera.",
+      "La confianza muestra qué tan alineadas están las señales del análisis. No es una garantía, pero ayuda a interpretar el resultado.",
     category: "recommendations",
     targetId: "confidence-row",
-    placement: "top",
+    placement: "bottom",
+    scrollPosition: "start",
   },
   {
     id: "reasoning",
-    title: "Abre el razonamiento antes de decidir",
+    section: "Recomendación",
+    phase: "ejemplo",
+    title: "Revisa el razonamiento",
     description:
-      "Este bloque usa progressive disclosure: mantiene la pantalla limpia y permite abrir la explicacion cuando necesitas entender por que se recomienda una accion.",
+      "Aquí puedes entender qué señales explican la recomendación antes de tomar una decisión.",
     category: "recommendations",
-    targetId: "reasoning-toggle",
-    placement: "top",
+    targetId: "reasoning-section",
+    placement: "bottom",
+    scrollPosition: "start",
   },
   {
     id: "indicators",
+    section: "Evidencia",
+    phase: "practica",
     title: "Los indicadores muestran la evidencia",
     description:
-      "RSI, media movil de 50 dias, media movil de 200 dias y tendencia general son las piezas que justifican el veredicto. Estan agrupadas para comparar rapido.",
+      "Revisa el RSI, las medias móviles y la tendencia para comprender qué datos sostienen la recomendación.",
     category: "recommendations",
-    targetId: "indicators-section",
-    placement: "top",
+    targetId: "indicators-overview",
+    placement: "bottom",
+    scrollPosition: "start",
   },
 ]
 
-const pageSteps: TutorialStep[] = [
-  {
-    id: "search-flow",
-    title: "Busca o elige una accion popular",
-    description:
-      "El punto focal inicial es la busqueda. Puedes escribir un simbolo o partir desde las acciones populares para reducir friccion.",
-    category: "page",
-    targetId: "stock-search",
-    placement: "bottom",
-  },
-  {
-    id: "result-card",
-    title: "Lee primero el resumen",
-    description:
-      "La jerarquia visual pone arriba el nombre, precio y veredicto. Asi puedes escanear el resultado antes de entrar al detalle.",
-    category: "page",
-    targetId: "analysis-summary",
-    placement: "bottom",
-  },
-  {
-    id: "support-card",
-    title: "Usa la nota educativa como limite",
-    description:
-      "El cierre recuerda que los datos son apoyo educativo. Es una decision de tono y de seguridad para evitar que el usuario confunda la herramienta con asesoria financiera.",
-    category: "page",
+const supportStep: TutorialStep = {
+  id: "support-card",
+  section: "Uso responsable",
+  phase: "advertencia",
+  title: "Recuerda el límite del análisis",
+  description:
+    "StockSense entrega apoyo educativo. Los indicadores ayudan a investigar, pero no garantizan resultados ni reemplazan tu criterio.",
+  category: "page",
     targetId: "education-note",
-    placement: "top",
+    placement: "bottom",
+    scrollPosition: "start",
+}
+
+export const homeTutorialSteps: TutorialStep[] = [
+  {
+    id: "home-intro",
+    section: "Inicio claro",
+    phase: "inicio",
+    title: "Bienvenido a StockSense",
+    description:
+      "Esta es la página de inicio. Aquí conocerás el objetivo de StockSense.",
+    category: "page",
+    targetId: "home-hero-content",
+    placement: "bottom",
+  },
+]
+
+export const homeAnalysisEntrySteps: TutorialStep[] = [
+  {
+    id: "home-main-overview",
+    section: "Inicio",
+    phase: "inicio",
+    title: "Página de inicio",
+    description:
+      "Esta es la página de inicio. Aquí encontrarás información sobre nosotros.",
+    category: "page",
+    targetId: "home-hero-content",
+    placement: "bottom",
+    panelWidth: "narrow",
+    viewportGap: 72,
+  },
+  {
+    id: "home-navbar",
+    section: "Inicio",
+    phase: "inicio",
+    title: "Barra de navegación",
+    description:
+      "Desde esta barra puedes moverte por las secciones principales de StockSense sin perder el hilo de la página.",
+    category: "page",
+    targetId: "site-navbar",
+    placement: "bottom",
+    spotlightOffsetY: -10,
+  },
+  {
+    id: "home-analysis-entry",
+    section: "Inicio",
+    phase: "inicio",
+    title: "Analizar acciones",
+    description:
+      "Acá comenzarás a analizar las acciones. Usa la opción Analizar de la barra superior para entrar al buscador y revisar las recomendaciones.",
+    category: "page",
+    targetId: "desktop-nav-analyze-link",
+    placement: "bottom",
+    spotlightOffsetY: -8,
+    finishLabel: "Ir a analizar",
   },
 ]
 
 export const tutorialStepsByLevel: Record<KnowledgeLevel, TutorialStep[]> = {
-  bajo: [...stocksSteps, ...recommendationsSteps, ...pageSteps],
-  medio: [...recommendationsSteps, ...pageSteps],
-  alto: pageSteps,
+  bajo: [...analysisCoreSteps, ...recommendationsSteps, supportStep],
+  medio: [...analysisCoreSteps, ...recommendationsSteps, supportStep],
+  alto: [...analysisCoreSteps, supportStep],
 }
+
+const tutorialPriceHistory: PricePoint[] = Array.from({ length: 30 }, (_, index) => {
+  const price = 164.8 + index * 0.61 + Math.sin(index / 2) * 0.8
+  const rsi = 44 + index * 0.35 + Math.sin(index / 3) * 4
+
+  return {
+    date: new Date(Date.UTC(2026, 4, 29 + index)).toISOString().slice(0, 10),
+    price: Math.round(price * 100) / 100,
+    rsi: Math.round(rsi * 10) / 10,
+    sma50: Math.round((163.9 + index * 0.49) * 100) / 100,
+    sma200: Math.round((160.2 + index * 0.16) * 100) / 100,
+  }
+})
 
 export const tutorialDemoAnalysis: AnalysisResult = {
   symbol: "AAPL",
@@ -166,11 +337,13 @@ export const tutorialDemoAnalysis: AnalysisResult = {
       description: "La tendencia general sube y refuerza el veredicto de compra.",
     },
   },
+  priceHistory: tutorialPriceHistory,
+  priceChangePercent: 10.8,
 }
 
 export const KNOWLEDGE_PROFILE_STORAGE_KEY = "stocksense-knowledge-profile"
 export const TUTORIAL_COMPLETED_STORAGE_KEY = "stocksense-tutorial-completed"
-export const TUTORIAL_PROFILE_VERSION = "tutorial-profile-v3"
+export const TUTORIAL_PROFILE_VERSION = "tutorial-profile-v6"
 export const KNOWLEDGE_PROFILE_COOKIE_KEY = "stocksense_knowledge_profile"
 export const TUTORIAL_COMPLETED_COOKIE_KEY = "stocksense_tutorial_completed"
 
