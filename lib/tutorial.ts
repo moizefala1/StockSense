@@ -141,7 +141,7 @@ const analysisCoreSteps: TutorialStep[] = [
     targetId: "stock-search-panel",
     placement: "bottom",
     panelWidth: "wide",
-    viewportGap: 56,
+    viewportGap: 24,
   },
   {
     id: "stock-price",
@@ -245,6 +245,7 @@ export const homeAnalysisEntrySteps: TutorialStep[] = [
     category: "page",
     targetId: "home-hero-content",
     placement: "bottom",
+    panelWidth: "wide",
     viewportGap: 260,
   },
   {
