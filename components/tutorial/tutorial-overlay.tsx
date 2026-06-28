@@ -305,7 +305,7 @@ export function TutorialOverlay({ isOpen, steps, onFinish, onStepChange }: Tutor
       const absoluteTop = window.scrollY + rect.top
       const alignment =
         currentStep.scrollPosition ?? (currentStep.placement === "top" ? "end" : "start")
-      const viewportGap = 96
+      const viewportGap = currentStep.viewportGap ?? 96
       const scrollTop =
         alignment === "center"
           ? absoluteTop - (window.innerHeight - rect.height) / 2

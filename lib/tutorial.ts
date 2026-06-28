@@ -27,6 +27,7 @@ export interface TutorialStep {
   targetId: string
   placement: "top" | "bottom" | "left" | "right"
   scrollPosition?: "start" | "center" | "end"
+  viewportGap?: number
   panelMode?: "default" | "navigation"
   panelWidth?: "default" | "wide" | "compact"
   nextLabel?: string
@@ -139,6 +140,7 @@ const analysisCoreSteps: TutorialStep[] = [
     targetId: "stock-search-panel",
     placement: "bottom",
     panelWidth: "wide",
+    viewportGap: 72,
   },
   {
     id: "stock-price",
