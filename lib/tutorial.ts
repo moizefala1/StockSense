@@ -136,7 +136,7 @@ const analysisCoreSteps: TutorialStep[] = [
     description:
       "Escribe en el buscador el nombre de la empresa que quieres analizar o selecciona una de las acciones populares.",
     category: "page",
-    targetId: "stock-search-controls",
+    targetId: "stock-search-panel",
     placement: "bottom",
     panelWidth: "wide",
   },
