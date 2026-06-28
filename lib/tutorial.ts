@@ -235,6 +235,17 @@ export const homeTutorialSteps: TutorialStep[] = [
 
 export const homeAnalysisEntrySteps: TutorialStep[] = [
   {
+    id: "home-navbar",
+    section: "Inicio",
+    phase: "inicio",
+    title: "Barra de navegación",
+    description:
+      "Desde esta barra puedes moverte por las secciones principales de StockSense sin perder el hilo de la página.",
+    category: "page",
+    targetId: "site-navbar",
+    placement: "bottom",
+  },
+  {
     id: "home-analysis-entry",
     section: "Inicio",
     phase: "inicio",

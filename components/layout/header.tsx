@@ -18,7 +18,10 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
+    <header
+      className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60"
+      data-tutorial-id="site-navbar"
+    >
       <nav className="mx-auto flex h-15 max-w-7xl items-center justify-between px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2 pt-4 pb-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
