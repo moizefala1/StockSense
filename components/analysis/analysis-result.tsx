@@ -30,6 +30,12 @@ interface AnalysisResultProps {
   tutorialStepId?: string | null
 }
 
+const tutorialIndicatorByStep: Record<string, IndicatorKey> = {
+  "indicator-sma50": "sma50",
+  "indicator-rsi": "rsi",
+  "indicator-sma200": "sma200",
+}
+
 export function AnalysisResult({
   analysis,
   onReanalyze,
@@ -42,25 +48,39 @@ export function AnalysisResult({
   const [showReasoning, setShowReasoning] = useState(tutorialMode)
   const [activeIndicator, setActiveIndicator] = useState<IndicatorKey>(defaultIndicatorByRisk[risk])
   const reasoningOpen = tutorialMode || showReasoning
+  const tutorialIndicator = tutorialStepId ? tutorialIndicatorByStep[tutorialStepId] : undefined
+  const displayedIndicator = tutorialMode && tutorialIndicator ? tutorialIndicator : activeIndicator
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold text-primary">Resultado del análisis</h2>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={onSearchAgain} className="bg-accent text-background hover:bg-accent/80 hover:text-background">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onSearchAgain}
+            className="bg-accent text-background hover:bg-accent/80 hover:text-background"
+          >
             <Search className="h-4 w-4" />
             Analizar otra acción
           </Button>
-          <Button variant="outline" size="sm" onClick={onSearchAgain} className="border-border bg-primary text-white hover:bg-primary/80 hover:text-white">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onSearchAgain}
+            className="border-border bg-primary text-white hover:bg-primary/80 hover:text-white"
+          >
             Preguntar a la IA
           </Button>
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
+      <div
+        className="grid scroll-mt-6 gap-6 lg:grid-cols-2 lg:items-start"
+        data-tutorial-id="analysis-results-overview"
+      >
         <div className="space-y-6">
-          {/* Card 1: identidad de la acción + veredicto + confianza + razonamiento */}
           <Card className="border-border shadow-sm" data-tutorial-id="analysis-summary">
             <CardHeader data-tutorial-id="analysis-overview">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -91,7 +111,10 @@ export function AnalysisResult({
             </CardHeader>
 
             <CardContent>
-              <div className="flex scroll-mt-28 justify-between items-center" data-tutorial-id="confidence-row">
+              <div
+                className="flex scroll-mt-28 justify-between items-center"
+                data-tutorial-id="confidence-row"
+              >
                 <p className="text-sm text-muted-foreground">Confianza: {analysis.confidence}%</p>
 
                 <Button
@@ -132,7 +155,6 @@ export function AnalysisResult({
             </CardContent>
           </Card>
 
-          {/* Card 2: disclaimer de qué significan los indicadores, separada del veredicto */}
           <Card
             className="scroll-mt-28 border-border bg-primary-foreground shadow-sm"
             data-tutorial-id="education-note"
@@ -152,31 +174,58 @@ export function AnalysisResult({
           </Card>
         </div>
 
-        {/* Card 3: gráfico + selector de indicador + resumen + explicación de cómo se calcula */}
-        <Card className="border-border shadow-sm" data-tutorial-id="indicators-section">
-          <CardContent>
-            <div data-tutorial-id="indicators-overview">
-              <div className="flex items-center justify-between mb-1">
+        <div className="space-y-4" data-tutorial-id="indicators-section">
+          <Card className="scroll-mt-28 border-border shadow-sm" data-tutorial-id="indicators-overview">
+            <CardContent>
+              <div className="flex items-center justify-between gap-4 mb-1">
                 <h3 className="font-medium text-primary">Evolución del precio</h3>
-                <IndicatorSelector active={activeIndicator} onChange={setActiveIndicator} />
+                <IndicatorSelector active={displayedIndicator} onChange={setActiveIndicator} />
               </div>
 
-              <PriceChart analysis={analysis} activeIndicator={activeIndicator} className="mt-3" />
+              <PriceChart analysis={analysis} activeIndicator={displayedIndicator} className="mt-3" />
+            </CardContent>
+          </Card>
+
+          <div className="space-y-4 scroll-mt-28" data-tutorial-id="indicators-info-stack">
+            <Card
+              className="border-border bg-primary-foreground shadow-sm"
+              data-tutorial-id="indicators-general-info"
+            >
+              <CardContent className="py-0">
+                <div className="flex gap-3">
+                  <Info className="h-5 w-5 flex-shrink-0 text-accent" />
+                  <div>
+                    <h3 className="text-sm font-semibold text-primary">En general</h3>
+                    <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                      Aquí tienes más información de los indicadores. Cada botón cambia el gráfico y
+                      la tarjeta de abajo para mostrar qué está midiendo esa señal.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <div
+              className="scroll-mt-28"
+              data-tutorial-id={`indicator-card-${displayedIndicator}`}
+            >
+              <IndicatorSummaryCard
+                analysis={analysis}
+                indicator={displayedIndicator}
+                className={cn(
+                  "bg-card shadow-sm transition-shadow",
+                  tutorialIndicator === displayedIndicator && "ring-4 ring-accent/20"
+                )}
+              />
             </div>
 
-            <IndicatorSummaryCard
-              analysis={analysis}
-              indicator={activeIndicator}
-              className="mt-5"
-            />
-
             <IndicatorExplainer
-              indicator={activeIndicator}
+              indicator={displayedIndicator}
               knowledge={knowledge}
-              className="mt-3"
+              className="bg-card shadow-sm"
             />
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   )

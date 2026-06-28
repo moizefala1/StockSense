@@ -35,7 +35,13 @@ export function Header() {
             <Link
               key={item.name}
               href={item.href}
-              data-tutorial-id={item.href === "/analizar" ? "desktop-nav-analyze-link" : undefined}
+              data-tutorial-id={
+                item.href === "/analizar"
+                  ? "desktop-nav-analyze-link"
+                  : item.href === "/como-funciona"
+                    ? "desktop-nav-how-it-works-link"
+                    : undefined
+              }
               className={cn(
                 "flex h-full items-center text-sm font-medium transition-colors hover:text-accent hover:border-b-2 hover:border-accent p-1",
                 pathname === item.href

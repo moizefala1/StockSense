@@ -29,8 +29,10 @@ export interface TutorialStep {
   scrollPosition?: "start" | "center" | "end"
   viewportGap?: number
   spotlightOffsetY?: number
+  spotlightPadding?: { top?: number; right?: number; bottom?: number; left?: number }
   spotlightMode?: "default" | "hidden"
   panelMode?: "default" | "navigation"
+  panelAnchor?: "target" | "viewport-bottom"
   panelWidth?: "default" | "wide" | "compact" | "balanced" | "narrow" | "featured"
   nextLabel?: string
   finishLabel?: string
@@ -70,8 +72,9 @@ export const investmentBasicsTutorialSteps: TutorialStep[] = [
     id: "investment-basics-intro",
     section: "Conceptos básicos",
     phase: "inicio",
-    title: "Primero te enseñaremos qué es una inversión y cómo invertir",
-    description: "",
+    title: "Primero te enseñaremos qué es una acción y cómo invertir",
+    description:
+      "Partiremos por lo básico para que entiendas qué estás comprando antes de analizar recomendaciones.",
     category: "stocks",
     targetId: "investment-basics-intro",
     placement: "bottom",
@@ -207,16 +210,69 @@ const recommendationsSteps: TutorialStep[] = [
     scrollPosition: "start",
   },
   {
-    id: "indicators",
+    id: "indicators-chart",
     section: "Evidencia",
-    phase: "practica",
-    title: "Los indicadores muestran la evidencia",
+    phase: "concepto",
+    title: "Evolución del precio",
     description:
-      "Revisa el RSI, las medias móviles y la tendencia para comprender qué datos sostienen la recomendación.",
+      "Antes de revisar cada indicador, mira esta card del gráfico. Aquí ves cómo se movió el precio en los últimos días y cómo se compara con la señal seleccionada.",
     category: "recommendations",
     targetId: "indicators-overview",
-    placement: "bottom",
-    scrollPosition: "start",
+    placement: "left",
+    scrollPosition: "center",
+    spotlightPadding: { top: 8, right: 8, bottom: 8, left: 8 },
+  },
+  {
+    id: "indicator-sma50",
+    section: "Evidencia",
+    phase: "practica",
+    title: "SMA 50d: tendencia reciente",
+    description:
+      "Primero aprieta SMA 50d en el selector del gráfico. Ahí aparece la media móvil de 50 días y la card de abajo resume si el precio está fuerte o débil frente a su tendencia reciente.",
+    category: "recommendations",
+    targetId: "indicator-tab-sma50",
+    placement: "left",
+    scrollPosition: "center",
+    spotlightPadding: { top: 4, right: 4, bottom: 4, left: 4 },
+  },
+  {
+    id: "indicator-rsi",
+    section: "Evidencia",
+    phase: "practica",
+    title: "RSI: fuerza del movimiento",
+    description:
+      "Luego aprieta RSI en el mismo selector. El gráfico cambia a la fuerza del movimiento y la card indica si la acción está neutral, sobrevendida o sobrecomprada.",
+    category: "recommendations",
+    targetId: "indicator-tab-rsi",
+    placement: "left",
+    scrollPosition: "center",
+    spotlightPadding: { top: 4, right: 4, bottom: 4, left: 4 },
+  },
+  {
+    id: "indicator-sma200",
+    section: "Evidencia",
+    phase: "practica",
+    title: "SMA 200d: tendencia de largo plazo",
+    description:
+      "Por último aprieta SMA 200d. Esta vista muestra la media móvil de 200 días y la card resume si la acción se mantiene sólida en una mirada más larga.",
+    category: "recommendations",
+    targetId: "indicator-tab-sma200",
+    placement: "left",
+    scrollPosition: "center",
+    spotlightPadding: { top: 4, right: 4, bottom: 4, left: 4 },
+  },
+  {
+    id: "indicators-general",
+    section: "Evidencia",
+    phase: "concepto",
+    title: "Indicadores en general",
+    description:
+      "Aquí tienes más información de los indicadores. Este bloque reúne la explicación general, la señal seleccionada y la sección de cálculo.",
+    category: "recommendations",
+    targetId: "indicators-info-stack",
+    placement: "left",
+    scrollPosition: "center",
+    spotlightPadding: { top: 8, right: 8, bottom: 8, left: 8 },
   },
 ]
 
@@ -231,6 +287,23 @@ const supportStep: TutorialStep = {
     targetId: "education-note",
     placement: "bottom",
     scrollPosition: "start",
+}
+
+const expertAnalysisOverviewStep: TutorialStep = {
+  id: "expert-analysis-overview",
+  section: "Resultado del análisis",
+  phase: "inicio",
+  title: "Información general del análisis",
+  description:
+    "Aquí encontrarás información importante sobre las acciones y en base a qué se hacen las recomendaciones.",
+  category: "page",
+  targetId: "analysis-results-overview",
+  placement: "bottom",
+  panelAnchor: "viewport-bottom",
+  panelWidth: "narrow",
+  scrollPosition: "start",
+  viewportGap: 24,
+  spotlightPadding: { top: 8, right: 8, bottom: 8, left: 8 },
 }
 
 export const homeTutorialSteps: TutorialStep[] = [
@@ -256,9 +329,11 @@ export const homeAnalysisEntrySteps: TutorialStep[] = [
     description:
       "Esta es la página de inicio. Aquí encontrarás información sobre nosotros.",
     category: "page",
-    targetId: "home-hero-content",
+    targetId: "home-hero",
     placement: "bottom",
+    panelAnchor: "viewport-bottom",
     panelWidth: "narrow",
+    spotlightPadding: { top: 84, bottom: 18 },
     viewportGap: 72,
   },
   {
@@ -272,6 +347,18 @@ export const homeAnalysisEntrySteps: TutorialStep[] = [
     targetId: "site-navbar",
     placement: "bottom",
     spotlightOffsetY: -10,
+  },
+  {
+    id: "home-how-it-works-entry",
+    section: "Inicio",
+    phase: "inicio",
+    title: "Cómo funciona StockSense",
+    description:
+      "En Cómo Funciona encontrarás una explicación paso a paso sobre las inversiones, los indicadores y la forma en que StockSense prepara cada recomendación.",
+    category: "page",
+    targetId: "desktop-nav-how-it-works-link",
+    placement: "bottom",
+    spotlightOffsetY: -8,
   },
   {
     id: "home-analysis-entry",
@@ -291,7 +378,7 @@ export const homeAnalysisEntrySteps: TutorialStep[] = [
 export const tutorialStepsByLevel: Record<KnowledgeLevel, TutorialStep[]> = {
   bajo: [...analysisCoreSteps, ...recommendationsSteps, supportStep],
   medio: [...analysisCoreSteps, ...recommendationsSteps, supportStep],
-  alto: [...analysisCoreSteps, supportStep],
+  alto: [...analysisCoreSteps.slice(0, 1), expertAnalysisOverviewStep, supportStep],
 }
 
 const tutorialPriceHistory: PricePoint[] = Array.from({ length: 30 }, (_, index) => {

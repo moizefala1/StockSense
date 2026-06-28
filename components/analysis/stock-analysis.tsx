@@ -11,6 +11,7 @@ import { StockSearch } from "@/components/analysis/stock-search"
 import { AnalysisResult } from "@/components/analysis/analysis-result"
 import { ThresholdConfig } from "@/components/analysis/threshold-config"
 import { TutorialOverlay } from "@/components/tutorial/tutorial-overlay"
+import { useTutorialPageTransition } from "@/components/tutorial/tutorial-page-transition"
 import { TutorialSkeleton } from "@/components/tutorial/tutorial-skeleton"
 import { DEFAULT_THRESHOLDS, type IndicatorThresholds } from "@/lib/types"
 import {
@@ -183,6 +184,7 @@ export function StockAnalysis() {
     useTutorialProfile()
   const [manualTutorialOpen, setManualTutorialOpen] = useState(false)
   const [tutorialStepId, setTutorialStepId] = useState<string | null>(null)
+  const { isTransitionSettling, startTransition } = useTutorialPageTransition()
 
   const handleTutorialFinish = () => {
     completeTutorial()
@@ -194,26 +196,31 @@ export function StockAnalysis() {
     if (profile) {
       restartTutorial()
       if (profile.level === "bajo") {
-        router.push("/como-funciona?tutorial=basics")
+        const href = "/como-funciona?tutorial=basics"
+        startTransition({
+          href,
+          onNavigate: () => router.push(href),
+        })
       } else {
         setManualTutorialOpen(true)
       }
     }
   }
 
-  const tutorialOpen =
+  const tutorialActive =
     Boolean(profile) &&
     (manualTutorialOpen || (status === "ready" && !isTutorialCompleted))
+  const tutorialOpen = tutorialActive && !isTransitionSettling
 
   const userKnowledge = profile && profile.level !== "bajo" ? "sabe" as const : "no-sabe" as const
   const userRisk = "moderado" as const
 
-  const visibleAnalysis = analysis ?? (tutorialOpen ? tutorialDemoAnalysis : null)
+  const visibleAnalysis = analysis ?? (tutorialActive ? tutorialDemoAnalysis : null)
   const tutorialSteps = profile ? tutorialStepsByLevel[profile.level] : []
 
   // Cuando hay error, volvemos al buscador automáticamente — el toast flota encima.
   // El usuario puede cerrar el toast y reintentar desde el buscador.
-  const showSearch = (!analysis && !isAnalyzing) || tutorialOpen
+  const showSearch = (!analysis && !isAnalyzing) || tutorialActive
   const showEmpty = status === "ready" && showSearch && !visibleAnalysis && !error
 
   return (
@@ -285,12 +292,12 @@ export function StockAnalysis() {
             onSearchAgain={reset}
             knowledge={userKnowledge}
             risk={userRisk}
-            tutorialMode={tutorialOpen}
+            tutorialMode={tutorialActive}
             tutorialStepId={tutorialStepId}
           />
         )}
 
-        {tutorialOpen && <div className="h-[45vh]" aria-hidden="true" />}
+        {tutorialActive && <div className="h-[45vh]" aria-hidden="true" />}
       </div>
 
       {profile && tutorialSteps.length > 0 && (
@@ -299,6 +306,7 @@ export function StockAnalysis() {
           isOpen={tutorialOpen}
           level={profile.level}
           steps={tutorialSteps}
+          onClose={handleTutorialFinish}
           onFinish={handleTutorialFinish}
           onStepChange={setTutorialStepId}
         />

@@ -62,3 +62,16 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  html[data-tutorial-route-pending],
+  html[data-tutorial-route-enter] {
+    overflow-x: hidden;
+  }
+
+  html[data-tutorial-route-pending] body,
+  html[data-tutorial-route-enter] body {
+    overflow-x: hidden;
+    pointer-events: none;
+  }
+}

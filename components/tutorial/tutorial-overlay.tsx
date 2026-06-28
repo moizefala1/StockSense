@@ -11,6 +11,7 @@ interface TutorialOverlayProps {
   level: KnowledgeLevel
   steps: TutorialStep[]
   onFinish: () => void
+  onClose?: () => void
   onStepChange?: (stepId: string) => void
 }
 
@@ -79,15 +80,22 @@ function getPreferredPanelWidth(
 function getPaddedRect(
   rect: RectState,
   viewport: ViewportState,
-  offsetY = 0
+  offsetY = 0,
+  spotlightPadding: TutorialStep["spotlightPadding"] = {}
 ): RectState {
   const padding = viewport.width < 640 ? 14 : 22
   const adjustedTop = rect.top + offsetY
-  const topBoundary = offsetY < 0 ? 0 : 8
-  const left = Math.max(8, rect.left - padding)
-  const top = Math.max(topBoundary, adjustedTop - padding)
-  const right = Math.min(viewport.width - 8, rect.left + rect.width + padding)
-  const bottom = Math.min(viewport.height - 8, adjustedTop + rect.height + padding)
+  const topBoundary = offsetY < 0 || spotlightPadding.top ? 0 : 8
+  const left = Math.max(8, rect.left - padding - (spotlightPadding.left ?? 0))
+  const top = Math.max(topBoundary, adjustedTop - padding - (spotlightPadding.top ?? 0))
+  const right = Math.min(
+    viewport.width - 8,
+    rect.left + rect.width + padding + (spotlightPadding.right ?? 0)
+  )
+  const bottom = Math.min(
+    viewport.height - 8,
+    adjustedTop + rect.height + padding + (spotlightPadding.bottom ?? 0)
+  )
 
   return {
     left,
@@ -239,14 +247,46 @@ function getPanelStyle(
   }
 }
 
-export function TutorialOverlay({ isOpen, steps, onFinish, onStepChange }: TutorialOverlayProps) {
+function getViewportBottomPanelStyle(
+  viewport: ViewportState,
+  panelWidth: TutorialStep["panelWidth"]
+): CSSProperties {
+  const preferredWidth = getPreferredPanelWidth(viewport.width, panelWidth)
+  const width = Math.min(preferredWidth, viewport.width - PANEL_SAFE_PADDING * 2)
+  const availableHeight = Math.max(160, viewport.height - PANEL_SAFE_PADDING * 2)
+
+  return {
+    width,
+    left: "50%",
+    bottom: PANEL_SAFE_PADDING,
+    transform: "translateX(-50%)",
+    maxHeight: Math.min(PANEL_MAX_HEIGHT, availableHeight),
+  }
+}
+
+export function TutorialOverlay({
+  isOpen,
+  steps,
+  onFinish,
+  onClose,
+  onStepChange,
+}: TutorialOverlayProps) {
   const [stepIndex, setStepIndex] = useState(0)
   const [targetRect, setTargetRect] = useState<RectState | null>(null)
   const [viewport, setViewport] = useState<ViewportState>({ width: 1200, height: 800 })
+  const closeTutorial = onClose ?? onFinish
 
   const currentStep = steps[stepIndex]
   const paddedRect = useMemo(
-    () => (targetRect ? getPaddedRect(targetRect, viewport, currentStep?.spotlightOffsetY) : null),
+    () =>
+      targetRect
+        ? getPaddedRect(
+            targetRect,
+            viewport,
+            currentStep?.spotlightOffsetY,
+            currentStep?.spotlightPadding
+          )
+        : null,
     [currentStep, targetRect, viewport]
   )
 
@@ -362,14 +402,14 @@ export function TutorialOverlay({ isOpen, steps, onFinish, onStepChange }: Tutor
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        onFinish()
+        closeTutorial()
       }
     }
 
     window.addEventListener("keydown", handleKeyDown)
 
     return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [isOpen, onFinish])
+  }, [closeTutorial, isOpen])
 
   if (!isOpen || !currentStep) return null
 
@@ -379,6 +419,7 @@ export function TutorialOverlay({ isOpen, steps, onFinish, onStepChange }: Tutor
   const showSpotlight = Boolean(paddedRect) && currentStep.spotlightMode !== "hidden"
   const panelAnchorRect = showSpotlight ? paddedRect : null
   const panelWidth = currentStep.panelWidth ?? (navigationOnly ? "compact" : "default")
+  const anchorPanelToViewportBottom = currentStep.panelAnchor === "viewport-bottom"
 
   return (
     <div className="fixed inset-0 z-[80] pointer-events-auto animate-in fade-in duration-200" aria-live="polite">
@@ -398,7 +439,7 @@ export function TutorialOverlay({ isOpen, steps, onFinish, onStepChange }: Tutor
         <div
           className={`absolute inset-0 pointer-events-auto ${
             currentStep.spotlightMode === "hidden"
-              ? "bg-primary backdrop-blur-2xl"
+              ? "bg-background/95 backdrop-blur-2xl"
               : "bg-primary/72 backdrop-blur-sm"
           }`}
         />
@@ -409,15 +450,14 @@ export function TutorialOverlay({ isOpen, steps, onFinish, onStepChange }: Tutor
           navigationOnly ? "rounded-xl p-3" : featuredPanel ? "rounded-2xl p-6" : "rounded-2xl p-4"
         }`}
         style={{
-          ...getPanelStyle(
-            panelAnchorRect,
-            viewport,
-            currentStep.placement,
-            panelWidth
-          ),
-          ...(featuredPanel
-            ? { minHeight: Math.min(240, viewport.height - PANEL_SAFE_PADDING * 2) }
-            : {}),
+          ...(anchorPanelToViewportBottom
+            ? getViewportBottomPanelStyle(viewport, panelWidth)
+            : getPanelStyle(
+                panelAnchorRect,
+                viewport,
+                currentStep.placement,
+                panelWidth
+              )),
         }}
         role="dialog"
         aria-modal="true"
@@ -427,20 +467,22 @@ export function TutorialOverlay({ isOpen, steps, onFinish, onStepChange }: Tutor
       >
         <button
           type="button"
-          onClick={onFinish}
-          className="absolute right-3 top-3 rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-primary focus-visible:ring-2 focus-visible:ring-accent"
+          onClick={closeTutorial}
+          className="absolute right-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-primary focus-visible:ring-2 focus-visible:ring-accent"
           aria-label="Cerrar tutorial"
         >
-          <X className="h-4 w-4" />
+          <X className="pointer-events-none h-4 w-4" />
         </button>
 
         {!navigationOnly && (
           <div
             key={currentStep.id}
-            className="min-h-0 flex-1 overflow-y-auto pr-7 animate-in fade-in-0 slide-in-from-bottom-1 duration-200"
+            className={`animate-in fade-in-0 slide-in-from-bottom-1 duration-200 ${
+              featuredPanel ? "pr-8" : "min-h-0 flex-1 overflow-y-auto pr-7"
+            }`}
             data-tutorial-scroll
           >
-            <h2 className={`${featuredPanel ? "text-xl" : "text-lg"} font-semibold leading-tight text-primary`}>
+            <h2 className={`${featuredPanel ? "text-xl sm:text-2xl" : "text-lg"} font-semibold leading-tight text-primary`}>
               {currentStep.title}
             </h2>
             {currentStep.description && (

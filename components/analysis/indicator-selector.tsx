@@ -10,7 +10,7 @@ interface IndicatorSelectorProps {
   className?: string
 }
 
-const order: IndicatorKey[] = ["rsi", "sma50", "sma200"]
+const order: IndicatorKey[] = ["sma50", "rsi", "sma200"]
 
 export function IndicatorSelector({ active, onChange, className }: IndicatorSelectorProps) {
   return (
@@ -24,6 +24,7 @@ export function IndicatorSelector({ active, onChange, className }: IndicatorSele
           key={key}
           type="button"
           role="tab"
+          data-tutorial-id={`indicator-tab-${key}`}
           aria-selected={active === key}
           onClick={() => onChange(key)}
           className={cn(

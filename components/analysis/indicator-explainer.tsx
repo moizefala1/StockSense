@@ -18,11 +18,11 @@ export function IndicatorExplainer({ indicator, knowledge, className }: Indicato
   const text = knowledge === "sabe" ? content.technical : content.simple
 
   return (
-    <div className={cn("rounded-lg border border-border", className)}>
+    <div className={cn("overflow-hidden rounded-xl border border-border", className)}>
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between p-4 text-left transition-colors hover:bg-muted/60 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 rounded-lg"
+        className="flex w-full items-center justify-between p-4 text-left transition-colors hover:bg-muted/60 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1"
       >
         <span className="text-sm font-medium text-primary">
           ¿Cómo se calcula este indicador?

@@ -29,7 +29,7 @@ export function IndicatorSummaryCard({ analysis, indicator, className }: Indicat
   const title = indicatorExplainers[indicator].title
 
   return (
-    <div className={cn("rounded-lg border border-border p-4", className)}>
+    <div className={cn("rounded-xl border border-border p-4", className)}>
       <div className="flex items-baseline justify-between gap-3">
         <p className="text-sm font-medium text-primary">{title}</p>
         <span className={cn("text-sm font-semibold flex-shrink-0", signalTextClass[data.signal])}>
