@@ -44,10 +44,16 @@ function getPreferredPanelWidth(
     return viewportWidth >= 768 ? 340 : viewportWidth - PANEL_SAFE_PADDING * 2
   }
 
+  if (panelWidth === "balanced") {
+    if (viewportWidth >= 1280) return 460
+    if (viewportWidth >= 768) return 440
+    return viewportWidth - PANEL_SAFE_PADDING * 2
+  }
+
   if (panelWidth === "wide") {
-    if (viewportWidth >= 1280) return 1080
-    if (viewportWidth >= 1024) return 940
-    if (viewportWidth >= 768) return 720
+    if (viewportWidth >= 1280) return 960
+    if (viewportWidth >= 1024) return 840
+    if (viewportWidth >= 768) return 680
   }
 
   if (viewportWidth >= 1280) return 520
@@ -354,18 +360,15 @@ export function TutorialOverlay({ isOpen, steps, onFinish, onStepChange }: Tutor
 
   if (!isOpen || !currentStep) return null
 
-  const panelStyle = getPanelStyle(
-    paddedRect,
-    viewport,
-    currentStep.placement,
-    currentStep.panelWidth ?? (currentStep.panelMode === "navigation" ? "compact" : "default")
-  )
   const isLastStep = stepIndex === steps.length - 1
   const navigationOnly = currentStep.panelMode === "navigation"
+  const showSpotlight = Boolean(paddedRect) && currentStep.spotlightMode !== "hidden"
+  const panelAnchorRect = showSpotlight ? paddedRect : null
+  const panelWidth = currentStep.panelWidth ?? (navigationOnly ? "compact" : "default")
 
   return (
     <div className="fixed inset-0 z-[80] pointer-events-auto animate-in fade-in duration-200" aria-live="polite">
-      {paddedRect ? (
+      {showSpotlight && paddedRect ? (
         <div
           className="absolute rounded-[2rem] border-2 border-accent pointer-events-none transition-all duration-300 ease-out"
           style={{
@@ -385,7 +388,12 @@ export function TutorialOverlay({ isOpen, steps, onFinish, onStepChange }: Tutor
         className={`absolute pointer-events-auto flex flex-col overflow-hidden border border-border bg-card shadow-2xl transition-[top,left,transform,opacity] duration-300 ease-out animate-in fade-in zoom-in-95 ${
           navigationOnly ? "rounded-xl p-3" : "rounded-2xl p-4"
         }`}
-        style={panelStyle}
+        style={getPanelStyle(
+          panelAnchorRect,
+          viewport,
+          currentStep.placement,
+          panelWidth
+        )}
         role="dialog"
         aria-modal="true"
         aria-label="Tutorial de StockSense"

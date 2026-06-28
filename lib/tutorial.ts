@@ -29,8 +29,9 @@ export interface TutorialStep {
   scrollPosition?: "start" | "center" | "end"
   viewportGap?: number
   spotlightOffsetY?: number
+  spotlightMode?: "default" | "hidden"
   panelMode?: "default" | "navigation"
-  panelWidth?: "default" | "wide" | "compact"
+  panelWidth?: "default" | "wide" | "compact" | "balanced"
   nextLabel?: string
   finishLabel?: string
   problem?: string
@@ -73,9 +74,10 @@ export const investmentBasicsTutorialSteps: TutorialStep[] = [
     description:
       "Primero debes aprender qué es una acción. Con esa base será más fácil entender cómo invertir, por qué invertir y cómo interpretar las recomendaciones.",
     category: "stocks",
-    targetId: "tutorial-centered-intro",
+    targetId: "investment-basics-intro",
     placement: "bottom",
-    panelWidth: "wide",
+    panelWidth: "balanced",
+    spotlightMode: "hidden",
   },
   {
     id: "stock-definition",
