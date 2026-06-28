@@ -59,7 +59,7 @@ export function KnowledgeOnboarding({ onComplete }: KnowledgeOnboardingProps) {
 
             <CardContent className="text-center">
               <Button onClick={() => setStep("profile")} size="lg">
-                De acuerdo
+                Comenzar
               </Button>
             </CardContent>
           </>

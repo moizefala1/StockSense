@@ -35,7 +35,20 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max)
 }
 
-function getPreferredPanelWidth(viewportWidth: number) {
+function getPreferredPanelWidth(
+  viewportWidth: number,
+  panelWidth: TutorialStep["panelWidth"] = "default"
+) {
+  if (panelWidth === "compact") {
+    return viewportWidth >= 768 ? 340 : viewportWidth - PANEL_SAFE_PADDING * 2
+  }
+
+  if (panelWidth === "wide") {
+    if (viewportWidth >= 1280) return 640
+    if (viewportWidth >= 1024) return 600
+    if (viewportWidth >= 768) return 540
+  }
+
   if (viewportWidth >= 1280) return 520
   if (viewportWidth >= 1024) return 480
   if (viewportWidth >= 768) return 440
@@ -61,10 +74,11 @@ function getPaddedRect(rect: RectState, viewport: ViewportState): RectState {
 function getPanelStyle(
   rect: RectState | null,
   viewport: ViewportState,
-  placement: TutorialStep["placement"]
+  placement: TutorialStep["placement"],
+  panelWidth: TutorialStep["panelWidth"]
 ): CSSProperties {
   const margin = 16
-  const preferredWidth = getPreferredPanelWidth(viewport.width)
+  const preferredWidth = getPreferredPanelWidth(viewport.width, panelWidth)
   const width = Math.min(preferredWidth, viewport.width - PANEL_SAFE_PADDING * 2)
   const availableHeight = Math.max(160, viewport.height - PANEL_SAFE_PADDING * 2)
   const fullMaxHeight = Math.min(PANEL_MAX_HEIGHT, availableHeight)
@@ -320,8 +334,14 @@ export function TutorialOverlay({ isOpen, steps, onFinish }: TutorialOverlayProp
 
   if (!isOpen || !currentStep) return null
 
-  const panelStyle = getPanelStyle(paddedRect, viewport, currentStep.placement)
+  const panelStyle = getPanelStyle(
+    paddedRect,
+    viewport,
+    currentStep.placement,
+    currentStep.panelWidth ?? (currentStep.panelMode === "navigation" ? "compact" : "default")
+  )
   const isLastStep = stepIndex === steps.length - 1
+  const navigationOnly = currentStep.panelMode === "navigation"
 
   return (
     <div className="fixed inset-0 z-[80] pointer-events-auto animate-in fade-in duration-200" aria-live="polite">
@@ -373,7 +393,9 @@ export function TutorialOverlay({ isOpen, steps, onFinish }: TutorialOverlayProp
       )}
 
       <div
-        className="absolute pointer-events-auto flex flex-col overflow-hidden rounded-2xl border border-border bg-card p-4 shadow-2xl transition-[top,left,transform,opacity] duration-300 ease-out animate-in fade-in zoom-in-95"
+        className={`absolute pointer-events-auto flex flex-col overflow-hidden border border-border bg-card shadow-2xl transition-[top,left,transform,opacity] duration-300 ease-out animate-in fade-in zoom-in-95 ${
+          navigationOnly ? "rounded-xl p-3" : "rounded-2xl p-4"
+        }`}
         style={panelStyle}
         role="dialog"
         aria-modal="true"
@@ -390,18 +412,20 @@ export function TutorialOverlay({ isOpen, steps, onFinish }: TutorialOverlayProp
           <X className="h-4 w-4" />
         </button>
 
-        <div
-          key={currentStep.id}
-          className="min-h-0 flex-1 overflow-y-auto pr-7 animate-in fade-in-0 slide-in-from-bottom-1 duration-200"
-          data-tutorial-scroll
-        >
-          <h2 className="text-lg font-semibold leading-tight text-primary">{currentStep.title}</h2>
-          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-            {currentStep.description}
-          </p>
-        </div>
+        {!navigationOnly && (
+          <div
+            key={currentStep.id}
+            className="min-h-0 flex-1 overflow-y-auto pr-7 animate-in fade-in-0 slide-in-from-bottom-1 duration-200"
+            data-tutorial-scroll
+          >
+            <h2 className="text-lg font-semibold leading-tight text-primary">{currentStep.title}</h2>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              {currentStep.description}
+            </p>
+          </div>
+        )}
 
-        <div className="mt-4 shrink-0 border-t border-border/60 pt-4">
+        <div className={`${navigationOnly ? "mt-0" : "mt-4 border-t border-border/60 pt-4"} shrink-0`}>
           <div className="mb-2 text-xs text-muted-foreground">
             <span>
               Paso {stepIndex + 1} de {steps.length}
@@ -439,12 +463,12 @@ export function TutorialOverlay({ isOpen, steps, onFinish }: TutorialOverlayProp
             >
               {isLastStep ? (
                 <>
-                  Terminar
+                  {currentStep.finishLabel ?? "Terminar"}
                   <Check className="h-4 w-4" />
                 </>
               ) : (
                 <>
-                  Siguiente
+                  {currentStep.nextLabel ?? "Siguiente"}
                   <ArrowRight className="h-4 w-4" />
                 </>
               )}

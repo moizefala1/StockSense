@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import { TrendingUp, AlertCircle, X, GraduationCap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -163,6 +164,7 @@ function ErrorToast({ message, onClose }: ErrorToastProps) {
 // ── StockAnalysis ─────────────────────────────────────────────────────────────
 
 export function StockAnalysis() {
+  const router = useRouter()
   const [thresholds, setThresholds] = useState<IndicatorThresholds>(DEFAULT_THRESHOLDS)
 
   const {
@@ -189,7 +191,11 @@ export function StockAnalysis() {
   const handleRestartTutorial = () => {
     if (profile) {
       restartTutorial()
-      setManualTutorialOpen(true)
+      if (profile.level === "bajo") {
+        router.push("/como-funciona?tutorial=basics")
+      } else {
+        setManualTutorialOpen(true)
+      }
     }
   }
 

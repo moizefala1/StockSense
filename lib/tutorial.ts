@@ -26,6 +26,10 @@ export interface TutorialStep {
   category: "stocks" | "recommendations" | "page"
   targetId: string
   placement: "top" | "bottom" | "left" | "right"
+  panelMode?: "default" | "navigation"
+  panelWidth?: "default" | "wide" | "compact"
+  nextLabel?: string
+  finishLabel?: string
   problem?: string
   concept?: string
   example?: string
@@ -57,224 +61,153 @@ export const knowledgeLevelOptions: Array<{
   },
 ]
 
-const stocksSteps: TutorialStep[] = [
+export const investmentBasicsTutorialSteps: TutorialStep[] = [
   {
-    id: "stock-basics",
-    section: "Bloque 1 · Qué estás analizando",
+    id: "stock-definition",
+    section: "Conceptos básicos",
     phase: "concepto",
-    title: "Qué estás analizando",
+    title: "¿Qué es una acción?",
     description:
-      "Una acción representa una participación en una empresa. En StockSense puedes buscarla por símbolo, como AAPL o MSFT, para ver una lectura simplificada.",
+      "Una acción representa una pequeña parte de una empresa. Cuando compras una, pasas a ser dueño de una fracción de esa compañía y su valor puede subir o bajar.",
     category: "stocks",
+    targetId: "investment-stock-definition",
+    placement: "bottom",
+  },
+  {
+    id: "investing-definition",
+    section: "Conceptos básicos",
+    phase: "concepto",
+    title: "¿Qué es invertir?",
+    description: "",
+    category: "page",
+    targetId: "investing-definition",
+    placement: "bottom",
+    panelMode: "navigation",
+    panelWidth: "compact",
+  },
+  {
+    id: "why-invest",
+    section: "Conceptos básicos",
+    phase: "concepto",
+    title: "¿Por qué invertir?",
+    description: "",
+    category: "page",
+    targetId: "why-investing",
+    placement: "bottom",
+    panelMode: "navigation",
+    panelWidth: "compact",
+  },
+  {
+    id: "investing-rules",
+    section: "Conceptos básicos",
+    phase: "advertencia",
+    title: "Las tres reglas más importantes",
+    description: "",
+    category: "page",
+    targetId: "investing-rules",
+    placement: "bottom",
+    panelMode: "navigation",
+    panelWidth: "compact",
+  },
+  {
+    id: "investing-platforms",
+    section: "Conceptos básicos",
+    phase: "ejemplo",
+    title: "Plataformas recomendadas en Chile",
+    description: "",
+    category: "page",
+    targetId: "investing-platforms",
+    placement: "top",
+    panelMode: "navigation",
+    panelWidth: "compact",
+    finishLabel: "Ir a analizar",
+  },
+]
+
+const analysisCoreSteps: TutorialStep[] = [
+  {
+    id: "search-flow",
+    section: "Analizar una acción",
+    phase: "inicio",
+    title: "Busca una acción",
+    description:
+      "Escribe el símbolo de una empresa o elige una acción popular para comenzar el análisis.",
+    category: "page",
     targetId: "stock-search",
     placement: "bottom",
-    problem:
-      "Si partes directo por Comprar o Vender, la recomendación se siente como una respuesta mágica.",
-    concept:
-      "Una acción representa una participación en una empresa. En StockSense la buscas por símbolo, como AAPL o MSFT.",
-    example:
-      "AAPL no es solo un código: es Apple Inc. La clase usará ese ejemplo para conectar empresa, precio y señales.",
-    practice:
-      "Antes de avanzar, ubica mentalmente dos datos: el símbolo de la acción y el nombre de la empresa.",
-    takeaway:
-      "Esto sirve para que cada análisis tenga contexto y no parezca una apuesta aislada.",
+    panelWidth: "wide",
   },
   {
     id: "stock-price",
-    section: "Bloque 1 · Qué estás analizando",
-    phase: "problema",
+    section: "Resultado del análisis",
+    phase: "concepto",
     title: "El precio es solo una parte",
     description:
-      "El precio actual te orienta, pero no basta para decidir. StockSense lo combina con indicadores para explicar mejor la recomendación.",
+      "Aquí verás el precio actual de la acción y una explicación breve de cómo se genera la recomendación.",
     category: "stocks",
-    targetId: "analysis-summary",
+    targetId: "stock-price",
     placement: "bottom",
-    problem:
-      "Sin contexto, un precio alto puede parecer caro y un precio bajo puede parecer oportunidad, aunque no siempre sea así.",
-    concept:
-      "StockSense combina precio, tendencia e indicadores para transformar un dato suelto en una lectura más útil.",
-    example:
-      "Si AAPL vale $182.52, todavía falta preguntar: ¿sube con fuerza?, ¿está sobre sus medias?, ¿el RSI muestra exceso?",
-    warning:
-      "Evita decidir solo por el precio actual. Úsalo como punto de partida, no como conclusión.",
-    takeaway:
-      "Usa el precio cuando quieras orientarte; usa los indicadores cuando quieras justificar una decisión.",
+  },
+  {
+    id: "recommendation",
+    section: "Resultado del análisis",
+    phase: "solucion",
+    title: "Recomendación",
+    description:
+      "Con esta indicación podrás ahorrar tiempo, ya que te entregamos la recomendación lista: comprar, mantener o vender.",
+    category: "recommendations",
+    targetId: "analysis-recommendation",
+    placement: "bottom",
   },
 ]
 
 const recommendationsSteps: TutorialStep[] = [
   {
-    id: "verdict",
-    section: "Bloque 3 · Recomendaciones",
-    phase: "concepto",
-    title: "El veredicto resume la recomendación",
-    description:
-      "Comprar, Mantener o Vender resume varias señales en una respuesta rápida. Úsalo como punto de partida y luego revisa el detalle.",
-    category: "recommendations",
-    targetId: "analysis-summary",
-    placement: "bottom",
-    problem:
-      "Cuando una plataforma muestra demasiados números a la vez, el usuario termina leyendo todo y entendiendo poco.",
-    concept:
-      "Comprar, Mantener o Vender sintetiza RSI, medias móviles y tendencia. Es una puerta de entrada, no una orden financiera.",
-    example:
-      "Sin resumen: cuatro indicadores dispersos. Con resumen: primero ves Comprar, después revisas por qué.",
-    practice:
-      "Mira el veredicto y pregúntate: ¿qué evidencia debería revisar antes de confiar en él?",
-    takeaway:
-      "Úsalo para orientarte rápido; confirma siempre con confianza, razonamiento e indicadores.",
-  },
-  {
     id: "confidence",
-    section: "Bloque 3 · Recomendaciones",
+    section: "Recomendación",
     phase: "advertencia",
-    title: "La confianza muestra qué tan fuerte es la señal",
+    title: "Confianza de la señal",
     description:
-      "El porcentaje indica qué tan alineadas están las señales del análisis. No es una garantía, pero ayuda a interpretar el resultado con más cuidado.",
+      "La confianza muestra qué tan alineadas están las señales del análisis. No es una garantía, pero ayuda a interpretar el resultado.",
     category: "recommendations",
     targetId: "confidence-row",
     placement: "top",
-    problem:
-      "Una recomendación sin nivel de confianza puede sonar absoluta, aunque esté basada en señales imperfectas.",
-    concept:
-      "La confianza comunica incertidumbre. No dice que algo va a pasar; dice qué tan coherentes están las señales del análisis.",
-    example:
-      "Comprar con 85% se interpreta distinto a Comprar con 52%. El texto es el mismo, pero la fuerza del respaldo cambia.",
-    warning:
-      "No confundas confianza con garantía. Es apoyo para decidir mejor, no predicción segura.",
-    takeaway:
-      "Úsala cuando necesites medir cuánto peso darle al veredicto.",
   },
   {
     id: "reasoning",
-    section: "Bloque 4 · Explicación progresiva",
+    section: "Recomendación",
     phase: "ejemplo",
     title: "Revisa el razonamiento",
     description:
-      "Este bloque explica por qué aparece la recomendación. Ábrelo cuando quieras entender las señales detrás del veredicto.",
+      "Aquí puedes entender qué señales explican la recomendación antes de tomar una decisión.",
     category: "recommendations",
     targetId: "reasoning-toggle",
     placement: "top",
-    problem:
-      "Mostrar todo el razonamiento desde el inicio vuelve la pantalla densa y hace que lo importante pierda jerarquía.",
-    concept:
-      "Esto es progressive disclosure: primero ves lo esencial; luego abres el detalle si necesitas más contexto.",
-    example:
-      "Sin esto: un párrafo largo debajo del veredicto. Con esto: una pregunta clara, ¿por qué esta recomendación?",
-    practice:
-      "Antes de avanzar, abre el razonamiento y busca qué señales justifican el resultado.",
-    solution:
-      "La solución esperada es encontrar una cadena: precio sobre medias, RSI sin exceso y tendencia alineada.",
-    takeaway:
-      "Úsalo cuando el veredicto te interese, pero todavía no sepas si confiar en él.",
   },
   {
     id: "indicators",
-    section: "Bloque 5 · Evidencia",
+    section: "Evidencia",
     phase: "practica",
     title: "Los indicadores muestran la evidencia",
     description:
-      "Aquí puedes revisar RSI, medias móviles y tendencia. Sirven para comprobar qué datos sostienen la recomendación.",
+      "Revisa el RSI, las medias móviles y la tendencia para comprender qué datos sostienen la recomendación.",
     category: "recommendations",
     targetId: "indicators-section",
     placement: "top",
-    problem:
-      "Si solo ves el veredicto, aprendes poco. Si ves la evidencia, entiendes el patrón detrás de la recomendación.",
-    concept:
-      "RSI, medias móviles y tendencia cumplen roles distintos: fuerza, dirección y contexto temporal.",
-    example:
-      "Problema/solución: RSI neutral + precio sobre medias + tendencia alcista explica mejor un Comprar que una sola métrica aislada.",
-    practice:
-      "Ejercicio: compara dos señales. ¿Apuntan en la misma dirección o se contradicen?",
-    solution:
-      "Si varias señales coinciden, la recomendación gana respaldo. Si chocan, conviene ser más prudente.",
-    takeaway:
-      "Usa esta sección cuando quieras pasar de aceptar una recomendación a entenderla.",
   },
 ]
 
-const pageSteps: TutorialStep[] = [
-  {
-    id: "analysis-intro",
-    section: "Bloque 2 · Recorrido cognitivo",
-    phase: "inicio",
-    title: "Recorrido de la página",
-    description:
-      "En esta vista eliges una acción, revisas el resultado y abres el detalle cuando quieras entender la recomendación.",
-    category: "page",
-    targetId: "stock-search",
-    placement: "bottom",
-    problem:
-      "El problema real es que invertir suele sentirse como saltar entre datos sin orden.",
-    concept:
-      "StockSense organiza la página como un recorrido cognitivo: entrada clara, resultado visible, detalle progresivo y cierre seguro.",
-    example:
-      "Ruta de clase: buscar AAPL → leer Comprar/Mantener/Vender → abrir el porqué → contrastar indicadores.",
-    takeaway:
-      "Esto sirve para que sepas siempre cuál es el siguiente paso razonable.",
-  },
-  {
-    id: "search-flow",
-    section: "Bloque 2 · Recorrido cognitivo",
-    phase: "ejemplo",
-    title: "Busca una acción",
-    description:
-      "Escribe un símbolo o elige una acción popular para iniciar el análisis. Este es el punto de entrada principal.",
-    category: "page",
-    targetId: "stock-search",
-    placement: "bottom",
-    problem:
-      "Si la página empieza mostrando demasiadas opciones, la persona no sabe dónde actuar primero.",
-    concept:
-      "Un buen affordance hace evidente la acción disponible. Aquí la acción principal es buscar por símbolo o elegir una acción popular.",
-    example:
-      "Opción A: escribir AAPL. Opción B: partir desde una acción popular si no recuerdas el símbolo.",
-    practice:
-      "Ejercicio: identifica cuál sería tu primera acción si quisieras analizar Apple.",
-    solution:
-      "La respuesta esperada es usar el buscador o seleccionar AAPL desde una lista sugerida.",
-    takeaway:
-      "Úsalo cuando ya tengas una empresa en mente o quieras explorar una alternativa conocida.",
-  },
-  {
-    id: "result-card",
-    section: "Bloque 2 · Recorrido cognitivo",
-    phase: "solucion",
-    title: "Lee primero el resumen",
-    description:
-      "Arriba verás el nombre, precio, veredicto y confianza. Con eso puedes entender rápido la situación antes de revisar más detalles.",
-    category: "page",
-    targetId: "analysis-summary",
-    placement: "bottom",
-    problem:
-      "Sin jerarquía, todos los datos parecen igual de importantes y aumenta la confusión.",
-    concept:
-      "La tarjeta resume identidad, precio, veredicto y confianza. Es la vista general de la situación.",
-    example:
-      "Sin esto: buscarías el dato clave entre varias tarjetas. Con esto: empiezas por una conclusión visible.",
-    takeaway:
-      "Úsalo como mapa rápido antes de revisar el razonamiento y la evidencia.",
-  },
-  {
-    id: "support-card",
-    section: "Bloque 6 · Cierre seguro",
-    phase: "advertencia",
-    title: "Recuerda el límite del análisis",
-    description:
-      "StockSense entrega apoyo educativo. Los indicadores ayudan a investigar, pero no garantizan resultados ni reemplazan tu propio criterio.",
-    category: "page",
-    targetId: "education-note",
-    placement: "top",
-    problem:
-      "Si una interfaz financiera suena demasiado segura, puede empujar decisiones apresuradas.",
-    concept:
-      "La nota educativa pone el marco correcto: los indicadores apoyan la investigación, pero no garantizan resultados.",
-    warning:
-      "No uses StockSense como única base para invertir. Contrasta con contexto, objetivos personales y riesgo.",
-    takeaway:
-      "Esto sirve para mantener el tutorial responsable y la decisión final en manos del usuario.",
-  },
-]
+const supportStep: TutorialStep = {
+  id: "support-card",
+  section: "Uso responsable",
+  phase: "advertencia",
+  title: "Recuerda el límite del análisis",
+  description:
+    "StockSense entrega apoyo educativo. Los indicadores ayudan a investigar, pero no garantizan resultados ni reemplazan tu criterio.",
+  category: "page",
+  targetId: "education-note",
+  placement: "top",
+}
 
 export const homeTutorialSteps: TutorialStep[] = [
   {
@@ -290,34 +223,10 @@ export const homeTutorialSteps: TutorialStep[] = [
   },
 ]
 
-const summarySteps: TutorialStep[] = [
-  {
-    id: "tutorial-summary",
-    section: "Resumen final",
-    phase: "resumen",
-    title: "Resumen para usar StockSense",
-    description:
-      "Busca una acción, lee el veredicto, revisa la confianza, abre el razonamiento y compara los indicadores antes de decidir.",
-    category: "page",
-    targetId: "analysis-summary",
-    placement: "bottom",
-    concept:
-      "Qué veremos → por qué importa → definición corta → ejemplo → errores comunes → práctica → solución → resumen.",
-    example:
-      "En la página: busca la acción → lee el veredicto → revisa confianza → abre el razonamiento → compara indicadores → recuerda el límite educativo.",
-    practice:
-      "La próxima vez que uses la página, intenta explicar en una frase por qué el veredicto tiene sentido.",
-    solution:
-      "Una buena respuesta menciona al menos dos evidencias, por ejemplo tendencia y medias móviles, no solo el color del veredicto.",
-    takeaway:
-      "Úsalo cuando quieras decidir con más claridad, no cuando busques una garantía automática.",
-  },
-]
-
 export const tutorialStepsByLevel: Record<KnowledgeLevel, TutorialStep[]> = {
-  bajo: [...stocksSteps, ...pageSteps, ...recommendationsSteps, ...summarySteps],
-  medio: [...pageSteps, ...recommendationsSteps, ...summarySteps],
-  alto: [...pageSteps, ...summarySteps],
+  bajo: [...analysisCoreSteps, ...recommendationsSteps, supportStep],
+  medio: [...analysisCoreSteps, ...recommendationsSteps, supportStep],
+  alto: [...analysisCoreSteps, supportStep],
 }
 
 const tutorialPriceHistory: PricePoint[] = Array.from({ length: 30 }, (_, index) => {

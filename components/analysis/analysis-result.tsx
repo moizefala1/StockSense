@@ -62,7 +62,7 @@ export function AnalysisResult({
           <Card className="border-border shadow-sm" data-tutorial-id="analysis-summary">
             <CardHeader>
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
+                <div data-tutorial-id="stock-price">
                   <CardTitle className="text-2xl text-primary">
                     {analysis.symbol} - {analysis.name}
                   </CardTitle>
@@ -70,7 +70,12 @@ export function AnalysisResult({
                     ${analysis.price.toFixed(2)}
                   </p>
                 </div>
-                <VerdictBadge verdict={analysis.verdict} />
+                <div
+                  data-tutorial-id="analysis-recommendation"
+                  className="rounded-full ring-4 ring-accent/15"
+                >
+                  <VerdictBadge verdict={analysis.verdict} />
+                </div>
               </div>
             </CardHeader>
 

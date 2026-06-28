@@ -27,6 +27,7 @@ import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { cn } from "@/lib/utils"
+import { InvestmentBasicsTutorial } from "@/components/tutorial/investment-basics-tutorial"
 
 const navSections = [
   { id: "como-invertir", label: "Cómo invertir" },
@@ -308,8 +309,24 @@ export default function ComoFuncionaPage() {
               </p>
             </div>
 
+            {/* ¿Qué es una acción? */}
+            <div className="mb-16 scroll-mt-28" data-tutorial-id="investment-stock-definition">
+              <h3 className="mb-6 text-xl font-bold">¿Qué es una acción?</h3>
+              <div className="space-y-4 text-muted-foreground">
+                <p>
+                  Una acción representa una pequeña parte de una empresa. Al comprarla, pasas a ser
+                  dueño de una fracción de esa compañía y el valor de tu inversión cambia según su
+                  desempeño y las expectativas del mercado.
+                </p>
+                <p>
+                  Por ejemplo, comprar una acción de Apple significa tener una pequeña participación
+                  en Apple. Puedes ganar si su valor aumenta, pero también puedes perder si disminuye.
+                </p>
+              </div>
+            </div>
+
             {/* ¿Qué es invertir? */}
-            <div className="mb-16">
+            <div className="mb-16 scroll-mt-28" data-tutorial-id="investing-definition">
               <h3 className="mb-6 text-xl font-bold">¿Qué es invertir?</h3>
               <div className="space-y-4 text-muted-foreground">
                 <p>
@@ -326,7 +343,7 @@ export default function ComoFuncionaPage() {
             </div>
 
             {/* ¿Por qué invertir? */}
-            <div className="mb-16">
+            <div className="mb-16 scroll-mt-28" data-tutorial-id="why-investing">
               <h3 className="mb-6 text-xl font-bold">¿Por qué deberías invertir?</h3>
               <div className="grid gap-6 sm:grid-cols-2">
                 <div className="rounded-xl border bg-card p-5">
@@ -347,7 +364,7 @@ export default function ComoFuncionaPage() {
             </div>
 
             {/* Reglas */}
-            <div className="mb-16">
+            <div className="mb-16 scroll-mt-28" data-tutorial-id="investing-rules">
               <h3 className="mb-6 text-xl font-bold">Las 3 reglas más importantes</h3>
               <div className="grid gap-6 md:grid-cols-3">
                 <Card className="group">
@@ -392,7 +409,7 @@ export default function ComoFuncionaPage() {
             </div>
 
             {/* Plataformas */}
-            <div>
+            <div className="scroll-mt-28" data-tutorial-id="investing-platforms">
               <h3 className="mb-2 text-xl font-bold">Plataformas recomendadas en Chile</h3>
               <p className="mb-8 text-muted-foreground">
                 Estas apps están reguladas por la CMF y son las más usadas para empezar a invertir desde cero. Las recomendamos para usarlas complementariamente con StockSense
@@ -687,6 +704,8 @@ export default function ComoFuncionaPage() {
           </div>
         </section>
       </main>
+
+      <InvestmentBasicsTutorial />
 
       <Footer />
     </div>

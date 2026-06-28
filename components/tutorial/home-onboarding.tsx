@@ -69,7 +69,11 @@ export function HomeOnboarding() {
         steps={homeTutorialSteps}
         onFinish={() => {
           setHomeTutorialProfile(null)
-          router.push("/analizar")
+          router.push(
+            homeTutorialProfile.level === "bajo"
+              ? "/como-funciona?tutorial=basics"
+              : "/analizar?tutorial=analysis"
+          )
         }}
       />
     )
