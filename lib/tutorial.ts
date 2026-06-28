@@ -135,7 +135,7 @@ const analysisCoreSteps: TutorialStep[] = [
     phase: "inicio",
     title: "Busca una acción",
     description:
-      "Usa esta zona para elegir la empresa que quieres analizar. Puedes escribir el nombre de una acción, por ejemplo Apple o Amazon, o seleccionar una de las opciones populares. Al elegirla, StockSense preparará el análisis y mostrará una recomendación clara.",
+      "Escribe el nombre de una empresa o elige una acción popular. StockSense usará esa selección para preparar el análisis y mostrarte una recomendación clara.",
     category: "page",
     targetId: "stock-search-panel",
     placement: "bottom",
@@ -230,6 +230,21 @@ export const homeTutorialSteps: TutorialStep[] = [
     category: "page",
     targetId: "home-hero-content",
     placement: "bottom",
+  },
+]
+
+export const homeAnalysisEntrySteps: TutorialStep[] = [
+  {
+    id: "home-analysis-entry",
+    section: "Inicio",
+    phase: "inicio",
+    title: "Analizar acciones",
+    description:
+      "Acá comenzarás a analizar las acciones. Usa la opción Analizar de la barra superior para entrar al buscador y revisar las recomendaciones.",
+    category: "page",
+    targetId: "desktop-nav-analyze-link",
+    placement: "bottom",
+    finishLabel: "Ir a analizar",
   },
 ]
 

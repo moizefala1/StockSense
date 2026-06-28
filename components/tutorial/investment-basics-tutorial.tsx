@@ -21,7 +21,7 @@ export function InvestmentBasicsTutorial() {
       steps={investmentBasicsTutorialSteps}
       onFinish={() => {
         setIsOpen(false)
-        router.push("/analizar?tutorial=analysis")
+        router.push("/?tutorial=analysis-entry")
       }}
     />
   )

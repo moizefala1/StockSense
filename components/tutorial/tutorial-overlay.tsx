@@ -45,9 +45,9 @@ function getPreferredPanelWidth(
   }
 
   if (panelWidth === "wide") {
-    if (viewportWidth >= 1280) return 720
-    if (viewportWidth >= 1024) return 660
-    if (viewportWidth >= 768) return 560
+    if (viewportWidth >= 1280) return 840
+    if (viewportWidth >= 1024) return 760
+    if (viewportWidth >= 768) return 640
   }
 
   if (viewportWidth >= 1280) return 520
@@ -218,6 +218,7 @@ export function TutorialOverlay({ isOpen, steps, onFinish, onStepChange }: Tutor
   const [stepIndex, setStepIndex] = useState(0)
   const [targetRect, setTargetRect] = useState<RectState | null>(null)
   const [viewport, setViewport] = useState<ViewportState>({ width: 1200, height: 800 })
+  const [isAutoScrolling, setIsAutoScrolling] = useState(false)
 
   const currentStep = steps[stepIndex]
   const paddedRect = useMemo(
@@ -312,12 +313,21 @@ export function TutorialOverlay({ isOpen, steps, onFinish, onStepChange }: Tutor
           : alignment === "end"
             ? absoluteTop - window.innerHeight + rect.height + viewportGap
             : absoluteTop - viewportGap
+      const nextScrollTop = Math.max(0, scrollTop)
+      const scrollDistance = Math.abs(window.scrollY - nextScrollTop)
+      const settleDelay = clamp(scrollDistance * 0.45, 320, 720)
 
-      window.scrollTo({ top: Math.max(0, scrollTop), behavior: "smooth" })
+      setIsAutoScrolling(true)
+      window.scrollTo({ top: nextScrollTop, behavior: "smooth" })
+      const timer = window.setTimeout(() => {
+        setIsAutoScrolling(false)
+        updateRect()
+      }, settleDelay)
+
+      return () => window.clearTimeout(timer)
     }
-    const timer = window.setTimeout(updateRect, 260)
 
-    return () => window.clearTimeout(timer)
+    setIsAutoScrolling(false)
   }, [currentStep, isOpen, onStepChange, updateRect])
 
   useEffect(() => {
@@ -356,12 +366,18 @@ export function TutorialOverlay({ isOpen, steps, onFinish, onStepChange }: Tutor
   )
   const isLastStep = stepIndex === steps.length - 1
   const navigationOnly = currentStep.panelMode === "navigation"
+  const targetMotionClass = isAutoScrolling
+    ? "transition-none"
+    : "transition-all duration-300 ease-out"
+  const panelMotionClass = isAutoScrolling
+    ? "transition-none"
+    : "transition-[top,left,transform,opacity] duration-300 ease-out"
 
   return (
     <div className="fixed inset-0 z-[80] pointer-events-auto animate-in fade-in duration-200" aria-live="polite">
       {paddedRect ? (
         <div
-          className="absolute rounded-[2rem] border-2 border-accent pointer-events-none transition-all duration-300 ease-out"
+          className={`absolute rounded-[2rem] border-2 border-accent pointer-events-none ${targetMotionClass}`}
           style={{
             top: paddedRect.top,
             left: paddedRect.left,
@@ -376,7 +392,7 @@ export function TutorialOverlay({ isOpen, steps, onFinish, onStepChange }: Tutor
       )}
 
       <div
-        className={`absolute pointer-events-auto flex flex-col overflow-hidden border border-border bg-card shadow-2xl transition-[top,left,transform,opacity] duration-300 ease-out animate-in fade-in zoom-in-95 ${
+        className={`absolute pointer-events-auto flex flex-col overflow-hidden border border-border bg-card shadow-2xl ${panelMotionClass} animate-in fade-in zoom-in-95 ${
           navigationOnly ? "rounded-xl p-3" : "rounded-2xl p-4"
         }`}
         style={panelStyle}

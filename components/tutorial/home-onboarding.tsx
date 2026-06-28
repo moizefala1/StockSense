@@ -3,13 +3,15 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { KnowledgeOnboarding } from "@/components/tutorial/knowledge-onboarding"
+import { TutorialOverlay } from "@/components/tutorial/tutorial-overlay"
 import { useTutorialProfile } from "@/hooks/use-tutorial-profile"
-import type { KnowledgeProfile } from "@/lib/tutorial"
+import { homeAnalysisEntrySteps, type KnowledgeProfile } from "@/lib/tutorial"
 
 export function HomeOnboarding() {
   const router = useRouter()
   const { status, profile, saveProfile } = useTutorialProfile()
   const [isKnowledgeOpen, setIsKnowledgeOpen] = useState(false)
+  const [isAnalysisEntryOpen, setIsAnalysisEntryOpen] = useState(false)
 
   const handleComplete = (nextProfile: KnowledgeProfile) => {
     saveProfile(nextProfile)
@@ -17,7 +19,7 @@ export function HomeOnboarding() {
     router.push(
       nextProfile.level === "bajo"
         ? "/como-funciona?tutorial=basics"
-        : "/analizar?tutorial=analysis"
+        : "/?tutorial=analysis-entry"
     )
   }
 
@@ -62,6 +64,27 @@ export function HomeOnboarding() {
       document.removeEventListener("click", handleClick, true)
     }
   }, [isKnowledgeOpen, profile, status])
+
+  useEffect(() => {
+    if (status !== "ready" || !profile) return
+
+    const params = new URLSearchParams(window.location.search)
+    setIsAnalysisEntryOpen(params.get("tutorial") === "analysis-entry")
+  }, [profile, status])
+
+  if (status === "ready" && profile && isAnalysisEntryOpen) {
+    return (
+      <TutorialOverlay
+        isOpen
+        level={profile.level}
+        steps={homeAnalysisEntrySteps}
+        onFinish={() => {
+          setIsAnalysisEntryOpen(false)
+          router.push("/analizar?tutorial=analysis")
+        }}
+      />
+    )
+  }
 
   if (status === "ready" && !profile && isKnowledgeOpen) {
     return <KnowledgeOnboarding onComplete={handleComplete} />
