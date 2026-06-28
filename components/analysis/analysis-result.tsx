@@ -19,7 +19,6 @@ import { IndicatorSummaryCard } from "@/components/analysis/indicator-summary-ca
 import { IndicatorExplainer } from "@/components/analysis/indicator-explainer"
 import { ThresholdConfig } from "@/components/analysis/threshold-config"
 import { DEFAULT_THRESHOLDS, type IndicatorThresholds } from "@/lib/types"
-import { useAnalysis } from "@/hooks/use-analysis"
 
 interface AnalysisResultProps {
   analysis: AnalysisResultType
@@ -66,18 +65,10 @@ export function AnalysisResult({
             variant="outline"
             size="sm"
             onClick={onSearchAgain}
-            className="bg-accent text-background hover:bg-accent/80 hover:text-background"
+            className="bg-primary text-background hover:bg-accent/80 hover:text-background"
           >
             <Search className="h-4 w-4" />
             Analizar otra acción
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onSearchAgain}
-            className="border-border bg-primary text-white hover:bg-primary/80 hover:text-white"
-          >
-            Preguntar a la IA
           </Button>
         </div>
       </div>
