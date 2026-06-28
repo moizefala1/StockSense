@@ -45,15 +45,15 @@ function getPreferredPanelWidth(
   }
 
   if (panelWidth === "balanced") {
-    if (viewportWidth >= 1280) return 460
-    if (viewportWidth >= 768) return 440
+    if (viewportWidth >= 1280) return 560
+    if (viewportWidth >= 768) return 520
     return viewportWidth - PANEL_SAFE_PADDING * 2
   }
 
   if (panelWidth === "wide") {
-    if (viewportWidth >= 1280) return 960
-    if (viewportWidth >= 1024) return 840
-    if (viewportWidth >= 768) return 680
+    if (viewportWidth >= 1280) return 1020
+    if (viewportWidth >= 1024) return 880
+    if (viewportWidth >= 768) return 700
   }
 
   if (viewportWidth >= 1280) return 520
@@ -381,7 +381,13 @@ export function TutorialOverlay({ isOpen, steps, onFinish, onStepChange }: Tutor
           }}
         />
       ) : (
-        <div className="absolute inset-0 bg-primary/72 backdrop-blur-sm pointer-events-auto" />
+        <div
+          className={`absolute inset-0 pointer-events-auto ${
+            currentStep.spotlightMode === "hidden"
+              ? "bg-primary/90 backdrop-blur-md"
+              : "bg-primary/72 backdrop-blur-sm"
+          }`}
+        />
       )}
 
       <div
@@ -416,9 +422,11 @@ export function TutorialOverlay({ isOpen, steps, onFinish, onStepChange }: Tutor
             data-tutorial-scroll
           >
             <h2 className="text-lg font-semibold leading-tight text-primary">{currentStep.title}</h2>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              {currentStep.description}
-            </p>
+            {currentStep.description && (
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                {currentStep.description}
+              </p>
+            )}
           </div>
         )}
 

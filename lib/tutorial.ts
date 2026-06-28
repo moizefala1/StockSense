@@ -70,9 +70,9 @@ export const investmentBasicsTutorialSteps: TutorialStep[] = [
     id: "investment-basics-intro",
     section: "Conceptos básicos",
     phase: "inicio",
-    title: "Primero: qué es una acción",
+    title: "Primero: inversión y cómo invertir",
     description:
-      "Primero debes aprender qué es una acción. Con esa base será más fácil entender cómo invertir, por qué invertir y cómo interpretar las recomendaciones.",
+      "Primero te enseñaremos qué es una inversión y cómo invertir.",
     category: "stocks",
     targetId: "investment-basics-intro",
     placement: "bottom",
@@ -259,7 +259,6 @@ export const homeAnalysisEntrySteps: TutorialStep[] = [
     category: "page",
     targetId: "home-hero-content",
     placement: "bottom",
-    panelWidth: "wide",
     viewportGap: 260,
   },
   {
