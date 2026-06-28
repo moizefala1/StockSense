@@ -33,7 +33,10 @@ export function StockSearch({
           </p>
         </div>
 
-        <div className="mt-8 rounded-[1.75rem] border border-border bg-card p-4 shadow-[0_8px_30px_rgba(0,0,0,0.08)] sm:p-5">
+        <div
+          className="mt-8 rounded-[1.75rem] border border-border bg-card p-4 shadow-[0_8px_30px_rgba(0,0,0,0.08)] sm:p-5"
+          data-tutorial-id="stock-search-controls"
+        >
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground/60" />
             <Input

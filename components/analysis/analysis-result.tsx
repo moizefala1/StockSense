@@ -155,12 +155,14 @@ export function AnalysisResult({
         {/* Card 3: gráfico + selector de indicador + resumen + explicación de cómo se calcula */}
         <Card className="border-border shadow-sm" data-tutorial-id="indicators-section">
           <CardContent>
-            <div className="flex items-center justify-between mb-1">
-              <h3 className="font-medium text-primary">Evolución del precio</h3>
-              <IndicatorSelector active={activeIndicator} onChange={setActiveIndicator} />
-            </div>
+            <div data-tutorial-id="indicators-overview">
+              <div className="flex items-center justify-between mb-1">
+                <h3 className="font-medium text-primary">Evolución del precio</h3>
+                <IndicatorSelector active={activeIndicator} onChange={setActiveIndicator} />
+              </div>
 
-            <PriceChart analysis={analysis} activeIndicator={activeIndicator} className="mt-3" />
+              <PriceChart analysis={analysis} activeIndicator={activeIndicator} className="mt-3" />
+            </div>
 
             <IndicatorSummaryCard
               analysis={analysis}

@@ -120,7 +120,7 @@ export const investmentBasicsTutorialSteps: TutorialStep[] = [
     description: "",
     category: "page",
     targetId: "investing-platforms",
-    placement: "top",
+    placement: "bottom",
     panelMode: "navigation",
     panelWidth: "compact",
     finishLabel: "Ir a analizar",
@@ -136,7 +136,7 @@ const analysisCoreSteps: TutorialStep[] = [
     description:
       "Escribe en el buscador el nombre de la empresa que quieres analizar o selecciona una de las acciones populares.",
     category: "page",
-    targetId: "stock-search",
+    targetId: "stock-search-controls",
     placement: "bottom",
     panelWidth: "wide",
   },
@@ -198,8 +198,9 @@ const recommendationsSteps: TutorialStep[] = [
     description:
       "Revisa el RSI, las medias móviles y la tendencia para comprender qué datos sostienen la recomendación.",
     category: "recommendations",
-    targetId: "indicators-section",
-    placement: "top",
+    targetId: "indicators-overview",
+    placement: "bottom",
+    scrollPosition: "start",
   },
 ]
 
