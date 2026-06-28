@@ -289,6 +289,8 @@ export function StockAnalysis() {
             tutorialStepId={tutorialStepId}
           />
         )}
+
+        {tutorialOpen && <div className="h-[45vh]" aria-hidden="true" />}
       </div>
 
       {profile && tutorialSteps.length > 0 && (
