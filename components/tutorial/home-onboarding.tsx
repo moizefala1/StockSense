@@ -3,24 +3,26 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { KnowledgeOnboarding } from "@/components/tutorial/knowledge-onboarding"
-import { TutorialOverlay } from "@/components/tutorial/tutorial-overlay"
 import { useTutorialProfile } from "@/hooks/use-tutorial-profile"
-import { homeTutorialSteps, type KnowledgeProfile } from "@/lib/tutorial"
+import type { KnowledgeProfile } from "@/lib/tutorial"
 
 export function HomeOnboarding() {
   const router = useRouter()
   const { status, profile, saveProfile } = useTutorialProfile()
-  const [homeTutorialProfile, setHomeTutorialProfile] = useState<KnowledgeProfile | null>(null)
   const [isKnowledgeOpen, setIsKnowledgeOpen] = useState(false)
 
   const handleComplete = (nextProfile: KnowledgeProfile) => {
     saveProfile(nextProfile)
     setIsKnowledgeOpen(false)
-    setHomeTutorialProfile(nextProfile)
+    router.push(
+      nextProfile.level === "bajo"
+        ? "/como-funciona?tutorial=basics"
+        : "/analizar?tutorial=analysis"
+    )
   }
 
   useEffect(() => {
-    if (status !== "ready" || profile || isKnowledgeOpen || homeTutorialProfile) return
+    if (status !== "ready" || profile || isKnowledgeOpen) return
 
     let hasTriggered = false
 
@@ -59,25 +61,7 @@ export function HomeOnboarding() {
       window.removeEventListener("keydown", handleKeyDown)
       document.removeEventListener("click", handleClick, true)
     }
-  }, [homeTutorialProfile, isKnowledgeOpen, profile, status])
-
-  if (homeTutorialProfile) {
-    return (
-      <TutorialOverlay
-        isOpen
-        level={homeTutorialProfile.level}
-        steps={homeTutorialSteps}
-        onFinish={() => {
-          setHomeTutorialProfile(null)
-          router.push(
-            homeTutorialProfile.level === "bajo"
-              ? "/como-funciona?tutorial=basics"
-              : "/analizar?tutorial=analysis"
-          )
-        }}
-      />
-    )
-  }
+  }, [isKnowledgeOpen, profile, status])
 
   if (status === "ready" && !profile && isKnowledgeOpen) {
     return <KnowledgeOnboarding onComplete={handleComplete} />

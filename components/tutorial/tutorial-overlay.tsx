@@ -313,7 +313,7 @@ export function TutorialOverlay({ isOpen, steps, onFinish, onStepChange }: Tutor
             ? absoluteTop - window.innerHeight + rect.height + viewportGap
             : absoluteTop - viewportGap
 
-      window.scrollTo({ top: Math.max(0, scrollTop), behavior: "auto" })
+      window.scrollTo({ top: Math.max(0, scrollTop), behavior: "smooth" })
     }
     const timer = window.setTimeout(updateRect, 260)
 
@@ -361,7 +361,7 @@ export function TutorialOverlay({ isOpen, steps, onFinish, onStepChange }: Tutor
     <div className="fixed inset-0 z-[80] pointer-events-auto animate-in fade-in duration-200" aria-live="polite">
       {paddedRect ? (
         <div
-          className="absolute rounded-[2rem] border-2 border-accent pointer-events-none transition-all duration-300 ease-in-out"
+          className="absolute rounded-[2rem] border-2 border-accent pointer-events-none transition-all duration-300 ease-out"
           style={{
             top: paddedRect.top,
             left: paddedRect.left,
@@ -376,7 +376,7 @@ export function TutorialOverlay({ isOpen, steps, onFinish, onStepChange }: Tutor
       )}
 
       <div
-        className={`absolute pointer-events-auto flex flex-col overflow-hidden border border-border bg-card shadow-2xl transition-[top,left,transform,opacity] duration-300 ease-in-out animate-in fade-in-0 ${
+        className={`absolute pointer-events-auto flex flex-col overflow-hidden border border-border bg-card shadow-2xl transition-[top,left,transform,opacity] duration-300 ease-out animate-in fade-in zoom-in-95 ${
           navigationOnly ? "rounded-xl p-3" : "rounded-2xl p-4"
         }`}
         style={panelStyle}
@@ -398,7 +398,7 @@ export function TutorialOverlay({ isOpen, steps, onFinish, onStepChange }: Tutor
         {!navigationOnly && (
           <div
             key={currentStep.id}
-            className="min-h-0 flex-1 overflow-y-auto pr-7 animate-in fade-in-0 duration-200"
+            className="min-h-0 flex-1 overflow-y-auto pr-7 animate-in fade-in-0 slide-in-from-bottom-1 duration-200"
             data-tutorial-scroll
           >
             <h2 className="text-lg font-semibold leading-tight text-primary">{currentStep.title}</h2>

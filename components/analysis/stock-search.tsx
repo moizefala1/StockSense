@@ -22,7 +22,7 @@ export function StockSearch({
   onAnalyze,
 }: StockSearchProps) {
   return (
-    <section className="relative mx-auto mb-12 max-w-3xl pt-8" data-tutorial-id="stock-search">
+    <section className="relative mx-auto mb-12 max-w-3xl pt-10" data-tutorial-id="stock-search">
       <div
         className="relative rounded-[2rem] border-[5px] border-border bg-primary px-4 pb-5 pt-12 shadow-[inset_0_0_52px_oklch(0.14_0.03_265_/_0.12),inset_0_-16px_30px_oklch(0.12_0.025_265_/_0.14),inset_0_12px_24px_oklch(0.16_0.03_265_/_0.07)] sm:px-6 sm:pb-6 sm:pt-12"
         data-tutorial-id="stock-search-panel"

@@ -135,12 +135,12 @@ const analysisCoreSteps: TutorialStep[] = [
     phase: "inicio",
     title: "Busca una acción",
     description:
-      "Escribe en el buscador el nombre de la empresa que quieres analizar o selecciona una de las acciones populares.",
+      "Usa esta zona para elegir la empresa que quieres analizar. Puedes escribir el nombre de una acción, por ejemplo Apple o Amazon, o seleccionar una de las opciones populares. Al elegirla, StockSense preparará el análisis y mostrará una recomendación clara.",
     category: "page",
     targetId: "stock-search-panel",
     placement: "bottom",
     panelWidth: "wide",
-    viewportGap: 72,
+    viewportGap: 56,
   },
   {
     id: "stock-price",
