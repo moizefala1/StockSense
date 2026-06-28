@@ -182,10 +182,12 @@ export function StockAnalysis() {
   const { status, profile, isTutorialCompleted, completeTutorial, restartTutorial } =
     useTutorialProfile()
   const [manualTutorialOpen, setManualTutorialOpen] = useState(false)
+  const [tutorialStepId, setTutorialStepId] = useState<string | null>(null)
 
   const handleTutorialFinish = () => {
     completeTutorial()
     setManualTutorialOpen(false)
+    setTutorialStepId(null)
   }
 
   const handleRestartTutorial = () => {
@@ -284,6 +286,7 @@ export function StockAnalysis() {
             knowledge={userKnowledge}
             risk={userRisk}
             tutorialMode={tutorialOpen}
+            tutorialStepId={tutorialStepId}
           />
         )}
       </div>
@@ -295,6 +298,7 @@ export function StockAnalysis() {
           level={profile.level}
           steps={tutorialSteps}
           onFinish={handleTutorialFinish}
+          onStepChange={setTutorialStepId}
         />
       )}
     </main>

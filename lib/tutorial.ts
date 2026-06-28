@@ -26,6 +26,7 @@ export interface TutorialStep {
   category: "stocks" | "recommendations" | "page"
   targetId: string
   placement: "top" | "bottom" | "left" | "right"
+  scrollPosition?: "start" | "center" | "end"
   panelMode?: "default" | "navigation"
   panelWidth?: "default" | "wide" | "compact"
   nextLabel?: string
@@ -72,6 +73,8 @@ export const investmentBasicsTutorialSteps: TutorialStep[] = [
     category: "stocks",
     targetId: "investment-stock-definition",
     placement: "bottom",
+    panelMode: "navigation",
+    panelWidth: "compact",
   },
   {
     id: "investing-definition",
@@ -131,7 +134,7 @@ const analysisCoreSteps: TutorialStep[] = [
     phase: "inicio",
     title: "Busca una acción",
     description:
-      "Escribe el símbolo de una empresa o elige una acción popular para comenzar el análisis.",
+      "Escribe el nombre de una acción o elige una opción popular para comenzar el análisis.",
     category: "page",
     targetId: "stock-search",
     placement: "bottom",
@@ -145,7 +148,7 @@ const analysisCoreSteps: TutorialStep[] = [
     description:
       "Aquí verás el precio actual de la acción y una explicación breve de cómo se genera la recomendación.",
     category: "stocks",
-    targetId: "stock-price",
+    targetId: "analysis-overview",
     placement: "bottom",
   },
   {
@@ -154,7 +157,7 @@ const analysisCoreSteps: TutorialStep[] = [
     phase: "solucion",
     title: "Recomendación",
     description:
-      "Con esta indicación podrás ahorrar tiempo, ya que te entregamos la recomendación lista: comprar, mantener o vender.",
+      "Esta tarjeta resume el análisis en una recomendación directa: comprar, mantener o vender. Así podrás ahorrar tiempo al recibir la indicación lista.",
     category: "recommendations",
     targetId: "analysis-recommendation",
     placement: "bottom",
@@ -171,7 +174,8 @@ const recommendationsSteps: TutorialStep[] = [
       "La confianza muestra qué tan alineadas están las señales del análisis. No es una garantía, pero ayuda a interpretar el resultado.",
     category: "recommendations",
     targetId: "confidence-row",
-    placement: "top",
+    placement: "bottom",
+    scrollPosition: "start",
   },
   {
     id: "reasoning",
@@ -182,7 +186,8 @@ const recommendationsSteps: TutorialStep[] = [
       "Aquí puedes entender qué señales explican la recomendación antes de tomar una decisión.",
     category: "recommendations",
     targetId: "reasoning-toggle",
-    placement: "top",
+    placement: "bottom",
+    scrollPosition: "start",
   },
   {
     id: "indicators",
@@ -205,8 +210,9 @@ const supportStep: TutorialStep = {
   description:
     "StockSense entrega apoyo educativo. Los indicadores ayudan a investigar, pero no garantizan resultados ni reemplazan tu criterio.",
   category: "page",
-  targetId: "education-note",
-  placement: "top",
+    targetId: "education-note",
+    placement: "bottom",
+    scrollPosition: "start",
 }
 
 export const homeTutorialSteps: TutorialStep[] = [

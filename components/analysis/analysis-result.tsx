@@ -27,6 +27,7 @@ interface AnalysisResultProps {
   /** Eje 2: tolerancia al riesgo del usuario. Determina qué indicador viene preseleccionado. Por defecto, moderado. */
   risk?: RiskProfile
   tutorialMode?: boolean
+  tutorialStepId?: string | null
 }
 
 export function AnalysisResult({
@@ -36,6 +37,7 @@ export function AnalysisResult({
   knowledge = "no-sabe",
   risk = "moderado",
   tutorialMode = false,
+  tutorialStepId = null,
 }: AnalysisResultProps) {
   const [showReasoning, setShowReasoning] = useState(tutorialMode)
   const [activeIndicator, setActiveIndicator] = useState<IndicatorKey>(defaultIndicatorByRisk[risk])
@@ -60,7 +62,7 @@ export function AnalysisResult({
         <div className="space-y-6">
           {/* Card 1: identidad de la acción + veredicto + confianza + razonamiento */}
           <Card className="border-border shadow-sm" data-tutorial-id="analysis-summary">
-            <CardHeader>
+            <CardHeader data-tutorial-id="analysis-overview">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div data-tutorial-id="stock-price">
                   <CardTitle className="text-2xl text-primary">
@@ -72,15 +74,24 @@ export function AnalysisResult({
                 </div>
                 <div
                   data-tutorial-id="analysis-recommendation"
-                  className="rounded-full ring-4 ring-accent/15"
+                  className={cn(
+                    "relative rounded-full",
+                    tutorialStepId === "recommendation" && "ring-4 ring-accent/20"
+                  )}
                 >
                   <VerdictBadge verdict={analysis.verdict} />
+                  {tutorialMode && tutorialStepId === "stock-price" && (
+                    <div
+                      className="absolute -inset-1 rounded-full border border-border bg-muted shadow-inner"
+                      aria-hidden="true"
+                    />
+                  )}
                 </div>
               </div>
             </CardHeader>
 
             <CardContent>
-              <div className="flex justify-between items-center" data-tutorial-id="confidence-row">
+              <div className="flex scroll-mt-28 justify-between items-center" data-tutorial-id="confidence-row">
                 <p className="text-sm text-muted-foreground">Confianza: {analysis.confidence}%</p>
 
                 <Button
@@ -98,7 +109,7 @@ export function AnalysisResult({
                 type="button"
                 onClick={() => setShowReasoning(!reasoningOpen)}
                 data-tutorial-id="reasoning-toggle"
-                className="mt-4 flex w-full items-center justify-between rounded-lg bg-muted p-4 text-left transition-colors hover:bg-muted/80 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1"
+                className="mt-4 flex w-full scroll-mt-28 items-center justify-between rounded-lg bg-muted p-4 text-left transition-colors hover:bg-muted/80 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1"
               >
                 <span className="text-sm font-medium text-primary">
                   ¿Por qué esta recomendación?
@@ -121,7 +132,7 @@ export function AnalysisResult({
 
           {/* Card 2: disclaimer de qué significan los indicadores, separada del veredicto */}
           <Card
-            className="border-border bg-primary-foreground shadow-sm"
+            className="scroll-mt-28 border-border bg-primary-foreground shadow-sm"
             data-tutorial-id="education-note"
           >
             <CardContent>

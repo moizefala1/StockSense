@@ -11,6 +11,7 @@ interface TutorialOverlayProps {
   level: KnowledgeLevel
   steps: TutorialStep[]
   onFinish: () => void
+  onStepChange?: (stepId: string) => void
 }
 
 interface RectState {
@@ -57,7 +58,7 @@ function getPreferredPanelWidth(
 }
 
 function getPaddedRect(rect: RectState, viewport: ViewportState): RectState {
-  const padding = 10
+  const padding = viewport.width < 640 ? 14 : 22
   const left = Math.max(8, rect.left - padding)
   const top = Math.max(8, rect.top - padding)
   const right = Math.min(viewport.width - 8, rect.left + rect.width + padding)
@@ -213,7 +214,7 @@ function getPanelStyle(
   }
 }
 
-export function TutorialOverlay({ isOpen, steps, onFinish }: TutorialOverlayProps) {
+export function TutorialOverlay({ isOpen, steps, onFinish, onStepChange }: TutorialOverlayProps) {
   const [stepIndex, setStepIndex] = useState(0)
   const [targetRect, setTargetRect] = useState<RectState | null>(null)
   const [viewport, setViewport] = useState<ViewportState>({ width: 1200, height: 800 })
@@ -293,18 +294,20 @@ export function TutorialOverlay({ isOpen, steps, onFinish }: TutorialOverlayProp
   useEffect(() => {
     if (!isOpen || !currentStep) return
 
+    onStepChange?.(currentStep.id)
+
     const element = document.querySelector<HTMLElement>(
       `[data-tutorial-id="${currentStep.targetId}"]`
     )
 
     element?.scrollIntoView({
-      block: currentStep.placement === "top" ? "end" : "start",
+      block: currentStep.scrollPosition ?? (currentStep.placement === "top" ? "end" : "start"),
       behavior: "smooth",
     })
     const timer = window.setTimeout(updateRect, 260)
 
     return () => window.clearTimeout(timer)
-  }, [currentStep, isOpen, updateRect])
+  }, [currentStep, isOpen, onStepChange, updateRect])
 
   useEffect(() => {
     if (!isOpen) return
@@ -346,48 +349,17 @@ export function TutorialOverlay({ isOpen, steps, onFinish }: TutorialOverlayProp
   return (
     <div className="fixed inset-0 z-[80] pointer-events-auto animate-in fade-in duration-200" aria-live="polite">
       {paddedRect ? (
-        <>
-          <div
-            className="absolute bg-primary/72 backdrop-blur-[1px] pointer-events-auto transition-all duration-300 ease-out"
-            style={{ top: 0, left: 0, width: "100%", height: paddedRect.top }}
-          />
-          <div
-            className="absolute bg-primary/72 backdrop-blur-[1px] pointer-events-auto transition-all duration-300 ease-out"
-            style={{
-              top: paddedRect.top + paddedRect.height,
-              left: 0,
-              width: "100%",
-              bottom: 0,
-            }}
-          />
-          <div
-            className="absolute bg-primary/72 backdrop-blur-[1px] pointer-events-auto transition-all duration-300 ease-out"
-            style={{
-              top: paddedRect.top,
-              left: 0,
-              width: paddedRect.left,
-              height: paddedRect.height,
-            }}
-          />
-          <div
-            className="absolute bg-primary/72 backdrop-blur-[1px] pointer-events-auto transition-all duration-300 ease-out"
-            style={{
-              top: paddedRect.top,
-              left: paddedRect.left + paddedRect.width,
-              right: 0,
-              height: paddedRect.height,
-            }}
-          />
-          <div
-            className="absolute rounded-[1.25rem] border-2 border-accent shadow-[0_0_0_4px_oklch(0.76_0.136_212_/_0.16),0_18px_60px_rgba(0,0,0,0.24)] transition-all duration-300 ease-out"
-            style={{
-              top: paddedRect.top,
-              left: paddedRect.left,
-              width: paddedRect.width,
-              height: paddedRect.height,
-            }}
-          />
-        </>
+        <div
+          className="absolute rounded-[2rem] border-2 border-accent pointer-events-none transition-all duration-300 ease-out"
+          style={{
+            top: paddedRect.top,
+            left: paddedRect.left,
+            width: paddedRect.width,
+            height: paddedRect.height,
+            boxShadow:
+              "0 0 0 9999px color-mix(in oklab, var(--primary) 72%, transparent), 0 0 0 5px color-mix(in oklab, var(--accent) 18%, transparent), 0 18px 60px rgb(0 0 0 / 0.24)",
+          }}
+        />
       ) : (
         <div className="absolute inset-0 bg-primary/72 backdrop-blur-sm pointer-events-auto" />
       )}
