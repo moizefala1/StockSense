@@ -381,16 +381,17 @@ export const tutorialStepsByLevel: Record<KnowledgeLevel, TutorialStep[]> = {
   alto: [...analysisCoreSteps.slice(0, 1), expertAnalysisOverviewStep, supportStep],
 }
 
-const tutorialPriceHistory: PricePoint[] = Array.from({ length: 30 }, (_, index) => {
-  const price = 164.8 + index * 0.61 + Math.sin(index / 2) * 0.8
-  const rsi = 44 + index * 0.35 + Math.sin(index / 3) * 4
+const tutorialPriceHistory: PricePoint[] = Array.from({ length: 365 }, (_, index) => {
+  const progress = index / 364
+  const price = 148 + (182.52 - 148) * progress + Math.sin(index / 6) * 2.5
+  const rsi = 42 + (55 - 42) * progress + Math.sin(index / 5) * 6
 
   return {
-    date: new Date(Date.UTC(2026, 4, 29 + index)).toISOString().slice(0, 10),
+    date: new Date(Date.UTC(2026, 5, 28 - 364 + index)).toISOString().slice(0, 10),
     price: Math.round(price * 100) / 100,
     rsi: Math.round(rsi * 10) / 10,
-    sma50: Math.round((163.9 + index * 0.49) * 100) / 100,
-    sma200: Math.round((160.2 + index * 0.16) * 100) / 100,
+    sma50: Math.round((148 + (178.2 - 148) * progress) * 100) / 100,
+    sma200: Math.round((148 + (164.8 - 148) * progress) * 100) / 100,
   }
 })
 

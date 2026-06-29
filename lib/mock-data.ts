@@ -19,21 +19,24 @@ export const mockStocks: Stock[] = [
 ]
 
 /**
- * Genera una serie de 30 días de precios que termina exactamente en `endPrice`.
+ * Genera una serie de 365 días de precios que termina exactamente en `endPrice`.
  * La dirección general (sube/baja/lateral) se decide aquí mismo, al azar, en vez
  * de depender de un veredicto externo — porque el veredicto se calcula DESPUÉS,
  * a partir de esta serie, no al revés. Así el gráfico es la única fuente de verdad
  * y todo lo demás (señales, veredicto, valores mostrados) se deriva de él.
+ *
+ * Se generan 365 días para soportar el rango de 1 año; el gráfico filtra luego
+ * según el rango temporal seleccionado (1 mes, 6 meses, 1 año, YTD).
  */
 function generatePriceHistory(
   endPrice: number,
   thresholds: IndicatorThresholds
 ): PricePoint[] {
-  const days = 30
+  const days = 365
   const points: PricePoint[] = []
 
-  // Tendencia general aleatoria: entre -9% y +9% desde hace 30 días hasta hoy.
-  const trendBias = (Math.random() - 0.5) * 0.18
+  // Tendencia general aleatoria: entre -30% y +30% desde hace 1 año hasta hoy.
+  const trendBias = (Math.random() - 0.5) * 0.6
   const startPrice = endPrice * (1 - trendBias)
 
   // Camino aleatorio (random walk) interpolado entre startPrice y endPrice,
@@ -48,8 +51,7 @@ function generatePriceHistory(
   // Forzamos que el último punto sea exactamente el precio actual
   rawPrices[days - 1] = endPrice
 
-  // Medias móviles simples calculadas sobre la propia serie generada
-  // (ventanas cortas porque solo tenemos 30 puntos de historia).
+  // Medias móviles simples calculadas sobre la propia serie generada.
   const sma = (arr: number[], idx: number, window: number) => {
     const start = Math.max(0, idx - window + 1)
     const slice = arr.slice(start, idx + 1)
@@ -90,8 +92,8 @@ function generatePriceHistory(
     date.setDate(date.getDate() - (days - 1 - i))
 
     const price = rawPrices[i]
-    const sma50 = sma(rawPrices, i, 10) // ventana corta porque solo hay 30 puntos
-    const sma200 = sma(rawPrices, i, 20)
+    const sma50 = sma(rawPrices, i, 50)
+    const sma200 = sma(rawPrices, i, 200)
     const rsi = rsiSeries[i]
 
     let rsiSignal: Verdict | undefined
@@ -142,8 +144,10 @@ export function generateMockAnalysis(
 
   // La tendencia general también se deriva de la propia serie: comparamos el
   // precio de hace 30 días contra el actual, en vez de elegirla al azar aparte.
+  // La serie ahora tiene 365 días pero la ventana de análisis sigue siendo 30.
+  const thirtyDaysAgo = priceHistory[priceHistory.length - 31] ?? priceHistory[0]
   const priceChangePercent =
-    Math.round(((latest.price - priceHistory[0].price) / priceHistory[0].price) * 1000) / 10
+    Math.round(((latest.price - thirtyDaysAgo.price) / thirtyDaysAgo.price) * 1000) / 10
   const trendValue = priceChangePercent > 1.5 ? "Alcista" : priceChangePercent < -1.5 ? "Bajista" : "Lateral"
   const trendSignal: Verdict =
     trendValue === "Alcista" ? "comprar" : trendValue === "Bajista" ? "vender" : "mantener"

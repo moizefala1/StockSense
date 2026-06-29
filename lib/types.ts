@@ -21,6 +21,18 @@ export type RiskProfile = "conservador" | "moderado" | "arriesgado"
 /** Los 3 indicadores que se pueden superponer al precio en el gráfico, uno a la vez. */
 export type IndicatorKey = "rsi" | "sma50" | "sma200"
 
+/** Rangos temporales disponibles para visualizar el gráfico de precio. */
+export type TimeRange = "1y" | "6m" | "1m" | "ytd"
+
+export const TIME_RANGE_LABELS: Record<TimeRange, string> = {
+  "1y": "1 año",
+  "6m": "6 meses",
+  "1m": "1 mes",
+  ytd: "YTD",
+}
+
+export const DEFAULT_TIME_RANGE: TimeRange = "1m"
+
 export interface Stock {
   symbol: string
   name: string

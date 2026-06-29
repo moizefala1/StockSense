@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import {
   Area,
   AreaChart,
@@ -14,7 +14,9 @@ import {
 } from "recharts"
 import { TrendingUp, TrendingDown, Minus } from "lucide-react"
 import { cn } from "@/lib/utils"
-import type { AnalysisResult, IndicatorKey, PricePoint, Verdict } from "@/lib/types"
+import type { AnalysisResult, IndicatorKey, PricePoint, TimeRange, Verdict } from "@/lib/types"
+import { DEFAULT_TIME_RANGE, TIME_RANGE_LABELS } from "@/lib/types"
+import { TimeRangeSelector } from "@/components/analysis/time-range-selector"
 
 interface PriceChartProps {
   analysis: AnalysisResult
@@ -59,6 +61,31 @@ const indicatorAxisLabel: Record<IndicatorKey, string> = {
   rsi: "RSI",
   sma50: "Media 50d",
   sma200: "Media 200d",
+}
+
+function filterByRange(history: PricePoint[], range: TimeRange): PricePoint[] {
+  if (range === "1y") return history
+
+  const last = history[history.length - 1]
+  if (!last) return history
+
+  if (range === "ytd") {
+    const startOfYear = new Date(last.date)
+    startOfYear.setMonth(0, 1)
+    const cutoff = startOfYear.toISOString().split("T")[0]
+    const filtered = history.filter((p) => p.date >= cutoff)
+    return filtered.length > 0 ? filtered : history
+  }
+
+  if (range === "6m") {
+    const start = new Date(last.date)
+    start.setMonth(start.getMonth() - 6, 1)
+    const cutoff = start.toISOString().split("T")[0]
+    const filtered = history.filter((p) => p.date >= cutoff)
+    return filtered.length > 0 ? filtered : history
+  }
+
+  return history.slice(-30)
 }
 
 function formatDateShort(dateStr: string) {
@@ -116,41 +143,55 @@ function SignalDot({ cx = 0, cy = 0, payload }: SignalDotProps) {
 }
 
 export function PriceChart({ analysis, activeIndicator, className }: PriceChartProps) {
-  const { priceHistory, verdict, priceChangePercent } = analysis
+  const { verdict } = analysis
+  const [timeRange, setTimeRange] = useState<TimeRange>(DEFAULT_TIME_RANGE)
   const colorHex = verdictHex[verdict]
   const textClass = verdictTextClass[verdict]
   const bgClass = verdictBgClass[verdict]
   const Icon = VerdictIcon[verdict]
-  const isPositiveChange = priceChangePercent >= 0
 
   const gradientId = useMemo(() => `price-gradient-${analysis.symbol}`, [analysis.symbol])
 
-  // El RSI vive en una escala 0-100, muy distinta a la del precio ($). Para que ambas líneas
-  // convivan en el mismo gráfico sin que una aplaste a la otra, el RSI se dibuja en un eje
-  // Y secundario (yAxisId="rsi") en vez de compartir la escala del precio.
   const isRsiActive = activeIndicator === "rsi"
+
+  const visibleHistory = useMemo(
+    () => filterByRange(analysis.priceHistory, timeRange),
+    [analysis.priceHistory, timeRange]
+  )
+
+  const displayChangePercent = useMemo(() => {
+    if (visibleHistory.length < 2) return 0
+    const first = visibleHistory[0].price
+    const last = visibleHistory[visibleHistory.length - 1].price
+    return Math.round(((last - first) / first) * 1000) / 10
+  }, [visibleHistory])
+
+  const isPositiveChange = displayChangePercent >= 0
 
   return (
     <div className={cn("w-full", className)}>
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
         <div className="flex items-center gap-2">
           <div className={cn("flex h-7 w-7 items-center justify-center rounded-full", bgClass)}>
             <Icon className={cn("h-4 w-4", textClass)} />
           </div>
           <p className="text-sm text-muted-foreground">
-            Últimos 30 días ·{" "}
+            {TIME_RANGE_LABELS[timeRange]} ·{" "}
             <span className={cn("font-medium", textClass)}>{verdictLabel[verdict]}</span>
           </p>
         </div>
-        <p className={cn("text-lg font-semibold", textClass)}>
-          {isPositiveChange ? "+" : ""}
-          {priceChangePercent}%
-        </p>
+        <div className="flex items-center gap-3">
+          <p className={cn("text-lg font-semibold", textClass)}>
+            {isPositiveChange ? "+" : ""}
+            {displayChangePercent}%
+          </p>
+          <TimeRangeSelector active={timeRange} onChange={setTimeRange} />
+        </div>
       </div>
 
       <div className="h-[220px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={priceHistory} margin={{ top: 8, right: 16, bottom: 0, left: 0 }}>
+          <AreaChart data={visibleHistory} margin={{ top: 8, right: 16, bottom: 0, left: 0 }}>
             <defs>
               <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor={colorHex} stopOpacity={0.25} />
@@ -166,7 +207,7 @@ export function PriceChart({ analysis, activeIndicator, className }: PriceChartP
               tick={{ fontSize: 11, fill: "var(--muted-fg)" }}
               axisLine={false}
               tickLine={false}
-              interval={Math.floor(priceHistory.length / 4)}
+              interval={Math.floor(visibleHistory.length / 4)}
             />
 
             {/* Eje del precio (izquierda) */}

@@ -74,10 +74,10 @@ export function AnalysisResult({
       </div>
 
       <div
-        className="grid scroll-mt-6 gap-6 lg:grid-cols-2 lg:items-start"
+        className="grid scroll-mt-6 gap-6 lg:grid-cols-2 lg:items-stretch"
         data-tutorial-id="analysis-results-overview"
       >
-        <div className="space-y-6">
+        <div className="flex flex-col gap-6">
           <Card className="border-border shadow-sm" data-tutorial-id="analysis-summary">
             <CardHeader data-tutorial-id="analysis-overview">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -86,7 +86,7 @@ export function AnalysisResult({
                     {analysis.symbol} - {analysis.name}
                   </CardTitle>
                   <p className="mt-1 text-xl font-semibold text-muted-foreground">
-                    ${analysis.price.toFixed(2)}
+                    ${analysis.price.toFixed(2)} USD
                   </p>
                 </div>
                 <div
@@ -152,7 +152,7 @@ export function AnalysisResult({
             </CardContent>
           </Card>
 
-          <div className="mb-6">
+          <div>
             <ThresholdConfig
               thresholds={thresholds}
               onThresholdsChange={setThresholds}
@@ -160,7 +160,7 @@ export function AnalysisResult({
           </div>
 
           <Card
-            className="scroll-mt-28 border-border bg-primary-foreground shadow-sm"
+            className="flex flex-1 flex-col justify-center scroll-mt-28 border-border bg-primary-foreground shadow-sm"
             data-tutorial-id="education-note"
           >
             <CardContent>
@@ -222,14 +222,14 @@ export function AnalysisResult({
                 )}
               />
             </div>
-
-            <IndicatorExplainer
-              indicator={displayedIndicator}
-              knowledge={knowledge}
-              className="bg-card shadow-sm"
-            />
           </div>
         </div>
+
+        <IndicatorExplainer
+          indicator={displayedIndicator}
+          knowledge={knowledge}
+          className="bg-card shadow-sm lg:col-span-2"
+        />
       </div>
     </div>
   )

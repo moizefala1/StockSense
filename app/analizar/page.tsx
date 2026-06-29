@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import { Suspense } from "react"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { StockAnalysis } from "@/components/analysis/stock-analysis"
@@ -14,9 +13,7 @@ export default function AnalizarPage() {
   return (
     <>
       <Header />
-      <Suspense fallback={null}>
         <StockAnalysis />
-      </Suspense>
       <Footer />
     </>
   )

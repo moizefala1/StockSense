@@ -1,5 +1,20 @@
 import type { IndicatorKey, KnowledgeLevel } from "@/lib/types"
 
+export type RsiZone = "oversold" | "neutral" | "overbought"
+
+export interface IndicatorExample {
+  /** Situación del mercado o de la acción que ejemplifica una lectura del indicador */
+  situation: string
+  /** Lectura concreta del indicador en esa situación */
+  reading: string
+  /** Qué podría significar para un inversor y cómo se usaría la señal */
+  takeaway: string
+  /** Zona del RSI que ilustra el ejemplo; define color e icono en la UI */
+  zone?: RsiZone
+  /** Valor numérico del RSI destacado en el badge del ejemplo */
+  rsiValue?: number
+}
+
 export interface IndicatorExplainerContent {
   title: string
   shortLabel: string
@@ -9,6 +24,8 @@ export interface IndicatorExplainerContent {
   technical: string
   /** Fórmula matemática mostrada como texto monoespaciado, solo nivel técnico */
   formula: string
+  /** Ejemplos prácticos opcionales que ilustran lecturas reales del indicador */
+  examples?: IndicatorExample[]
 }
 
 export const indicatorExplainers: Record<IndicatorKey, IndicatorExplainerContent> = {
@@ -20,6 +37,35 @@ export const indicatorExplainers: Record<IndicatorKey, IndicatorExplainerContent
     technical:
       "El RSI (Relative Strength Index) es un oscilador de momentum que mide la velocidad y magnitud de los movimientos de precio en una escala de 0 a 100, calculado típicamente sobre una ventana de 14 períodos. Se considera zona de sobreventa por debajo de 30 (posible señal de compra) y zona de sobrecompra por encima de 70 (posible señal de venta). Se calcula a partir del promedio de ganancias y pérdidas en el período.",
     formula: "RSI = 100 − [100 / (1 + RS)]\nRS = Promedio de ganancias / Promedio de pérdidas (período de 14 días)",
+    examples: [
+      {
+        situation:
+          "Una acción que cotizaba a $100 cae a $72 en dos semanas tras un reporte de resultados decepcionante.",
+        reading: "El RSI baja a 22, por debajo del umbral de 30 (zona de sobreventa).",
+        takeaway:
+          "La caída fue muy rápida y el precio podría estar \"enfriado\". Algunos inversores lo leen como una posible oportunidad de compra esperando un rebote, aunque si los fundamentos siguen empeorando el precio puede seguir bajando.",
+        zone: "oversold",
+        rsiValue: 22,
+      },
+      {
+        situation:
+          "Una acción se mueve entre $60 y $64 durante varias semanas sin noticias relevantes.",
+        reading: "El RSI oscila alrededor de 55, dentro de la zona neutral (30–70).",
+        takeaway:
+          "No hay señales extremas: el RSI por sí solo no sugiere comprar ni vender. Conviene cruzarlo con otros indicadores (medias móviles, tendencia) o esperar a que salga de la zona neutral.",
+        zone: "neutral",
+        rsiValue: 55,
+      },
+      {
+        situation:
+          "Una acción salta de $50 a $78 en pocos días después de anunciar un contrato importante.",
+        reading: "El RSI sube a 84, por encima del umbral de 70 (zona de sobrecompra).",
+        takeaway:
+          "La subida fue tan rápida que podría venir una corrección. Quien ya tiene la acción podría asegurar ganancias; quien quiere entrar podría esperar a que el RSI se enfríe hacia la zona neutral.",
+        zone: "overbought",
+        rsiValue: 84,
+      },
+    ],
   },
   sma50: {
     title: "Media Móvil de 50 días",

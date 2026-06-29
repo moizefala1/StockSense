@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react"
 import type { CSSProperties } from "react"
-import { ArrowLeft, ArrowRight, Check, X } from "lucide-react"
+import { ArrowLeft, ArrowRight, Check, SkipForward } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import type { KnowledgeLevel, TutorialStep } from "@/lib/tutorial"
 
@@ -465,20 +465,12 @@ export function TutorialOverlay({
         tabIndex={-1}
         data-tutorial-panel
       >
-        <button
-          type="button"
-          onClick={closeTutorial}
-          className="absolute right-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-primary focus-visible:ring-2 focus-visible:ring-accent"
-          aria-label="Cerrar tutorial"
-        >
-          <X className="pointer-events-none h-4 w-4" />
-        </button>
 
         {!navigationOnly && (
           <div
             key={currentStep.id}
             className={`animate-in fade-in-0 slide-in-from-bottom-1 duration-200 ${
-              featuredPanel ? "pr-8" : "min-h-0 flex-1 overflow-y-auto pr-7"
+              featuredPanel ? "" : "min-h-0 flex-1 overflow-y-auto"
             }`}
             data-tutorial-scroll
           >
@@ -507,17 +499,30 @@ export function TutorialOverlay({
           </div>
 
           <div className="mt-3 flex items-center justify-between gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="h-7 px-2.5 text-xs"
-              onClick={() => setStepIndex((current) => Math.max(0, current - 1))}
-              disabled={stepIndex === 0}
-            >
-              <ArrowLeft className="h-3.5 w-3.5" />
-              Anterior
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-7 px-2.5 text-xs"
+                onClick={() => setStepIndex((current) => Math.max(0, current - 1))}
+                disabled={stepIndex === 0}
+              >
+                <ArrowLeft className="h-3.5 w-3.5" />
+                Anterior
+              </Button>
+
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-7 px-2.5 text-xs text-muted-foreground hover:text-primary"
+                onClick={closeTutorial}
+              >
+                <SkipForward className="h-3.5 w-3.5" />
+                Omitir
+              </Button>
+            </div>
 
             <Button
               type="button"
